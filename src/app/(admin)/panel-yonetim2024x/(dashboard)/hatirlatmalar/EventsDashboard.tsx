@@ -581,6 +581,24 @@ export default function EventsDashboard({
                 </div>
               )}
 
+              {/* Client Selection */}
+              <div>
+                <label className="block text-xs font-medium text-gray-600 mb-1">
+                  <Users className="w-3 h-3 inline mr-1" />
+                  Müvekkil
+                </label>
+                <select
+                  name="clientId"
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
+                    focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
+                >
+                  <option value="">Müvekkil Seçin (isteğe bağlı)</option>
+                  {clientList.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
                   Başlık <span className="text-red-400">*</span>
@@ -638,8 +656,6 @@ export default function EventsDashboard({
                   </select>
                 </div>
               </div>
-
-              <input type="hidden" name="clientId" value="" />
 
               <div className="flex justify-end gap-3 pt-2">
                 <button

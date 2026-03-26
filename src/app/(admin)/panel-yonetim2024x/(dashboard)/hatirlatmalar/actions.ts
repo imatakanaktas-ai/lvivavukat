@@ -138,16 +138,16 @@ export async function getAllEvents(): Promise<{ items: UnifiedItem[]; clients: {
     });
   }
 
-  // Unique client list for filter dropdown
-  const clientMap = new Map<string, string>();
-  for (const item of items) {
-    if (item.clientId && item.clientFirstName) {
-      clientMap.set(item.clientId, `${item.clientFirstName} ${item.clientLastName || ""}`.trim());
-    }
-  }
-  const clientList = Array.from(clientMap.entries())
-    .map(([id, name]) => ({ id, name }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  // Fetch ALL clients for dropdown (not just those with items)
+  const allClients = await db
+    .select({ id: clients.id, firstName: clients.firstName, lastName: clients.lastName })
+    .from(clients)
+    .orderBy(asc(clients.firstName));
+
+  const clientList = allClients.map((c) => ({
+    id: c.id,
+    name: `${c.firstName} ${c.lastName}`.trim(),
+  }));
 
   return { items, clients: clientList };
 }
@@ -165,8 +165,9 @@ export async function createReminder(
   }
 
   try {
+    const cId = parsed.data.clientId || null;
     await db.insert(reminders).values({
-      clientId: parsed.data.clientId || null,
+      clientId: cId,
       title: parsed.data.title,
       description: parsed.data.description || null,
       dueDate: new Date(parsed.data.dueDate),
@@ -174,6 +175,7 @@ export async function createReminder(
     });
 
     revalidatePath(`/${ADMIN_PREFIX}/hatirlatmalar`);
+    if (cId) revalidatePath(`/${ADMIN_PREFIX}/muvekiller/${cId}`);
     return { success: true, message: "Hatırlatma eklendi." };
   } catch {
     return { success: false, message: "Hatırlatma eklenirken hata oluştu." };
@@ -183,8 +185,10 @@ export async function createReminder(
 export async function toggleReminderComplete(reminderId: string, isCompleted: boolean): Promise<ReminderActionState> {
   await requireAuth();
   try {
+    const [row] = await db.select({ clientId: reminders.clientId }).from(reminders).where(eq(reminders.id, reminderId)).limit(1);
     await db.update(reminders).set({ isCompleted }).where(eq(reminders.id, reminderId));
     revalidatePath(`/${ADMIN_PREFIX}/hatirlatmalar`);
+    if (row?.clientId) revalidatePath(`/${ADMIN_PREFIX}/muvekiller/${row.clientId}`);
     return { success: true, message: isCompleted ? "Tamamlandı." : "Geri alındı." };
   } catch {
     return { success: false, message: "Güncelleme sırasında hata oluştu." };
@@ -194,8 +198,10 @@ export async function toggleReminderComplete(reminderId: string, isCompleted: bo
 export async function deleteReminder(reminderId: string): Promise<ReminderActionState> {
   await requireAuth();
   try {
+    const [row] = await db.select({ clientId: reminders.clientId }).from(reminders).where(eq(reminders.id, reminderId)).limit(1);
     await db.delete(reminders).where(eq(reminders.id, reminderId));
     revalidatePath(`/${ADMIN_PREFIX}/hatirlatmalar`);
+    if (row?.clientId) revalidatePath(`/${ADMIN_PREFIX}/muvekiller/${row.clientId}`);
     return { success: true, message: "Hatırlatma silindi." };
   } catch {
     return { success: false, message: "Silme sırasında hata oluştu." };

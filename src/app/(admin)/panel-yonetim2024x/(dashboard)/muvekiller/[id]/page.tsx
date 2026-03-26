@@ -21,6 +21,9 @@ import {
 import { getClientWithRelations } from "../actions";
 import ClientNotesSection from "./ClientNotesSection";
 import DeleteClientButton from "./DeleteClientButton";
+import AddPaymentForm from "./AddPaymentForm";
+import AddCourtDateForm from "./AddCourtDateForm";
+import AddReminderForm from "./AddReminderForm";
 
 const ADMIN_PREFIX = process.env.ADMIN_ROUTE_PREFIX || "panel-yonetim2024x";
 
@@ -140,6 +143,7 @@ export default async function ClientDetailPage({
                 <DollarSign className="w-4 h-4 text-gray-400" />
                 Ödemeler
               </h2>
+              <AddPaymentForm clientId={client.id} />
             </div>
             {client.payments.length === 0 ? (
               <p className="text-sm text-gray-400 text-center py-6">Henüz ödeme kaydı yok</p>
@@ -168,10 +172,13 @@ export default async function ClientDetailPage({
 
           {/* Court dates */}
           <div className="p-6 rounded-2xl bg-white border border-gray-200/80">
-            <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2 mb-4">
-              <Gavel className="w-4 h-4 text-gray-400" />
-              Mahkeme Tarihleri
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                <Gavel className="w-4 h-4 text-gray-400" />
+                Mahkeme Tarihleri
+              </h2>
+              <AddCourtDateForm clientId={client.id} />
+            </div>
             {client.courtDates.length === 0 ? (
               <p className="text-sm text-gray-400 text-center py-6">Henüz mahkeme tarihi yok</p>
             ) : (
@@ -203,10 +210,13 @@ export default async function ClientDetailPage({
         <div className="space-y-6">
           {/* Reminders */}
           <div className="p-6 rounded-2xl bg-white border border-gray-200/80">
-            <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2 mb-4">
-              <Bell className="w-4 h-4 text-gray-400" />
-              Hatırlatmalar
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                <Bell className="w-4 h-4 text-gray-400" />
+                Hatırlatmalar
+              </h2>
+              <AddReminderForm clientId={client.id} />
+            </div>
             {client.reminders.length === 0 ? (
               <p className="text-sm text-gray-400 text-center py-6">Hatırlatma yok</p>
             ) : (

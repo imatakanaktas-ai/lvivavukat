@@ -19,7 +19,7 @@ type Template = {
   category: string;
   contentTemplate: string;
   variables: unknown;
-  createdAt: Date;
+  createdAt: string;
 };
 
 type CategoryConfig = Record<string, { label: string; icon: typeof FileText; color: string }>;

@@ -19,13 +19,23 @@ export default async function TemplatesPage() {
     // DB not connected
   }
 
+  // Serialize for client component
+  const serializedTemplates = templates.map((t) => ({
+    id: t.id,
+    name: t.name,
+    category: t.category,
+    contentTemplate: t.contentTemplate,
+    variables: t.variables,
+    createdAt: t.createdAt.toISOString(),
+  }));
+
   return (
     <div className="space-y-6 max-w-6xl">
       <div>
         <h1 className="text-2xl font-serif font-bold text-gray-900">Belge Şablonları</h1>
         <p className="text-sm text-gray-500 mt-1">Tekrar kullanılabilir belge şablonlarını yönetin</p>
       </div>
-      <TemplateManager initialTemplates={templates} categoryConfig={categoryConfig} />
+      <TemplateManager initialTemplates={serializedTemplates} categoryConfig={categoryConfig} />
     </div>
   );
 }

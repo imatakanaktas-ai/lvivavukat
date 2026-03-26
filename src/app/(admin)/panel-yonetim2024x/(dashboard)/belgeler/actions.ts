@@ -128,7 +128,7 @@ Detaylar: ${details}
 - Ukrayna hukukuna uygun olsun
 - Resmi dilde yazılsın
 - Tarih formatı: GG.AA.YYYY
-- Türkçe olarak oluştur
+- Kullanıcının detayları hangi dilde yazdıysa o dilde oluştur (Ukraynaca ise Ukraynaca, Türkçe ise Türkçe)
 - Gerekli yerlerde boşluk bırak ({{imza}}, {{tarih}} gibi)
 - Uygun başlık ve format kullan
 - Hukuki terminolojiyi doğru kullan`;

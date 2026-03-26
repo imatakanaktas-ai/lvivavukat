@@ -1,8 +1,12 @@
-const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT;
-const API_KEY = process.env.GEMINI_API_KEY;
-const MODEL = "gemini-2.0-flash";
+const MODEL = "gemini-2.5-flash";
 
-const ENDPOINT = `https://aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/global/publishers/google/models/${MODEL}:generateContent?key=${API_KEY}`;
+function getEndpoint() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is not set");
+  }
+  return `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${apiKey}`;
+}
 
 interface GeminiMessage {
   role: "user" | "model";
@@ -40,7 +44,8 @@ export async function generateContent(
     maxOutputTokens: 8192,
   };
 
-  const res = await fetch(ENDPOINT, {
+  const endpoint = getEndpoint();
+  const res = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -59,7 +64,7 @@ export async function generateContentStream(
   prompt: string,
   systemInstruction?: string
 ): Promise<ReadableStream<string>> {
-  const streamEndpoint = ENDPOINT.replace(":generateContent", ":streamGenerateContent");
+  const streamEndpoint = getEndpoint().replace(":generateContent", ":streamGenerateContent");
 
   const contents: GeminiMessage[] = [
     { role: "user", parts: [{ text: prompt }] },

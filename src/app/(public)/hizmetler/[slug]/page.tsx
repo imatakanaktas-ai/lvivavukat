@@ -37,6 +37,15 @@ export async function generateMetadata({
 
 // Block Renderer Component
 function BlockRenderer({ block, index }: { block: any, index: number }) {
+  const renderTextWithBold = (text: string, boldClassName: string = "text-foreground font-semibold") => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, k) => 
+      part.startsWith("**") && part.endsWith("**") 
+        ? <strong key={k} className={boldClassName}>{part.slice(2, -2)}</strong> 
+        : part
+    );
+  };
+
   if (block.type === "markdown") {
     return (
       <div key={index} className="prose prose-lg max-w-none text-foreground/80 leading-relaxed mb-10">
@@ -44,14 +53,14 @@ function BlockRenderer({ block, index }: { block: any, index: number }) {
           if (paragraph.startsWith("### ")) {
             return (
               <h3 key={i} className="text-xl font-serif font-bold text-foreground mt-6 mb-3">
-                {paragraph.replace("### ", "")}
+                {renderTextWithBold(paragraph.replace("### ", ""), "text-primary font-bold")}
               </h3>
             );
           }
           if (paragraph.startsWith("## ")) {
             return (
               <h2 key={i} className="text-2xl font-serif font-bold text-primary mt-8 mb-4">
-                {paragraph.replace("## ", "")}
+                {renderTextWithBold(paragraph.replace("## ", ""), "text-foreground font-bold")}
               </h2>
             );
           }
@@ -61,33 +70,19 @@ function BlockRenderer({ block, index }: { block: any, index: number }) {
               <ul key={i} className="space-y-2 my-4">
                 {items.map((item, j) => {
                   let text = item.replace("- ", "");
-                  // handle simple bolding markdown **text**
-                  const parts = text.split(/(\*\*.*?\*\*)/g);
                   return (
                     <li key={j} className="flex items-start gap-2">
                       <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2.5 flex-shrink-0" />
-                      <span>
-                        {parts.map((part, k) => 
-                          part.startsWith("**") && part.endsWith("**") 
-                            ? <strong key={k} className="text-foreground">{part.slice(2, -2)}</strong> 
-                            : part
-                        )}
-                      </span>
+                      <span>{renderTextWithBold(text, "text-foreground font-semibold")}</span>
                     </li>
                   );
                 })}
               </ul>
             );
           }
-          // handle bolding in paragraphs
-          const parts = paragraph.split(/(\*\*.*?\*\*)/g);
           return (
             <p key={i} className="mb-4">
-              {parts.map((part, k) => 
-                part.startsWith("**") && part.endsWith("**") 
-                  ? <strong key={k} className="text-foreground font-semibold">{part.slice(2, -2)}</strong> 
-                  : part
-              )}
+              {renderTextWithBold(paragraph, "text-foreground font-semibold")}
             </p>
           );
         })}

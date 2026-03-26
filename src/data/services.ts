@@ -124,7 +124,7 @@ export const serviceCategories: ServiceCategory[] = [
           {
             type: "quote",
             text: "Ukrayna'da geçirdiğiniz zamanın sadece evinize veya işinize odaklanarak geçmesi gerektiğine inanıyoruz. Evrak işlerinin getirdiği baş ağrısını bize bırakın.",
-            author: "Uzman Göç Hukuku Departmanımız"
+            author: "Av. Lyudmyla Chubai"
           }
         ],
         requiredDocuments: [
@@ -340,6 +340,12 @@ export const serviceCategories: ServiceCategory[] = [
 ## Öğrenci Vizesi Süreci
 
 Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçici oturum izni alması gerekmektedir. Bu süreçte üniversite kayıt işlemleri ve oturum izni başvurusu paralel olarak yürütülür.`,
+          contentBlocks: [
+            { type: "markdown", content: "### **Ukrayna Öğrenci Vizesi** ve Oturum İzni Süreçleri\n\nUkrayna, uygun eğitim maliyetleri ve kaliteli üniversiteleriyle Türk öğrenciler için cazip bir eğitim destinasyonudur. Üniversiteye kayıt olduktan sonra en önemli adım, yasal statünüzü güvence altına alacak olan öğrenci oturum izni başvurunuzdur.\n\nEksik belgelerle yapılan başvurular, okul kabulünüzün iptaline ve deport edilmenize varan ciddi sonuçlar doğurabilir. Alanında uzman avukat kadromuzla, kabul belgenizi almanızdan oturum kartınızı elinize alana dek tüm süreci yönetiyoruz." },
+            { type: "stats", items: [ { label: "Başarı Oranı", value: "%100" }, { label: "Bürokraside Tasarruf", value: "Tam Zamanlı" }, { label: "Türk Öğrenci", value: "Yüzlerce" }, { label: "Hızlı Sonuç", value: "Garantili" } ] },
+            { type: "why_us", title: "Öğrenci Vizelerinde Neden Bizi Tercih Etmelisiniz?", items: [ "Üniversite Koordinasyonu: Davet mektubu (kabul) aşamasından itibaren okul yetkilileriyle doğrudan iletişime geçiyoruz.", "Eksiksiz Belge Hazırlığı: Diploma denklikleri, apostil ve yeminli tercüme işlemlerini tek elden yönetiyoruz.", "Yasal Danışmanlık: Sadece oturum izni değil, Ukrayna'da yabancı öğrenci olarak sahip olduğunuz haklar konusunda tam rehberlik sağlıyoruz.", "Riskleri Sıfıra İndiriyoruz: Yanlış beyan veya evrak eksikliği sebebiyle alınabilecek ret kararlarının önüne geçiyoruz." ] },
+            { type: "quote", text: "Geleceğinizi inşa ederken bürokratik engellerin hayallerinizi ertelemesine izin vermeyin. Eğitim hayatınıza güvenle başlayın, yasal süreçleri bize bırakın.", author: "Av. Lyudmyla Chubai" }
+          ],
         requiredDocuments: [
           "Üniversite kabul mektubu (davet belgesi)",
           "Geçerli pasaport",
@@ -380,6 +386,12 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
 - Oturum iznine geçiş
 - Çalışma izni üzerinden uzatma
 - Eğitim amaçlı uzatma`,
+          contentBlocks: [
+            { type: "markdown", content: "### **Ukrayna Vize Uzatma** İşlemleri\n\nUkrayna'daki kalış süreniz esnasında beklenmedik durumlar, iş fırsatları veya eğitim gibi sebeplerle mevcut vizenizi ya da yasal sürenizi uzatmanız gerekebilir. Ukrayna Göç Dairesi yetkilileri, vize uzatma taleplerini çok sıkı bir şekilde incelemekte ve genellikle sadece kanıtlanmış olağanüstü durumlarda veya güçlü yasal zeminlerde kabul etmektedir.\n\nYasal kalış süresini bir gün dahi aşan yabancılar, hem para cezası ile karşılaşır hem de ülkeden sınır dışı edilme tehlikesi yaşarlar. Dosyanızın ve gerekçelerinizin doğru bir hukuki dille anlatılması şarttır." },
+            { type: "why_us", title: "Vize Uzatma Başvurunuz Neden Profesyonellerle Yapılmalı?", items: [ "Gerekçelendirme: Kalışınızı uzatma sebebinizin yetkililer tarafından güçlü bulunması için kanıt niteliğindeki belgeler ve dilekçeler hazırlanır.", "Tam Uyumluluk: Ukrayna göçmenlik kanunlarının belirlediği dar çerçeve içinde %100 uyumlu bir rota belirlenir.", "Zamanlama: Vize bitmeden en geç 3 gün öncesine kadar yapılması gereken başvuruyu anında işleme alırız." ] },
+            { type: "alert", level: "warning", title: "Kesin Kaçınılması Gerekenler", content: "Son güne bırakılan başvurular genellikle sistemsel gecikmelere takılmaktadır. Vizenizin biteceği günden en az iki hafta önce bizimle iletişime geçin." },
+            { type: "quote", text: "Zamanında yapılmayan basit bir başvuru, Ukrayna'daki planlarınızı yıllarca sekteye uğratabilir. Bürokratik süreleri şansa bırakmayın.", author: "Av. Lyudmyla Chubai" }
+          ],
         requiredDocuments: [
           "Geçerli pasaport",
           "Ukrayna'ya giriş damgası",
@@ -526,7 +538,7 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
           {
             type: "quote",
             text: "Kötü biten bir evliliğin, hukuki bir kabusa dönüşmesine asla izin vermeyin. Güçlü bir savunma ile yeni hayatınıza hızlıca adım atın.",
-            author: "Aile Hukuku Departmanı"
+            author: "Av. Lyudmyla Chubai"
           }
         ],
         requiredDocuments: ["Evlilik cüzdanı", "Pasaport", "Varsa çocuk doğum belgeleri", "Mal varlığı belgeleri", "Başvuru dilekçesi"],
@@ -552,6 +564,12 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
         metaDescription: "Ukrayna'da çocuk velayeti nasıl belirlenir? Velayet hakları, nafaka ve çocuğun üstün yararı prensibi hakkında bilgi.",
         heroDescription: "Çocuğunuzun hakları ve geleceği için velayet süreçlerinde profesyonel hukuki temsil sağlıyoruz.",
         content: `Çocuk velayeti davaları, aile hukukunun en hassas konularından biridir. Ukrayna hukuku, tüm kararlarda çocuğun üstün yararını esas almaktadır.`,
+          contentBlocks: [
+            { type: "markdown", content: "### **Ukrayna'da Velayet** ve Çocuk Hakları\n\nBoşanma sürecinin şüphesiz en hassas ve duygusal noktası, müşterek çocukların velayetidir. Ukrayna Aile Kanunu, velayet davalarında 'çocuğun üstün yararını' temel alır. Mahkemeler, anne ve babanın yaşam koşullarını, gelir durumlarını ve psikolojik stabilizasyonlarını detaylıca inceler.\n\nYabancı ülke vatandaşı ebeveynler için bu süreç, uluslararası çocuk kaçırma yasaları ve yerel dinamikler nedeniyle ekstra zorlayıcı olabilir. Ukrayna'daki yasal haklarınızı sonuna kadar savunmak, çocuğunuzla kopmaz bir bağ kurmanız için elimizden gelen tüm hukuki mücadaleyi veririz." },
+            { type: "stats", items: [ { label: "Çocuğun Üstün Yararı", value: "Odak Noktası" }, { label: "Psikolojik Destek", value: "Rehberlik" }, { label: "Düzenli Görüşme", value: "Garantili" }, { label: "Mahkeme Süreci", value: "Şeffaf" } ] },
+            { type: "why_us", title: "Velayet Savaşında Neden Aile Avukatınız Biz Olmalıyız?", items: [ "Duygusal Tarafsızlık, Hukuki Keskinlik: Duygusal olarak en yıprandığınız anlarda yasal haklarınızı koruyan, soğukkanlı ve rasyonel hamleler yapıyoruz.", "Pedagojik Yaklaşım: Mahkeme sürecinde çocuk psikolojisine zarar verebilecek çatışmaları minimize edecek diyalog yolları inşa ediyoruz.", "Nafaka ve Ziyaret Hakları: Yalnızca velayeti değil, nafaka oranının tespiti ve görüşme takviminin adil belirlenmesini sağlıyoruz." ] },
+            { type: "quote", text: "Bir çocuğun tebessümü her hukuk zaferinden daha değerlidir. Gelin bu karmaşık süreci, çocuğunuzun geleceğini koruyacak şekilde yönetelim.", author: "Av. Lyudmyla Chubai" }
+          ],
         requiredDocuments: ["Doğum belgesi", "Evlilik/boşanma belgesi", "Gelir belgeleri", "Konaklama belgesi", "Tanık beyanları"],
         processSteps: [
           { title: "Değerlendirme", description: "Aile durumunuzun ve haklarınızın değerlendirilmesi" },
@@ -574,6 +592,12 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
         metaDescription: "Ukrayna'da aile birleşimi yoluyla oturum izni nasıl alınır? Eş, çocuk ve ebeveyn birleşimi süreçleri hakkında detaylı bilgi.",
         heroDescription: "Ailenizle Ukrayna'da birlikte yaşamak için aile birleşimi oturum izni süreçlerini yönetiyoruz.",
         content: `Aile birleşimi, Ukrayna'da yasal olarak ikamet eden veya vatandaşlığa sahip kişilerin yakın aile üyelerini yanlarına getirmelerine olanak tanıyan yasal bir süreçtir.`,
+          contentBlocks: [
+            { type: "markdown", content: "### **Ukrayna Aile Birleşimi** ile Birlikte Yaşama Hakkı\n\nUkrayna vatandaşı veya Ukrayna’da kalıcı oturum izni sahibi biriyle evliyseniz, ailenizi tek bir çatı altında toplamak en doğal hakkınızdır. Ancak bu hakka kavuşmak, devasa bir evrak silsilesini ve bürokratik engelleri aşmayı gerektirir.\n\nHem eşinizin hem de varsa çocuklarınızın Ukrayna'da rahat, güvenli ve legal bir statüde yaşayabilmeleri için D tipi vize başvurusundan, oturum rozeti alım sürecine kadar tüm adımları hızlı, eksiksiz ve en güvenilir şekilde koordine ediyoruz." },
+            { type: "stats", items: [ { label: "Aile Dosyaları", value: "Sıfır Hata" }, { label: "Memuriyette Zaman", value: "En Aza İner" }, { label: "Güven ve Şeffaflık", value: "%100" } ] },
+            { type: "why_us", title: "Neden Birlikte Çalışmalıyız?", items: [ "Bürokrasisiz Geçiş: Onlarca belgeyi tercüme, apostil, onay üçgeninde yorulmadan sonuçlandırıyoruz.", "Memurlarla Etkili İletişim: Göç idaresinin dilinden anlayan bir yaklaşımla sürecin uzamasını engelliyoruz.", "Daimi Statüye Doğru: Aile birleşimiyle başlayan sürecinizi ileride Ukrayna Vatandaşlığına kadar taşıyacak bir master plan çiziyoruz." ] },
+            { type: "quote", text: "Ailenizle olan birliğiniz sınırlarla bölünemez. Yasal boşlukları fırsata çevirerek ailenizi en kısa sürede bir araya getiriyoruz.", author: "Av. Lyudmyla Chubai" }
+          ],
         requiredDocuments: ["Aile bağını kanıtlayan belgeler", "Davet eden kişinin oturum belgesi", "Pasaportlar", "Mali yeterlilik belgesi", "Konaklama belgesi", "Sağlık sigortası"],
         processSteps: [
           { title: "Uygunluk Kontrolü", description: "Aile birleşimi koşullarının değerlendirilmesi" },
@@ -596,6 +620,12 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
         metaDescription: "Ukrayna vatandaşlığı nasıl alınır? Vatandaşlık başvuru şartları, gerekli belgeler ve süreç hakkında kapsamlı rehber.",
         heroDescription: "Ukrayna vatandaşlığı edinme sürecinde başvuru şartlarından vatandaşlık yeminine kadar tüm adımlarda yanınızdayız.",
         content: `Ukrayna vatandaşlığı, belirli koşulları karşılayan yabancı uyruklulara açıktır. Vatandaşlık başvurusu kapsamlı bir süreç olup, profesyonel rehberlik büyük önem taşır.`,
+          contentBlocks: [
+            { type: "markdown", content: "### **Ukrayna Vatandaşlığına** Geçiş ve Sürekli Oturum\n\nUkrayna vatandaşlığı almak, sadece bir pasaport elde etmek değil, tüm Avrupa'ya açılan yeni nesil bir entegrasyondur. Ukrayna kanunlarına göre vatandaşlık ediniminin çeşitli yolları (evlilik, yatırımlar, soy bağı vb.) bulunur ancak bu süreç devlet başkanlığı kararnamesine kadar uzanan, spesifik ve uzun bir maratondur.\n\nDosya hazırlığında yapılacak herhangi bir hata, beklediğiniz yılları boşa çıkarabilir. Sürecin tüm komisyon aşamalarını, dil sınavını ve idari testleri hesaba katarak en başından kusursuz bir başvuru paketi hazırlıyoruz." },
+            { type: "stats", items: [ { label: "Dosya Güvenilirliği", value: "%100" }, { label: "Aşama Takibi", value: "Adım Adım" }, { label: "Referans", value: "Güçlü Başarı" }, { label: "Başvurular", value: "Eksiksiz" } ] },
+            { type: "why_us", title: "Ukrayna Vatandaşlık Bürokrasisini Nasıl Aşıyoruz?", items: [ "Bireysel Analiz: Durumunuzu (yatırımcı mısınız, eş misiniz, köken bağı mı var?) analiz edip en kısa rotayı çiziyoruz.", "Dil Sınavı Rehberliği: Ukrayna dili ve tarihi testleri için pratik yönlendirmelerde bulunuyoruz.", "Üst Düzey Takibi: Evrakların komisyonlarda ve devlet makamlarındaki onay süreçlerini bizzat takip ediyoruz." ] },
+            { type: "quote", text: "Vatandaşlık süreci uzun bir maratondur, doğru rehberle koşarsanız eninde sonunda bitiş çizgisine, kusursuz ulaşırsınız.", author: "Av. Lyudmyla Chubai" }
+          ],
         requiredDocuments: ["Kalıcı oturum izni", "Ukraynaca dil yeterlilik belgesi", "Gelir belgesi", "Adli sicil kaydı", "Mevcut vatandaşlıktan çıkış başvurusu"],
         processSteps: [
           { title: "Uygunluk Tespiti", description: "Vatandaşlık koşullarını karşılayıp karşılamadığınızın tespiti" },
@@ -772,6 +802,11 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
         metaDescription: "Ukrayna'da iş hukuku: iş sözleşmeleri, çalışma hakları, işten çıkarma ve işçi-işveren uyuşmazlıkları konusunda hukuki danışmanlık.",
         heroDescription: "Ukrayna'da çalışan Türk vatandaşları ve Türk işverenler için iş hukuku danışmanlığı ve uyuşmazlık çözümü.",
         content: `Ukrayna iş hukuku, işçi ve işveren haklarını düzenleyen kapsamlı bir mevzuata sahiptir. Yabancı çalışanlar için özel düzenlemeler de mevcuttur.`,
+          contentBlocks: [
+            { type: "markdown", content: "### **Ukrayna İş Hukuku** ve Yabancı İş İçi Yasal Düzenlemeler\n\nUkrayna iş güvencesi mevzuatı çalışanı oldukça koruyan yapıda olmakla birlikte, işverenler açısından detaylı sözleşme şartları barındırır. Yabancı işçi istihdamında veya bir çalışan olarak Ukrayna'da çalışma şartlarınızda hak kaybına uğramamanız için İş Kanunu çerçevesinde net tanımlamalar gereklidir.\n\nMobbing, haksız fesih, kıdem tazminatı, maaş iptali gibi sorunlarda gerek işverenlerin doğru sözleşmeler hazırlaması, gerekse işçilerin haklarını alması için arabuluculuktan yargı aşamasına kadar 360 derece hizmet veriyoruz." },
+            { type: "why_us", title: "İş Uyuşmazlıklarında Neden Biz?", items: [ "Önleyici Hukuk: Uyuşmazlık çıkmadan, kusursuz iş sözleşmeleri hazırlayarak riskleri ortadan kaldırıyoruz.", "Tazminat Odaklılık: Haksız fesihlerde maksimum mali telafi ve geçmiş maaşların temini için hızlı dava süreçleri açıyoruz.", "İşçi-İşveren Dengesi: Şirket iseniz, işçi davalarına ve cezalarına karşı sağlam bir hukuki altyapı oluşturuyoruz." ] },
+            { type: "quote", text: "Terinizin kurumasına bile fırsat kalmadan haklarınızın güvence altında olduğu, şeffaf bir çalışma ekosistemi kuruyoruz.", author: "Av. Lyudmyla Chubai" }
+          ],
         requiredDocuments: ["İş sözleşmesi", "Çalışma izni", "Kimlik belgeleri", "İlgili yazışmalar"],
         processSteps: [
           { title: "Hukuki Analiz", description: "Durumunuzun iş hukuku çerçevesinde değerlendirilmesi" },
@@ -794,6 +829,12 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
         metaDescription: "Ukrayna'da sözleşme hazırlama, inceleme ve uyuşmazlık çözümü hizmetleri. Ticari ve bireysel sözleşmeler için profesyonel hukuki destek.",
         heroDescription: "Her türlü sözleşmenin hazırlanması, incelenmesi ve uyuşmazlıkların çözümünde profesyonel hukuki destek sunuyoruz.",
         content: `Sözleşmeler, ticari ve bireysel ilişkilerin temelini oluşturur. Ukrayna hukukuna uygun, haklarınızı koruyan sözleşmelerin hazırlanması büyük önem taşır.`,
+          contentBlocks: [
+            { type: "markdown", content: "### **Sözleşme Hukuku** ile Geleceğinizi Teminat Altına Alın\n\nTicari dünyada ve sosyal yaşamda her şey bir imza ile başlar ancak küçük bir madde veya yanlış kelime kullanımı, tüm geleceğinizi felakete sürükleyebilir. Ukrayna dilinde ve yasal zemininde yapılan sözleşmelerde sadece gramer çevirisinin değil, yasal terminolojinin doğru konumlandırılması hayatidir.\n\nHisse devri, bayilik, kira, gizlilik, yazılım veya uluslararası satım sözleşmelerinizde karşı tarafın gizlediği tuzak maddeleri buluyoruz. Hem Ukrayna Hukuku hem de Uluslararası Ticaret kurallarına göre sizi sıfır risk alanında tutacak metinler üretiyoruz." },
+            { type: "stats", items: [ { label: "Çift Dilli Çeviri", value: "Terminolojik" }, { label: "İncelenen Kontrat", value: "Binlerce" }, { label: "Maliyet Koruması", value: "Üst Düzey" }, { label: "Ticari Güven", value: "Tam Güvence" } ] },
+            { type: "why_us", title: "Sözleşmelerde Nasıl Fark Yaratıyoruz?", items: [ "İki Yönlü Dil Kontrolü: Sözleşmenin yerel dilde ve Türkçe çevirisinde yasal karşılıkların denkliğini sağlıyoruz.", "Gizli Tuzakları Tespiti: Karşı alacaklının gizlediği, ileride tazminat ödemenize yol açabilecek 'ince yazılı' maddeleri ortadan kaldırıyoruz.", "Geleceğe Yönelik Kodlama: Olası uyuşmazlıklarda mahkemeden bile geçmeyip arabuluculukla lehinize sonuçlanacak şarta bağlı maddeler ekliyoruz." ] },
+            { type: "quote", text: "Atacağınız imza sadece bugünün anlaşması değil, yarının güvencesidir. Şansa bırakılmış kelimelerle anlaşma yapılmaz.", author: "Av. Lyudmyla Chubai" }
+          ],
         requiredDocuments: ["Mevcut sözleşme (varsa)", "Tarafların kimlik bilgileri", "İlgili ticari belgeler"],
         processSteps: [
           { title: "İhtiyaç Analizi", description: "Sözleşme ihtiyaçlarınızın belirlenmesi" },
@@ -849,10 +890,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
           {
             type: "stats",
             items: [
-              { label: "Anında Müdahale Edilen Vakalar", value: "7/24" },
-              { label: "Türkçe Başarılı İletişim", value: "%100" },
-              { label: "Tecrübe", value: "10+ Yıl" },
-              { label: "Ukrayna Çapında Destek", value: "Tüm Bölge" }
+              { label: "Anında Müdahale", value: "7/24" },
+              { label: "Ana Dilde İletişim", value: "%100" },
+              { label: "Ortalama Tecrübe", value: "10+ Yıl" },
+              { label: "Ukrayna Geneli Destek", value: "Tam Kapsam" }
             ]
           },
           {
@@ -879,7 +920,7 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
           {
             type: "quote",
             text: "Adaletin kılıcı keskindir ancak doğru savuma kalkanı olmadan bu adaleti aramak yalnızlığa yürümektir.",
-            author: "Av. Lyudmyla Chubai Yönetimi"
+            author: "Av. Lyudmyla Chubai"
           }
         ],
         requiredDocuments: ["Pasaport", "Gözaltı/tutuklama belgeleri", "İlgili deliller", "Tanık bilgileri"],
@@ -904,6 +945,12 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
         metaDescription: "Ukrayna'da miras hukuku: veraset ilamı, miras paylaşımı ve uluslararası miras süreçleri. Türk vatandaşları için hukuki danışmanlık.",
         heroDescription: "Ukrayna'da miras haklarınızın korunması ve veraset işlemlerinin yönetilmesi için profesyonel hukuki destek.",
         content: `Uluslararası miras süreçleri karmaşık olabilir. Ukrayna'da miras hakkı bulunan Türk vatandaşları için tüm yasal süreçleri yönetiyoruz.`,
+          contentBlocks: [
+            { type: "markdown", content: "### **Miras Hukuku** ve Yabancılar İçin Veraset İlamı\n\nUkrayna'daki bir akrabanızdan ya da yakınınızdan miras (gayrimenkul, banka hesabı, şirket hissesi) kaldığında, sürecin hem Ukrayna iç hukukuna hem de uluslararası anlaşmalara göre çözülmesi gerekir. Vefattan itibaren genelde 6 ay olan sürede veraset ilamına başlanmaması hak kayıpları yaratır.\n\nMirasın reddi, mirasçı analizi, vasiyetnamelerin iptali ve uluslararası varlık transfer süreçlerinde bürokratik engelleri adınıza çözüyor, mirasın adil ve hızlı bir şekilde tarafınıza aktarılmasını (veya Ukrayna'da satılıp Türkiye'ye naklini) sağlıyoruz." },
+            { type: "alert", level: "warning", title: "Zamana Karşı Yarış", content: "Ukrayna'da miras işlemlerinde yasal kabul süresi genelde 6 aydır. Süre kaçırılırsa hakkınızı aramak ekstra yargı yollarına başvurmayı gerektirir." },
+            { type: "why_us", title: "Zorlu Miras Süreçlerinde Neden Bizimle İlerlemelisiniz?", items: [ "Sınır Ötesi Yönetim: Türkiye'de otururken, vekalet yoluyla Ukrayna'daki varlıklarınızın tüm tescil ve satış sürecini yürütürüz.", "Vergi Optimizasyonu: Yabancıların miras alımında ortaya çıkan vergileri, yasal indirim ve çifte vergilendirme muafiyetlerine dayanarak en aza indiririz.", "Nizalı Miraslar: Diğer varislerle uyuşmazlık yaşadığınız davalarda, sizin payınızı garantileyen en güçlü savunmayı kurarız." ] },
+            { type: "quote", text: "Size bırakılan miras bir külfet değil, bir değer olmalıdır. Bürokratik yükleri alır, hakkınız olanı size pürüzsüzce teslim ederiz.", author: "Av. Lyudmyla Chubai" }
+          ],
         requiredDocuments: ["Veraset ilamı", "Ölüm belgesi", "Akrabalık belgeleri", "Miras bırakanın mal varlığı belgeleri", "Vasiyetname (varsa)"],
         processSteps: [
           { title: "Miras Tespiti", description: "Miras bırakanın mal varlığının tespiti" },
@@ -924,6 +971,12 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
         metaDescription: "Ukrayna'da vergi sistemi, vergi beyannamesi, çifte vergilendirme anlaşması ve vergi planlaması hakkında profesyonel danışmanlık.",
         heroDescription: "Ukrayna vergi mevzuatı ve Türkiye-Ukrayna çifte vergilendirme anlaşması çerçevesinde vergi danışmanlığı hizmeti sunuyoruz.",
         content: `Ukrayna vergi sistemi, yerel ve uluslararası düzenlemeleriyle karmaşık bir yapıya sahiptir. Özellikle yabancı vatandaşlar ve şirketler için doğru vergi planlaması büyük önem taşır.`,
+          contentBlocks: [
+            { type: "markdown", content: "### **Ukrayna Vergi Sistemi** ve Şirketler İçin Mali Danışmanlık\n\nUkrayna vergi sistemi, sürekli değişen reformlar ve ağır para cezalarıyla bilinir. Şirket kurulumundan (FOP veya TOV), ay sonu beyannamelerine ve KDV iade süreçlerine kadar en ufak bir muhasebe veya vergi hatası, tüm banka hesaplarınızın anında bloke olmasına yol açabilir.\n\nİşletmenizin faaliyet alanına en uygun vergi modelini seçmeniz, çifte vergilendirmeyi önleme anlaşmalarını kullanmanız ve devlet desteklerinden faydalanabilmeniz için sadece muhasebeci olarak değil, mali vergi avukatınız olarak size kalkan oluyoruz." },
+            { type: "stats", items: [ { label: "Mali İnceleme", value: "Önleyici" }, { label: "Vergi Tasarrufu", value: "Optimum" }, { label: "Banka Blokesi", value: "Sıfır Risk" }, { label: "Şeffaf Muhasebe", value: "Sürekli" } ] },
+            { type: "why_us", title: "Mali ve İdari Konularda Neden Biz?", items: [ "Çifte Vergilendirme: Türkiye ve Ukrayna arasındaki özel vergi maddelerini şirketiniz lehine kullandırıyoruz.", "Vergi Denetim Savunması: Şirketinize gelen sürpriz maliye denetimlerinde sizi temsil ediyor, usulsüz cezaları mahkemeden döndürüyoruz.", "Kesintisiz Akış: Her ay beyannamelerinizi zamanında, sıfır hatayla onaylıyor ve işletmenizi yasal güvenli alanda tutuyoruz." ] },
+            { type: "quote", text: "Kazancınızın sürdürülebilir olması, doğru ve şeffaf bir vergi altyapısında filizlenir. Ceza riskini değil, kârı yönetin.", author: "Av. Lyudmyla Chubai" }
+          ],
         requiredDocuments: ["Vergi numarası (INN)", "Gelir belgeleri", "Mevcut vergi beyannameleri", "Şirket mali tabloları"],
         processSteps: [
           { title: "Vergi Analizi", description: "Mevcut vergi durumunuzun analizi" },
@@ -946,6 +999,12 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
         metaDescription: "Ukrayna'da yeminli tercüme, noter tasdiki ve apostil işlemleri. Türkçe-Ukraynaca belge çeviri ve onay hizmetleri.",
         heroDescription: "Resmi belgelerin Türkçe-Ukraynaca yeminli tercümesi, noter tasdiki ve apostil işlemlerini eksiksiz gerçekleştiriyoruz.",
         content: `Ukrayna'daki tüm resmi işlemlerde belgelerinizin Ukraynaca tercümesi ve noter onayı gereklidir. Apostil işlemleri ise uluslararası belge geçerliliği için zorunludur.`,
+          contentBlocks: [
+            { type: "markdown", content: "### Türkçe-Ukraynaca **Yeminli Tercüme ve Apostil** İşlemleri\n\nUkrayna makamlarında onay görmesi gereken her belge mutlak dille ve terimsel bir hassasiyetle çevrilmiş olmalıdır. Adli, tıbbi veya ekonomik belgelerde yapılacak en ufak bir terim hatası, aylarca süren davalarınızın reddedilmesine neden olabilir.\n\nDoğrudan noter onaylı yeminli tercümanlarımızla, Apostilli devlet evrakları ve özel metinlerinizi resmi, hukuki zeminini bozmadan hızlıca çeviriyor ve ilgili makamlara yasal sunuma hazır hale getiriyoruz." },
+            { type: "stats", items: [ { label: "Hukuki Çeviri", value: "Kusursuz" }, { label: "Teslim Süresi", value: "Çok Hızlı" }, { label: "Noter Tasdiki", value: "Tam Yetki" }, { label: "Apostil", value: "Tüm Evraklar" } ] },
+            { type: "why_us", title: "Dil Bariyerini Nasıl Kırıyoruz?", items: [ "Hukuk Terimleri Uzmanlığı: Kelimesi kelimesine değil, kanunun metnindeki amacına uygun, teknik dil çevirisi yapıyoruz.", "Entegre Noter Ağı: Çevrilen evrakları kapı kapı dolaşmadan ofisimiz bünyesindeki bağlantılarla anında onaylatıyoruz.", "Gizlilik Politikası: Şirket bilançoları, gizlilik anlaşmaları ve teşhis raporlarınız maksimum güvenlik altında tercüme edilir." ] },
+            { type: "quote", text: "Farklı dillerin arasındaki köprüyü inşa ederken, cümlenin değil yasal hakkın çevirisini yapıyoruz.", author: "Av. Lyudmyla Chubai" }
+          ],
         requiredDocuments: ["Tercüme edilecek orijinal belgeler", "Pasaport fotokopisi"],
         processSteps: [
           { title: "Belge Teslim", description: "Tercüme edilecek belgelerin teslim alınması" },
@@ -968,6 +1027,12 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
         metaDescription: "Ukrayna'da noter işlemleri: vekâletname, sözleşme onayı, belge tasdiki. Türk vatandaşları için noter hizmetleri rehberi.",
         heroDescription: "Ukrayna'da her türlü noter işlemi, vekâletname düzenleme ve resmi belge onay süreçlerinde profesyonel destek.",
         content: `Ukrayna'da birçok hukuki işlem noter onayı gerektirmektedir. Gayrimenkul alım-satımı, vekâletname düzenleme, miras işlemleri ve şirket kuruluşu gibi konularda noter hizmetleri sunuyoruz.`,
+          contentBlocks: [
+            { type: "markdown", content: "### Ukrayna'da Hızlı ve Güvenilir **Noter İşlemleri**\n\nUkrayna'da bir vekaletname vermek, şirket kuruluş senedi onaylatmak veya taşınmaz alım-satım devrini yapmak uzun kuyruklar ve bürokratik engellerle dolu olabilir. Türkiye’deki noter sisteminden farklı olarak Ukrayna’da özel noterlik çok daha geniş ve katı kurallar barındıran bir zemine sahiptir.\n\nEvrak işlemlerinizi sıraya girmeden, dil bariyerini tamamen ortadan kaldıran yeminli tercümanlar eşliğinde koordine ediyor, imza atarken metnin size tanıdığı tüm yetkileri anında kendi dilinizde özetliyoruz." },
+            { type: "stats", items: [ { label: "Sıra Bekleme", value: "Sıfır" }, { label: "Anında Tercüme", value: "Yerinde" }, { label: "Güvenlik", value: "Noter Tasdikli" }, { label: "Tüm Yetkiler", value: "Kapsamlı" } ] },
+            { type: "why_us", title: "Noter İhtiyaçlarında Neden Aracısız Bizimle Çalışmalısınız?", items: [ "VIP Hizmet: Bekleme salonlarında vakit kaybetmeden, randevu saatinizde anında masaya oturursunuz.", "Anadilinizde Güvence: Vekaletname veya sözleşmenin neleri kapsadığını imza öncesinde şeffafça Türkçe açıklarız.", "Uluslararası Uyumluluk: Türkiye Başkonsolosluğu işlemlerine girecek evrakların, iki ülkenin şartlarını da sağlamasına özen gösteririz." ] },
+            { type: "quote", text: "Atılan her imza, hukuki bir sorumluluğun başlangıcıdır. Neyin altına imza attığınızı %100 bilme hakkınızı koruyoruz.", author: "Av. Lyudmyla Chubai" }
+          ],
         requiredDocuments: ["Pasaport", "İşleme göre değişen belgeler", "Tercüme belgeleri"],
         processSteps: [
           { title: "İhtiyaç Belirleme", description: "Hangi noter işleminin gerektiğinin belirlenmesi" },

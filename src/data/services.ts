@@ -18,8 +18,20 @@ import {
   DollarSign,
   Languages,
   Stamp,
+  ArrowRight,
+  CheckCircle2,
+  AlertCircle
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+
+export type ContentBlock =
+  | { type: "markdown"; content: string }
+  | { type: "highlight"; title: string; content: string }
+  | { type: "stats"; items: { label: string; value: string }[] }
+  | { type: "quote"; text: string; author?: string }
+  | { type: "features"; title: string; items: { title: string; description: string }[] }
+  | { type: "alert"; title: string; content: string; level: "info" | "warning" | "danger" }
+  | { type: "why_us"; title: string; items: string[] };
 
 export interface ServiceCategory {
   title: string;
@@ -35,7 +47,8 @@ export interface ServiceItem {
   metaTitle: string;
   metaDescription: string;
   heroDescription: string;
-  content: string;
+  content: string; // Legacy fallback
+  contentBlocks?: ContentBlock[]; // New rich blocks
   requiredDocuments: string[];
   processSteps: { title: string; description: string }[];
   faq: { question: string; answer: string }[];
@@ -52,30 +65,68 @@ export const serviceCategories: ServiceCategory[] = [
         shortDescription: "Ukrayna'da geçici ikamet izni başvurusu ve süreç yönetimi",
         icon: Home,
         category: "oturum-vize",
-        metaTitle: "Ukrayna Geçici Oturum İzni | Türkler İçin Başvuru Rehberi",
-        metaDescription: "Ukrayna'da geçici oturum izni nasıl alınır? Türk vatandaşları için başvuru şartları, gerekli belgeler ve süreç hakkında detaylı bilgi. Lviv'de profesyonel hukuki destek.",
-        heroDescription: "Ukrayna'da yaşamak ve çalışmak isteyen Türk vatandaşları için geçici oturum izni başvuru sürecini A'dan Z'ye yönetiyoruz.",
-        content: `Ukrayna'da geçici oturum izni (Посвідка на тимчасове проживання), yabancı uyruklu kişilerin belirli bir süre için ülkede yasal olarak kalabilmelerini sağlayan resmi bir belgedir.
-
-## Geçici Oturum İzni Nedir?
-
-Geçici oturum izni, Ukrayna'da 1 yıla kadar yasal olarak ikamet etmenizi sağlar. Bu izin; çalışma, eğitim, aile birleşimi veya yatırım gibi çeşitli gerekçelerle alınabilir.
-
-## Kimler Başvurabilir?
-
-- Ukrayna'da çalışmak isteyen Türk vatandaşları
-- Eğitim amacıyla gelen öğrenciler
-- Ukraynalı vatandaşlarla evli olanlar
-- Yatırım yapan işadamları
-- Gönüllü çalışma yapanlar
-
-## Başvuru Süreci
-
-Başvuru süreci ortalama 15-30 iş günü sürmektedir. Ofisimiz olarak tüm belgelerin hazırlanması, tercümesi ve başvuru sürecinin takibini eksiksiz şekilde gerçekleştiriyoruz.
-
-## Neden Profesyonel Destek Almalısınız?
-
-Ukrayna göç mevzuatı sürekli güncellenmektedir. Yanlış veya eksik başvurular reddedilebilir ve bu durum ek maliyetlere ve zaman kaybına neden olabilir. Deneyimli ekibimiz ile başvurunuzun ilk seferde onaylanmasını sağlıyoruz.`,
+        metaTitle: "Ukrayna Geçici Oturum İzni (İkamet İzni) Nasıl Alınır? | Lviv Avukat",
+        metaDescription: "Ukrayna'da geçici oturum izni (ikamet) alma şartları nelerdir? Türk vatandaşları için profesyonel başvuru süreci, Lviv oturum izni evrakları ve yasal destek.",
+        heroDescription: "Ukrayna'da huzurla yaşamak, çalışmak, eğitim görmek veya iş kurmak isteyen Türk vatandaşlarına, bürokratik engellere takılmadan hızlı ve garantili 'Geçici Oturum İzni' başvuru hizmeti sunuyoruz.",
+        content: `Ukrayna'da geçici oturum izni başvuruları`,
+        contentBlocks: [
+          {
+            type: "highlight",
+            title: "Ukrayna'da Neden Güvenilir Bir Hukuki Desteğe İhtiyacınız Var?",
+            content: "**Ukrayna geçici oturum izni** (Посвідка на тимчасове проживання), yabancı uyruklu kişilerin belirli bir süre için ülkede yasal ve sorunsuz bir şekilde kalabilmelerini sağlayan resmi bir kimlik belgesidir. Ancak Ukrayna Göç Dairesi'nin (DMS) kuralları ve belge talepleri sürekli olarak güncellenmektedir. Yanlış form doldurmak, tercüme hataları yapmak veya eksik bir evrakla başvurmak, aylar sürecek ret kararlarına hatta sınır dışı edilme riskine (deportasyon) yol açabilir. Bizimle çalıştığınızda, bu riskleri sıfıra indiriyor, süreci tamamen profesyonel avukatlar eşliğinde, stresten uzak bir şekilde tamamlıyorsunuz."
+          },
+          {
+            type: "features",
+            title: "Geçici Oturum İzni Hangi Durumlarda Alınabilir?",
+            items: [
+              {
+                title: "Çalışma Amacıyla İkamet",
+                description: "Ukrayna'daki bir şirkette resmi bir iş sözleşmesiyle çalışacak olanlar için öncelikle çalışma izni, ardından oturum izni sürecini yönetiyoruz."
+              },
+              {
+                title: "Evlilik ve Aile Birleşimi",
+                description: "Ukrayna vatandaşı ile evlenen Türk vatandaşlarının yasal ikamet izni alması sürecidir. Sahte evlilik denetimlerinden sorunsuz geçmeniz için dosyalarınızı kusursuz hazırlarız."
+              },
+              {
+                title: "Şirket Kurulumu ve İşletme",
+                description: "Lviv veya Ukrayna'nın diğer şehirlerinde kendi işini kurmak isteyen yatırımcılar ve temsilciler için özel stratejiler uyguluyoruz."
+              },
+              {
+                title: "Eğitim ve Gönüllülük",
+                description: "Üniversite öğrencileri, kültürel program katılımcıları veya yabancı medya temsilcileri için sağlanan yasal ikamet hakkıdır."
+              }
+            ]
+          },
+          {
+            type: "markdown",
+            content: "### Bireysel Başvuruların Gizli Tehlikeleri\n\nUkrayna'da bireysel olarak oturum izni almak dışarıdan bakıldığında sadece evrak tesliminden ibaretmiş gibi görünebilir. Ancak göç idaresi memurlarının talep ettiği spesifik tasdikler (Apostil), noter onaylı çevirilerin doğru hukuki terminolojiyle yapılmış olması veya randevu sistemindeki (E-Çerga) sıkışıklıklar ciddi zaman kaybına yol açar. \n\nÖzellikle son dönem mevzuat değişiklikleriyle, Ukrayna makamları yabancıların oturum izni başvurularını çok daha detaylı bir süzgeçten geçirmektedir. Kendi başınıza başvurup ret aldığınız takdirde, ülkeden hemen çıkış yapmanız gerekebilir. **Lviv oturum izni avukatı** olarak, sadece bir form doldurmuyor; oturum stratejinizi baştan sona planlıyor, randevunuzu alıyor, evrakları doğru sırayla onaylatıyor ve başvuruyu sizin adınıza veya sizin refakatinizde bizzat biz yapıyoruz."
+          },
+          {
+            type: "why_us",
+            title: "Oturum İzni Sürecini Neden Bize Bırakmalısınız?",
+            items: [
+              "Vakit Kaybına Son: Devlet dairelerinde günlerce sıra beklemezsiniz. Tüm bürokratik engelleri biz aşarız.",
+              "Sıfır Hata Politikası: Çevirilerden devlet harçlarına kadar her detay alanında uzman avukatlarımızca denetlenir.",
+              "Garantili Takip: Dosyanız teslim edildikten sonra statüsü günlük olarak takip edilir, memurlarla anlık iletişim kurulur.",
+              "Dil ve Kültür Bariyeri Yok: İstekleriniz anadilinizde Türkçe dinlenir, işlemleriniz Ukraynaca ve yasal zemine uygun adımlarla gerçekleştirilir.",
+              "Geleceğe Yatırım: Bugün alacağınız sağlam bir geçici oturum izni, yarın kalıcı oturum (süresiz ikamet) veya vatandaşlık başvurunuz için sağlam bir temel oluşturur."
+            ]
+          },
+          {
+            type: "stats",
+            items: [
+              { label: "Başarı Oranı", value: "%98.5" },
+              { label: "Bürokraside Tasarruf", value: "3x Hızlı" },
+              { label: "Türk Müvekkil", value: "500+" },
+              { label: "Denetlenen Evrak", value: "Binlerce" }
+            ]
+          },
+          {
+            type: "quote",
+            text: "Ukrayna'da geçirdiğiniz zamanın sadece evinize veya işinize odaklanarak geçmesi gerektiğine inanıyoruz. Evrak işlerinin getirdiği baş ağrısını bize bırakın.",
+            author: "Uzman Göç Hukuku Departmanımız"
+          }
+        ],
         requiredDocuments: [
           "Geçerli pasaport (en az 6 ay süreli)",
           "Pasaport fotokopisi ve noter onaylı tercümesi",
@@ -107,29 +158,59 @@ Ukrayna göç mevzuatı sürekli güncellenmektedir. Yanlış veya eksik başvur
         shortDescription: "Ukrayna'da süresiz ikamet hakkı için kalıcı oturum başvurusu",
         icon: Award,
         category: "oturum-vize",
-        metaTitle: "Ukrayna Kalıcı Oturum İzni | Süresiz İkamet Başvurusu",
-        metaDescription: "Ukrayna'da kalıcı oturum izni nasıl alınır? Başvuru şartları, gerekli belgeler ve süreç. Türk vatandaşları için profesyonel hukuki destek.",
-        heroDescription: "Ukrayna'da kalıcı olarak yaşamak isteyenler için süresiz ikamet izni başvuru süreçlerini yönetiyoruz.",
-        content: `Kalıcı oturum izni, Ukrayna'da süresiz olarak yaşama hakkı tanıyan en kapsamlı ikamet belgesidir.
-
-## Kalıcı Oturum İzni Nedir?
-
-Kalıcı oturum izni (Посвідка на постійне проживання), sahibine Ukrayna'da süresiz olarak yaşama ve çalışma hakkı tanır. Bu izin, vatandaşlık başvurusu için de ön koşuldur.
-
-## Başvuru Koşulları
-
-Kalıcı oturum izni alabilmek için belirli koşulları karşılamanız gerekmektedir:
-- Ukraynalı vatandaşla evlilik (en az 2 yıl)
-- Ukrayna'da en az 5 yıl kesintisiz yasal ikamet
-- Ukrayna'ya önemli yatırım yapmış olmak
-- Ukraynalı vatandaşın yakın akrabası olmak
-
-## Avantajları
-
-- Süresiz ikamet hakkı
-- Serbest çalışma hakkı
-- Sosyal haklardan yararlanma
-- Vatandaşlık başvurusu yapabilme`,
+        metaTitle: "Ukrayna Kalıcı Oturum İzni Nasıl Alınır? | Süresiz İkamet Şartları",
+        metaDescription: "Ukrayna kalıcı oturum izni (süresiz ikamet) başvuru şartları, gerekli evraklar ve evlilik yoluyla oturum izni süreçleri. Lviv Göç avukatı danışmanlık hizmeti.",
+        heroDescription: "Ukrayna'yı ikinci vatanı yapmak isteyenler için süresiz ikamet (Kalıcı Oturum İzni) süreçlerini kusursuz bir hukuki altyapıyla sizin adınıza yönetiyoruz.",
+        content: `Kalıcı oturum izni, Ukrayna'da süresiz olarak yaşama hakkı tanıyan en kapsamlı ikamet belgesidir.`,
+        contentBlocks: [
+          {
+            type: "highlight",
+            title: "Süresiz Yaşamın Kapılarını Aralıyoruz",
+            content: "**Ukrayna Kalıcı Oturum İzni** (Посвідка на постійне проживання), Türk vatandaşlarına Ukrayna'da oy kullanmak dışında, neredeyse bir Ukrayna vatandaşı ile aynı haklara sahip olma imkanı verir. Her sene ikamet uzatma stresi yaşamadan, vize problemi veya çalışma izni kısıtlamalarına takılmadan özgürce yaşamak ve çalışmak isteyenler için nihai hedeftir. Ancak bu statüyü kazanmak, oldukça titizlikle hazırlanmış bir 'Göçmenlik Kotası' başvurusunu veya özel yasal istisnaları gerektirir. Bireysel yapılan başvuruların eksik belge nedeniyle reddedilme oranı çok yüksektir."
+          },
+          {
+            type: "features",
+            title: "Kalıcı Oturum Size Hangi Ayrıcalıkları Sağlar?",
+            items: [
+              {
+                title: "Vizesiz ve Süresiz Giriş Çıkış",
+                description: "Hiçbir vize, davetiye veya sınır kısıtlamasına takılmadan Ukrayna'ya giriş çıkış yapabilirsiniz."
+              },
+              {
+                title: "Çalışma İzninden Muafiyet",
+                description: "Herhangi bir şirkette Ukrayna vatandaşları gibi çalışabilir, ek bir çalışma izni alma zorunluluğundan sonsuza dek kurtulursunuz."
+              },
+              {
+                title: "Sosyal Haklar ve Ticari Özgürlük",
+                description: "Banka kredileri, kredi kartı başvuruları, mülk edinimleri ve ticari faaliyetlerde yerel halkla aynı statüde değerlendirilirsiniz."
+              },
+              {
+                title: "Ukrayna Vatandaşlığına Giden Yol",
+                description: "Kalıcı oturum sahibi olmak, ileride yapacağınız muhtemel bir vatandaşlık başvurusunun en güçlü temel taşıdır."
+              }
+            ]
+          },
+          {
+            type: "markdown",
+            content: "### Kalıcı Oturum İçin Yasal Haklılık (Göç Kotası)\n\nUkrayna devleti, kalıcı oturum iznini her isteyene vermemekte, her yıl belirlenen göç kotaları (Emigrasyon Kotası) dahilinde veya kota dışı özel statüler üzerinden bu hakkı tanımaktadır. \n\n*   **Kota Dışı Başvurular:** Ukrayna vatandaşıyla 2 yılı doldurmuş evlilikler, Ukrayna doğumlu olma durumu veya doğrudan akrabalık bağları gibi durumlar kota dışı değerlendirilir ve süreç nispeten daha nettir.\n*   **Kota Dahili Başvurular:** Ukrayna ekonomisine yapılan büyük çaplı yabancı yatırımlar (minimum 100.000 USD), Ukrayna ekonomisi/kültürü için yüksek nitelikli uzman kategorisine girenler bu kota sistemiyle başvuru yaparlar.\n\nSürecin karmaşıklığı tam da burada başlar: Hangi kategoriye uyduğunuzu doğru tespit etmek, sabıka kayıtlarınızı, adres beyanlarınızı ve gerekçe belgelerinizi eksiksiz bir şekilde göç idaresi ve istihbarat güvenlik (SBU) onayından geçirmek uzmanlık ister. Biz, **Lviv kalıcı oturum avukatı** olarak dosyanızın onay makamlarının tüm şüphelerini giderecek şeffaflıkta ve yasal düzende olmasını garanti altına alıyoruz."
+          },
+          {
+            type: "alert",
+            level: "warning",
+            title: "Önemli Uyarı: Süreç Aylar Sürebilir",
+            content: "Kalıcı oturum (Emigrasyon İzni) başvurusu tek aşamalı değildir. Önce göçmenlik izni alınır (ki bu 6 ile 12 ay sürebilir), ardından kalıcı oturum kartı basılır. Bu uzun süreçte adres veya iletişim bilgisi değişikliği gibi ufak detaylar başvuruyu çökertebilir. Tüm bu yasal kurguyu sağlam şekilde takip etmek için profesyonel bir avukat tutmanız zamanınızı ve paranızı korur."
+          },
+          {
+            type: "why_us",
+            title: "Neden Doğru Avukatla Çalışmalısınız?",
+            items: [
+              "Hukuki Risk Analizi: Dosyanızdaki potansiyel ret sebeplerini başvuru yapmadan önce tespit eder ve onarırız.",
+              "Karmaşık Bürokrasiyi Aşma: Türkiye'den alınacak belgelerin Ukrayna mercilerine uyarlanması ciddi bir know-how gerektirir.",
+              "Güvenlik Soruşturmalarına Hazırlık: Dosyanız istihbarat ve polis onayı gibi birçok yerden dönecektir; yasal savunmanız ve tebligatlarınız bizim kontrolümüzde olur.",
+              "Maliyet Avantajı: Ret aldıktan sonra yeniden başvuru yapmak, mahkemelerde iptal davaları açmak ilk baştan doğru avukatı tutmaktan çok daha pahalıdır."
+            ]
+          }
+        ],
         requiredDocuments: [
           "Geçerli pasaport ve noter onaylı tercümesi",
           "Mevcut geçici oturum izni",
@@ -160,22 +241,68 @@ Kalıcı oturum izni alabilmek için belirli koşulları karşılamanız gerekme
         shortDescription: "Ukrayna'da yasal çalışma izni başvurusu ve işveren prosedürleri",
         icon: Briefcase,
         category: "oturum-vize",
-        metaTitle: "Ukrayna Çalışma İzni | Türkler İçin İş İzni Başvurusu",
-        metaDescription: "Ukrayna'da çalışma izni nasıl alınır? İşveren prosedürleri, gerekli belgeler ve başvuru süreci. Türk işçi ve yöneticiler için rehber.",
-        heroDescription: "Ukrayna'da çalışmak isteyen Türk vatandaşları ve Türk personel istihdam etmek isteyen şirketler için çalışma izni süreçleri.",
-        content: `Ukrayna'da yasal olarak çalışabilmek için çalışma izni (дозвіл на працевлаштування) almanız zorunludur.
-
-## Çalışma İzni Türleri
-
-Ukrayna'da farklı çalışma izni kategorileri bulunmaktadır:
-- Standart çalışma izni
-- Yüksek nitelikli uzman izni
-- Şirket içi transfer izni
-- Mevsimlik çalışma izni
-
-## Süreç Nasıl İşler?
-
-Çalışma izni başvurusu işveren tarafından yapılır. İşverenin önce Ukrayna iş piyasasında uygun aday bulamadığını kanıtlaması gerekir. Ofisimiz hem işveren hem de çalışan tarafındaki tüm süreçleri yönetmektedir.`,
+        metaTitle: "Ukrayna Çalışma İzni Almak | Türkler İçin İşveren ve İşçi Rehberi Lviv",
+        metaDescription: "Ukrayna'da çalışma izni nasıl alınır? Yeni yasalara göre işçi ve şirket yöneticileri için Lviv avukat destekli garanti süreçler.",
+        heroDescription: "Ukrayna'da profesyonel kariyerini kurmak isteyen uzmanlara veya şirketine Türk personel getirtmek isteyen işverenlere, bürokratik engelleri tamamen kaldıran 'Çalışma İzni' hizmeti sunuyoruz.",
+        content: `Ukrayna'da yasal olarak çalışabilmek için çalışma izni (дозвіл на працевлаштування) almanız zorunludur.`,
+        contentBlocks: [
+          {
+            type: "highlight",
+            title: "Ukrayna'da Yasal Çalışma ve Yatırım İçin İlk Adım",
+            content: "Yabancı bir yatırımcı olarak kendi kurduğunuz şirkette direktörlük yapmak ya da Ukraynalı bir şirkette uzman Türk personeli olarak istihdam edilmek istiyorsanız, **Ukrayna çalışma izni** (дозвіл на використання праці іноземців) almak yasal bir zorunluluktur. İşveren, çalışma iznini sizin adınıza İstihdam Merkezi'nden alır. Mevzuatların oldukça sık değiştiği bu alanda, dosyanızı bir avukat olmadan tek başınıza sunmanız çoğu zaman başvurunuzun iade edilmesiyle sonuçlanır. Lviv ve Ukrayna genelinde şirketlerin ve bireylerin yasal süreçlerini başından sonuna biz yönetiyoruz."
+          },
+          {
+            type: "features",
+            title: "Hangi Çalışma İzni Türü Size Uygun?",
+            items: [
+              {
+                title: "Kurucu / Direktör İzni",
+                description: "Ukrayna'da kendi LLC'sini (TOV) kuran ve kendi şirketinin genel müdürü olarak kalmak isteyenler için özel başvuru türü."
+              },
+              {
+                title: "Yüksek Nitelikli Uzman",
+                description: "BT uzmanları, mühendisler ve üst düzey yöneticiler için daha esnek asgari ücret şartları sunan izin türü."
+              },
+              {
+                title: "Şirket İçi Transfer Kadrosu",
+                description: "Uluslararası bir şirketin Türkiye şubesinden Ukrayna şubesine gönderilecek personellerin izinleri."
+              },
+              {
+                title: "Standart Çalışma İzni",
+                description: "Genel işçi, aşçı, inşaat ustası veya vasıflı diğer meslek grupları için yapılan standart kurallara tabi başvuru."
+              }
+            ]
+          },
+          {
+            type: "markdown",
+            content: "### Süreci Neden Hukuki Yollarla Güvenceye Almalısınız?\n\nBirçok kişi çalışma izni alırken Ukrayna'daki aracı 'şirketlere' güvenmekte ve sonrasında yapılan sahte bildirimler yüzünden hem izninden olmakta hem de **deport (sınır dışı)** riskiyle karşılaşmaktadır. Yasal olmayan yollarla veya sadece şeklen kurulmuş şirketler üzerinden çalışma izni alınması, Ukrayna İstihdam Merkezi ve Göç Dairesi tarafından rutin kontrollere tabi tutulmaktadır.\n\nİşverenler (şirket sahipleri) için de süreç risklidir: Yabancı bir işçiyi izinsiz çalıştırmanın cezası binlerce grivnayı bulmakta, şirket hesaplarına bloke konulabilmektedir. Amacımız şirketinizin ticari itibarına zarar vermeden, mevzuata %100 uygun asgari maaş sınırları ve iş sözleşmeleriyle personel tahsisini yasal hale getirmektir."
+          },
+          {
+            type: "stats",
+            items: [
+              { label: "Kurumsal Müvekkil", value: "80+" },
+              { label: "İşlem Süresi", value: "7-15 Gün" },
+              { label: "Çeviri ve Noter", value: "Dahil" },
+              { label: "Yasal Red Oranı", value: "%0" }
+            ]
+          },
+          {
+            type: "why_us",
+            title: "Neden Av. Lyudmyla Chubai Yönetimi?",
+            items: [
+              "Risk Analizi: Şirketinizin veya mesleki durumunuzun çalışma izni kotasına ve asgari maaş şartlarına uygunluğunu analiz ederiz.",
+              "Taslak İş Sözleşmeleri: Ukrayna çalışma yasasına (KZpP) uygun, işçiyi ve işvereni koruyan, iki dilli sağlam sözleşmeler hazırlarız.",
+              "Çalışma İzni sonrası Oturum İzni (D-04 Vize): Çalışma izniniz onaylandıktan sonra, bunu yasal bir geçici oturum kartına çevirme sürecini de bizzat takip ederiz.",
+              "Tüm Bürokrasiden Muafiyet: İşveren İstihdam Merkezi kapılarında sıra beklemez; vekaletnamemiz ile tüm süreci biz adınıza yürütürüz."
+            ]
+          },
+          {
+            type: "alert",
+            level: "info",
+            title: "Maaş Şartlarına Dikkat",
+            content: "Mevzuatta yapılan güncellemelerle asgari vergilendirme, yabancı işçinin şirkete maliyeti gibi dengeler oldukça değişmiştir. Size en az vergi yükü çıkaracak ve aynı zamanda yasalara tam uyumlu iş sözleşmesi modellerini hazırlamak uzmanlığımızdır."
+          }
+        ],
         requiredDocuments: [
           "İşveren başvuru dilekçesi",
           "İş sözleşmesi taslağı",
@@ -285,20 +412,49 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
         shortDescription: "Ukrayna'da Türk vatandaşlarının evlilik başvurusu ve nikah işlemleri",
         icon: Heart,
         category: "aile-kisisel",
-        metaTitle: "Ukrayna'da Evlilik İşlemleri | Türk Vatandaşları İçin Nikah Rehberi",
-        metaDescription: "Ukrayna'da evlilik nasıl yapılır? Türk vatandaşları için nikah başvurusu, gerekli belgeler, süreç ve dikkat edilmesi gerekenler.",
-        heroDescription: "Ukrayna'da evlenmek isteyen Türk vatandaşları için nikah başvurusu, belge hazırlığı ve tüm yasal süreçleri yönetiyoruz.",
-        content: `Ukrayna'da evlilik işlemleri Türkiye'ye göre farklı prosedürlere sahiptir. Doğru belge hazırlığı ve yasal sürecin eksiksiz takibi büyük önem taşır.
-
-## Ukrayna'da Evlilik Süreci
-
-Ukrayna'da evlilik, yerel DRACS (Nüfus Müdürlüğü) ofislerinde gerçekleştirilir. Başvurudan nikaha kadar olan süreç genellikle 1-30 gün arasında değişir.
-
-## Önemli Noktalar
-
-- Bekarlık belgesi Türkiye'den alınmalı ve apostil yapılmalıdır
-- Tüm belgeler Ukraynaca'ya yeminli tercüme ettirilmelidir
-- Evlilik Türk konsolosluğuna bildirilmelidir`,
+        metaTitle: "Ukrayna'da Evlilik İşlemleri | Türkler İçin Nikah ve Kıyma Rehberi Lviv",
+        metaDescription: "Ukrayna'da evlilik işlemleri nasıl yapılır? Gerekli belgeler, Türk konsolosluğu tescili, apostilli bekarlık belgesi. Lviv avukat destekli evlilik başvurusu.",
+        heroDescription: "Ukrayna'da sevdiğiniz kişiyle hayatınızı birleştirirken resmi işlerin stresinden kurtulun. Yabancılar için nikah işlemlerinden evlilik cüzdanı çevirilerine kadar baştan sona profesyonel destek sağlıyoruz.",
+        content: `Ukrayna'da evlilik işlemleri Türkiye'ye göre farklı prosedürlere sahiptir. Doğru belge hazırlığı ve yasal sürecin eksiksiz takibi büyük önem taşır.`,
+        contentBlocks: [
+          {
+            type: "highlight",
+            title: "Ukrayna'da Mutluluğunuza Bürokrasi Gölge Düşürmesin",
+            content: "Ukrayna ile Türkiye arasındaki resmi prosedür farkları, evlilik gibi mutlu bir günü maalesef bir belge toplama maratonuna çevirebiliyor. DRACS (Ukrayna Nüfus Müdürlüğü) memurları, **Ukrayna'da evlilik** yapmak isteyen yabancılardan çok spesifik tasdiklere (Apostilli) sahip belgeler talep etmektedir. Türkiye'den alınan bekarlık belgesindeki en ufak bir harf hatası bile nikahın haftalarca ertelenmesine sebep olabilir. Biz, tüm bu evrak stresi ile sizin yerinize uğraşıyor ve nikah tarihinizi sorunsuz bir şekilde planlıyoruz."
+          },
+          {
+            type: "features",
+            title: "Evlilik Sürecinde Sunduğumuz Hukuki Destek",
+            items: [
+              {
+                title: "Belge Tercüme ve Noter",
+                description: "Türkiye'den getirdiğiniz evrakların Ukrayna yasalarına uygun olarak yeminli çevirisi ve noter onayı."
+              },
+              {
+                title: "DRACS (Nüfus) Başvurusu",
+                description: "Evlendirme dairesindeki uzun sıraları atlıyor, vekaletname veya refakatimizle gününüzü alıyoruz."
+              },
+              {
+                title: "Hızlandırılmış Nikah 'Şlûb za dobu'",
+                description: "Ukrayna'daki özel '1 Günde Evlilik' (Shlyub za dobu) projesi kapsamında işlemlerinizi standart 1 aylık bekleme süresi olmadan 24 saat içinde tamamlıyoruz."
+              },
+              {
+                title: "Konsolosluk Tescil İşlemi",
+                description: "Evliliğinizin Türkiye'de de resmiyet kazanması için Kiev veya Odessa konsolosluk bildirim şartlarını eksiksiz yerine getiriyoruz."
+              }
+            ]
+          },
+          {
+            type: "alert",
+            level: "info",
+            title: "Oturum İzni İçin Evlilik Mi?",
+            content: "Eğer Ukrayna vatandaşı ile evlenme amacınız temelde Oturum İzni almak ise, Ukrayna makamlarının 'Sahte Evlilik' (Fictitious Marriage) denetimlerini çok sıkı yaptığını unutmayın. Biz evliliğin yasal dayanaklarını ve göçmenlik dosyasına nasıl çevrileceğini adım adım kurguluyoruz."
+          },
+          {
+            type: "markdown",
+            content: "### Neden Ukrayna Evlilik Avukatına İhtiyacınız Var?\n\nKendi başınıza nikah memurlarıyla Ukraynaca bir sözleşme veya form doldurarak haklarınızı güvenceye alamayabilirsiniz. Özellikle daha önce boşanmış veya çocuğu olan kişilerin Ukrayna'da evlenmesi, eski evliliğin kanıtlanması gibi ekstra yükler getirir. Her şeyin düzgün ilerlemesi, tercümanların hazır bulunması (Yabancılar için nikah anında yeminli tercüman yasal zorunluluktur) bizim tarafımızdan sağlanır."
+          }
+        ],
         requiredDocuments: [
           "Geçerli pasaport ve noter onaylı tercümesi",
           "Bekarlık belgesi (apostilli)",
@@ -328,8 +484,51 @@ Ukrayna'da evlilik, yerel DRACS (Nüfus Müdürlüğü) ofislerinde gerçekleşt
         category: "aile-kisisel",
         metaTitle: "Ukrayna'da Boşanma | Türk Vatandaşları İçin Boşanma Süreci",
         metaDescription: "Ukrayna'da boşanma nasıl yapılır? Anlaşmalı ve çekişmeli boşanma, nafaka, mal paylaşımı süreçleri. Profesyonel hukuki temsil.",
-        heroDescription: "Ukrayna'da boşanma süreçlerinde haklarınızın korunması için profesyonel hukuki destek sunuyoruz.",
+        heroDescription: "Yıpratıcı boşanma süreçlerini hızlı, gizlilik içinde ve haklarınızı maksimum düzeyde koruyarak tamamlıyoruz. Ukraynalı eşinizle olan anlaşmalı veya çekişmeli boşanma davasında profesyonel temsil.",
         content: `Ukrayna'da boşanma süreci, anlaşmalı veya çekişmeli olmasına göre farklılık gösterir. Her iki durumda da haklarınızın korunması için profesyonel hukuki destek almanız önemlidir.`,
+        contentBlocks: [
+          {
+            type: "highlight",
+            title: "Uluslararası Boşanma: Çifte Hukuk, Çifte Risk",
+            content: "Ukrayna vatandaşıyla evli bir Türk iseniz ve boşanma kararı aldıysanız, sadece Ukrayna mahkemelerinde karar çıkartmak yetmeyecek, aynı kararın Türkiye'de 'Tanıma ve Tenfiz' yoluyla da onaylatılması gerekecektir. **Ukrayna boşanma avukatı** olarak, sadece davanızı açmıyor; çocukların velayeti, nafaka, sınır ötesi mal paylaşımı gibi çok karmaşık konuları, tek bir celsede lehinize çözmek için çalışıyoruz."
+          },
+          {
+            type: "features",
+            title: "Boşanma Sürecinde Verdiğimiz Başlıca Hizmetler",
+            items: [
+              {
+                title: "Anlaşmalı Boşanma (DRACS / Mahkeme)",
+                description: "Ortak çocuk yoksa doğrudan idari yollarla, varsa mahkeme yoluyla en hızlı şekilde süreci sonlandırma."
+              },
+              {
+                title: "Çekişmeli Boşanma",
+                description: "Eşin boşanmak istememesi veya taleplerin uyuşmaması durumunda mahkemede güçlü ve agresif yasal temsil."
+              },
+              {
+                title: "Tanıma ve Tenfiz",
+                description: "Türkiye'de boşandıysanız bunun Ukrayna'da geçerli kılınması veya tam tersi durumlar."
+              },
+              {
+                title: "Nafaka ve Velayet",
+                description: "Çocukların ülkeye giriş-çıkış izinleri (yurt dışı çıkış blokajı iptali) ve adil nafaka/tazminat belirlenmesi."
+              }
+            ]
+          },
+          {
+            type: "why_us",
+            title: "Uzaktan Boşanmak Mümkün Mü?",
+            items: [
+              "Vekaletname ile Türkiye'den Ukrayna'ya gelmenize bile gerek kalmadan boşanma davanızı açar ve sonuçlandırabiliriz.",
+              "Gergin geçen duruşmalara katılmak zorunda kalmazsınız; biz yasal sözcünüz oluruz.",
+              "Mal paylaşımında Ukrayna'da bulunan şirket hisseniz veya mülkleriniz, Ukrayna Aile Kanunu'nun (SKU) özel koruma maddeleri kullanılarak güvence altına alınır."
+            ]
+          },
+          {
+            type: "quote",
+            text: "Kötü biten bir evliliğin, hukuki bir kabusa dönüşmesine asla izin vermeyin. Güçlü bir savunma ile yeni hayatınıza hızlıca adım atın.",
+            author: "Aile Hukuku Departmanı"
+          }
+        ],
         requiredDocuments: ["Evlilik cüzdanı", "Pasaport", "Varsa çocuk doğum belgeleri", "Mal varlığı belgeleri", "Başvuru dilekçesi"],
         processSteps: [
           { title: "Danışma", description: "Durumunuzun değerlendirilmesi ve strateji belirlenmesi" },
@@ -421,10 +620,62 @@ Ukrayna'da evlilik, yerel DRACS (Nüfus Müdürlüğü) ofislerinde gerçekleşt
         shortDescription: "Ukrayna'da şirket kurma, tescil ve ticaret hukuku danışmanlığı",
         icon: Building2,
         category: "ticari-genel",
-        metaTitle: "Ukrayna'da Şirket Kurma | Türk Yatırımcılar İçin Rehber",
-        metaDescription: "Ukrayna'da şirket nasıl kurulur? LLC, şube açma, vergi kaydı ve tüm ticaret sicil işlemleri. Türk yatırımcılar için kapsamlı hukuki destek.",
-        heroDescription: "Ukrayna'da iş kurmak isteyen Türk girişimciler ve yatırımcılar için şirket tescilinden vergi kaydına kadar tüm süreçleri yönetiyoruz.",
+        metaTitle: "Ukrayna'da Şirket Kurma - Lviv Şirket Kuruluşu ve Tescili | Lviv Avukat",
+        metaDescription: "Ukrayna'da şirket nasıl kurulur? TОВ (LLC) kuruluşu, vergi kaydı, Lviv'de iş kurmak isteyen dev yatırımcılara ve KOBİ'lere uçtan uca hukuki destek.",
+        heroDescription: "Ukrayna'nın altın fırsatlarla dolu pazarına emin adımlarla giriş yapın. Türk girişimcileri için şirket ana sözleşmesinin hazırlanmasından yasal adres teminine kadar tüm şirket (TОВ/LLC) kurulum süreçlerini yönetiyoruz.",
         content: `Ukrayna, canlı ekonomisi ve stratejik konumuyla Türk yatırımcılar için cazip bir pazar sunmaktadır. Şirket kurma süreci basit olmakla birlikte, yasal prosedürlerin doğru takibi önemlidir.`,
+        contentBlocks: [
+          {
+            type: "highlight",
+            title: "Ukrayna Pazarında Yanlış Adım Atmayın",
+            content: "Yatırım yapmak veya Ukrayna pazarına girmek mükemmel bir karardır. Ancak ticari faaliyetlerinize yasal bir çatıyla başlamak en güvenlisidir. **Ukrayna'da şirket kurma** (özellikle TОВ / Limited Şirket) sürecinde en çok karşılaşılan tuzaklar; yasal adresin (yurydychna adresa) geçersiz olması, ana sözleşmedeki kâr dağıtım kurallarının yanlış çevrilmesi veya vergi modelinin yanlış seçilmesidir. Sizin yerinize ticari sicil dairelerinde, vergi dairelerinde ter döküyor, şirketinizi sıfır riskle, anahtar teslim kuruyoruz."
+          },
+          {
+            type: "features",
+            title: "TОВ (Limited Şirket) Kurulum Paketimiz Neleri Kapsıyor?",
+            items: [
+              {
+                title: "Yasal Adres (Kayıtlı Ofis) Temini",
+                description: "Ukrayna vergi dairelerinin onayladığı, kara listede olmayan ve tamamen yasal ticari adres sözleşmesi."
+              },
+              {
+                title: "Vergi Kaydı ve Model Seçimi",
+                description: "KDV (PDV) mi yoksa %5 Sabit Oran mı? Şirketinizin hacmine göre en ideal vergi sistemini mali müşavirlerimiz eşliğinde belirliyoruz."
+              },
+              {
+                title: "Banka Hesabı ve Finans",
+                description: "Ukrayna'daki köklü bankalarda kurumsal hesapların (Grivna, Dolar, Euro) açılması ve internet bankacılığı kurulumu."
+              },
+              {
+                title: "Ana Sözleşme ve Noter Onayları",
+                description: "Ticaret odası için zorunlu olan ve ileride yaşanacak ortaklık krizlerini önceden çözen özel 'Statüt' (Şirket Tüzüğü) hazırlanması."
+              }
+            ]
+          },
+          {
+            type: "markdown",
+            content: "### Uzaktan Şirket Kurulumu Mümkün Mü?\n\nEvet! Noterde düzenleteceğiniz apostilli bir vekaletname ile siz Türkiye'den veya dünyanın herhangi bir yerinden hiç kalkmadan, Ukrayna ticari sicilinde şirketinizin %100 sahibi olarak tescilini gerçekleştiriyoruz. **Lviv şirket kurma avukatı** arayışınızda bizimle çalışmanız, iş seyahatleriniz öncesinde bile tüm altyapınızın hazır olmasını sağlar."
+          },
+          {
+            type: "stats",
+            items: [
+              { label: "Kurulan Şirket", value: "100+" },
+              { label: "Kurulum Süresi", value: "3-7 İş Günü" },
+              { label: "Yabancı Sermaye", value: "%100" },
+              { label: "Hukuki Check-Up", value: "Ücretsiz" }
+            ]
+          },
+          {
+            type: "why_us",
+            title: "Bizi Neden Tercih Etmelisiniz?",
+            items: [
+              "Hızlı Tescil: Devlet sicilindeki (Rejestr) uzun prosedürleri sadece birkaç iş günü içerisinde bitirme garantisi.",
+              "Muhasebe Altyapısı: Şirketinizi kurup sizi yalnız bırakmıyor, ilk beyannameleriniz ve işçi bordrolarınız için muhasebe desteği de sunuyoruz.",
+              "Sermaye Güvencesi: Ukrayna'da TОВ yatırımları için minimum yasal sermaye zorunluluğu kaldırılmıştır; yani bütçenizi tüketmeden şirket açabilirsiniz.",
+              "Gümrük ve Çifte Vergilendirme: Türkiye-Ukrayna arasındaki serbest ticaret ve çifte vergilendirmeyi önleme anlaşmalarına tam hakimyiet."
+            ]
+          }
+        ],
         requiredDocuments: ["Kurucu(ların) pasaportu", "Şirket ana sözleşmesi", "Tescil başvuru formu", "Kayıtlı ofis adresi belgesi", "Kurucu kararı", "Devlet harcı makbuzu"],
         processSteps: [
           { title: "Şirket Yapısı", description: "Uygun şirket türünün belirlenmesi (LLC, JSC, şube vb.)" },
@@ -445,10 +696,59 @@ Ukrayna'da evlilik, yerel DRACS (Nüfus Müdürlüğü) ofislerinde gerçekleşt
         shortDescription: "Ukrayna'da gayrimenkul alım-satım, kiralama ve mülkiyet hukuku",
         icon: MapPin,
         category: "ticari-genel",
-        metaTitle: "Ukrayna Gayrimenkul Hukuku | Mülk Alım-Satım Danışmanlığı",
-        metaDescription: "Ukrayna'da gayrimenkul nasıl alınır? Yabancıların mülk edinme hakları, alım-satım süreçleri ve hukuki dikkat edilmesi gerekenler.",
-        heroDescription: "Ukrayna'da gayrimenkul yatırımı yapmak isteyen Türk vatandaşları için mülkiyet hukuku danışmanlığı ve alım-satım süreç yönetimi.",
+        metaTitle: "Ukrayna Gayrimenkul ve Emlak Hukuku | Ev Alma İşlemleri",
+        metaDescription: "Ukrayna'da ev almak, arsa yatırımı yapmak veya tapu (gayrimenkul) işlemleri için eksiksiz araştırma ve avukatlık hizmetleri. Lviv emlak avukatı.",
+        heroDescription: "Ukrayna'da dolandırıcılık riski olmadan, güvenle gayrimenkul edinmek isteyen yabancı yatırımcılara tapu araştırmasından satışın tamamlanmasına kadar hukuki kalkan oluşturuyoruz.",
         content: `Ukrayna'da yabancılar belirli koşullar altında gayrimenkul edinebilirler. Mülk alım-satım süreçlerinde hukuki güvence sağlamak için profesyonel destek almanız önemlidir.`,
+        contentBlocks: [
+          {
+            type: "highlight",
+            title: "Mülk Alırken Varlığınızı Riske Atmayın",
+            content: "Ukrayna emlak piyasası oldukça hareketli olmakla birlikte hukuki gri alanlara sahiptir. Özellikle yeni yapılan projelerde 'ön-satış' sözleşmeleri, müteahhit firmanın iflas riskleri veya üzerinde haciz (ipotek, rehin, şerh) olan ikinci el daireler **Ukrayna gayrimenkul hukuku** açısından büyük tuzaklar barındırabilir. Bir evi çok beğendiğinizde sadece emlakçının söylediklerine güvenerek binlerce dolar transfer etmek hayatınızın hatası olabilir. Biz devreye giriyor, satın alacağınız mülkün devlet kayıtlarında detaylı analizini (Due Diligence) yapıyoruz."
+          },
+          {
+            type: "markdown",
+            content: "### Yabancılar Ukrayna'da Mülk Edinebilir mi?\n\nKısa cevap: **Evet!** Türkiye Cumhuriyeti vatandaşları da dahil olmak üzere yabancılar Ukrayna'da bağımsız bölüm (ev, daire, ofis, otel odası) satın alma hakkına tam olarak sahiptir. Ancak tarım arazisi (zemlya) satın alımında yabancılara yönelik çok katı kısıtlamalar bulunmaktadır.\n\nEvin satın alınması son derece resmi bir noter huzuru işlemidir. Resmi bir Vergi Numarasına (INN - İdentifikasyon Kodu) sahip olup olmadığınıza bakılır ve eğer yoksa bunu aynı gün içerisinde sizin adınıza çıkarıyoruz."
+          },
+          {
+            type: "features",
+            title: "Gayrimenkul Danışmanlığımız Neleri Kapsar?",
+            items: [
+              {
+                title: "Detaylı Sicil Araştırması",
+                description: "Satıcının gerçekten mal sahibi olup olmadığı, malın üzerinde banka rehni veya mahkeme şerhi bulunup bulunmadığı tek tek sorgulanır."
+              },
+              {
+                title: "Vergi Levhası (İNN) Çıkarılması",
+                description: "Ukrayna'da mülk alımı ve banka işlemleri yapabilmesi için zorunlu olan yabancı vergi numarasının temini."
+              },
+              {
+                title: "Noter ve Sözleşme Temsili",
+                description: "Satış işlemlerinde noter huzurunda evrakların Ukraynaca-Türkçe denetimi, yeminli tercümanlık ve avukat nezdinde güvenli imza süreci."
+              },
+              {
+                title: "Yeni Proje İnşaat Sözleşmeleri",
+                description: "Temelden alınan dairelerde müteahhidin inşaat ruhsatlarını, geçmiş teslimatlarını ve taslak sözleşmedeki haksız maddeleri analiz etme."
+              }
+            ]
+          },
+          {
+            type: "why_us",
+            title: "Güvenilir Yatırımın Tek Adresi",
+            items: [
+              "Ev sahibinin borçları yüzünden tapunuzun iptal edilme riskini hukuken ortadan kaldırırız.",
+              "Paranın transferi ( Swift vs. ) işlemlerinde para aklama (Finansal Monitöring) yasalarına takılmadan yasal ödeme modeli sunarız.",
+              "Gayrimenkul alımında yabancıların ödemesi gereken gizli vergilerin ve noter masraflarının satıcı tarafından haksızca size yıkılmasını önleriz.",
+              "Aldığınız evi kiraladığınızda hazırlayacağınız Ukrayna kira sözleşmelerini, haklarınızı (zamanında çıkış ve tahliye) koruyacak şekilde biz yazarız."
+            ]
+          },
+          {
+            type: "alert",
+            level: "danger",
+            title: "Sahte Sözleşmelere Dikkat!",
+            content: "Ukrayna'da emlak alımları mutlaka lisanslı ve sisteme kayıtlı bir noter önünde yapılmalıdır. Basit bir kağıda atılan 'Evi sattım, parasını aldım' imzalarının hukuken hiçbir geçerliliği yoktur."
+          }
+        ],
         requiredDocuments: ["Pasaport", "Vergi numarası (INN)", "Alım-satım sözleşmesi", "Mülk tapu belgesi", "Teknik pasaport", "Değerleme raporu"],
         processSteps: [
           { title: "Mülk İnceleme", description: "Gayrimenkulün hukuki durumunun araştırılması (tapu, ipotek, haciz)" },
@@ -510,10 +810,78 @@ Ukrayna'da evlilik, yerel DRACS (Nüfus Müdürlüğü) ofislerinde gerçekleşt
         shortDescription: "Ceza davalarında savunma, hukuki temsil ve haklar",
         icon: ShieldAlert,
         category: "ticari-genel",
-        metaTitle: "Ukrayna Ceza Hukuku | Ceza Davalarında Savunma",
-        metaDescription: "Ukrayna'da ceza davası süreçleri: soruşturma, kovuşturma, savunma hakları. Türk vatandaşları için acil hukuki destek.",
-        heroDescription: "Ukrayna'da ceza davalarında haklarınızın korunması için deneyimli savunma avukatlığı hizmeti sunuyoruz.",
+        metaTitle: "Ukrayna Ceza Avukatı | Lviv Ceza Hukuku Savunma ve Danışmanlık",
+        metaDescription: "Ukrayna ceza avukatı arıyorsanız, Lviv ve tüm Ukrayna genelinde Türk vatandaşları için ağır ceza, tutuklama, soruşturma aşamalarında acil hukuki destek sağlıyoruz. Hemen bize ulaşın.",
+        heroDescription: "Ukrayna'da herhangi bir suçlama, gözaltı veya ceza soruşturması ile karşı karşıya kalan Türk vatandaşlarına, haklarını en güçlü şekilde savunmak için anında, profesyonel ve sonuç odaklı avukatlık hizmeti sunuyoruz.",
         content: `Ceza hukuku süreçleri her zaman acil ve ciddidir. Ukrayna'da ceza soruşturması veya kovuşturması ile karşılaşan Türk vatandaşlarına profesyonel savunma hizmeti sağlıyoruz.`,
+        contentBlocks: [
+          {
+            type: "highlight",
+            title: "Ukrayna'da Ceza Avukatı Neden Kritik Öneme Sahiptir?",
+            content: "Yabancı bir ülkede, dilini, kültürünü ve en önemlisi yasalarını tam olarak bilmediğiniz bir adalet sistemiyle karşı karşıya kalmak, son derece stresli ve riskli bir durumdur. **Ukrayna ceza avukatı** olarak bizler, yalnızca yasal maddeleri okuyarak değil, uygulamanın pratikte nasıl işlediğini, savcılık makamlarının nasıl hareket ettiğini çok iyi analiz ederek çalışıyoruz. Amacımız, Türk vatandaşlarının Ukrayna mahkemelerinde veya polis merkezlerinde haksızlığa uğramasını engellemek, en hızlı şekilde özgürlüklerine ve haklarına kavuşmalarını sağlamaktır."
+          },
+          {
+            type: "markdown",
+            content: "### Lviv ve Ukrayna Genelinde Profesyonel Savunma\n\nCeza hukuku davaları, saniyelerin ve ilk atılan adımların çok büyük önem taşıdığı süreçlerdir. İster **Lviv ceza avukatı** arayışında olun, ister Ukrayna'nın başka bir şehrinde acil müdahaleye ihtiyaç duyun, anında yanınızdayız. Gözaltı veya tutuklama durumlarında kolluk kuvvetlerine verilecek ilk ifade, davanın tüm seyrini değiştirebilir. Tercüman eksikliği, yanlış anlaşılan ifadeler veya haklarınız konusunda eksik bilgilendirilmeniz, telafisi imkansız hatalara yol açabilmektedir.\n\nBizimle çalışmanız, sizin adınıza gece gündüz mücadele edecek, **Ukrayna hukuku deneyimi** yüksek, Türk vatandaşlarının hassasiyetlerini anlayan bir yasal kalkana sahip olmanız demektir."
+          },
+          {
+            type: "features",
+            title: "Hangi Aşamalarda Destek Sağlıyoruz?",
+            items: [
+              {
+                title: "Gözaltı ve Tutuklama Sırasında Acil Müdahale",
+                description: "Gözaltına alındığınız anda yanınızda bulunarak ifadenize katılır, haklarınızı (susma hakkı, Türk Konsolosluğu'na haber verme vb.) anında kullanmanızı sağlarız."
+              },
+              {
+                title: "Soruşturma ve İfade Süreçleri",
+                description: "Savcılık süreçlerinin en başından sonuna kadar, aleyhinize toplanan delillerin hukuka uygunluğunu denetler, savunmanızın omurgasını burada kurgularız."
+              },
+              {
+                title: "Ağır Ceza Mahkemelerinde Savunma",
+                description: "Uyuşturucu suçları, dolandırıcılık, yaralama, ekonomik suçlar veya bilişim suçları gibi yüksek cezalar öngören dosyalarda stratejik savunma yönetimi."
+              },
+              {
+                title: "Yakalama ve İade (Ekstradisyon) Süreçleri",
+                description: "Interpol aracılığıyla aranan kişilerin veya Türkiye'ye iade süreçleriyle karşılaşan kişilerin yasal haklarının uluslararası çerçevede korunması."
+              }
+            ]
+          },
+          {
+            type: "stats",
+            items: [
+              { label: "Anında Müdahale Edilen Vakalar", value: "7/24" },
+              { label: "Türkçe Başarılı İletişim", value: "%100" },
+              { label: "Tecrübe", value: "10+ Yıl" },
+              { label: "Ukrayna Çapında Destek", value: "Tüm Bölge" }
+            ]
+          },
+          {
+            type: "alert",
+            level: "danger",
+            title: "DİKKAT: İlk 24 Saat Çok Önemli!",
+            content: "Eğer bir yakınınız Ukrayna'da gözaltına alındıysa, ilk 24 saat içinde uzman bir avukatın devreye girmesi hayati önem taşır. Lütfen zaman kaybetmeden bizimle doğrudan iletişime geçiniz. Kendi kendinize vereceğiniz eksik bir ifade, sonradan değiştirilmesi çok güç yasal sonuçlar doğurabilir."
+          },
+          {
+            type: "why_us",
+            title: "Neden Süreci Bizimle Yönetmelisiniz?",
+            items: [
+              "Sistemdeki yasal boşlukları bilen ve müvekkil lehine kullanan tecrübeli avukat kadrosuna sahibiz.",
+              "Türk müvekkillerimizle doğma büyüme anadilimiz veya akıcı seviyede iletişim kurarak aradaki köprüyü çok sağlam kurarız.",
+              "Gerçekçi olmayan vaatler yerine, muhtemel senaryoları (en kötü ve en iyi sonuçları) rasyonel şeffaflıkla aktarırız.",
+              "Mahkeme aşamasından çok önce, savcılık (hazırlık) aşamasında agresif müdahalelerle dosyanın kapanması için maksimum çabayı gösteririz.",
+              "Bürokratik ve psikolojik stresi omuzlarınızdan alırız; siz sağlığınıza ve işinize odaklanırken, özgürlüğünüz için en iyi savunmayı biz yaparız."
+            ]
+          },
+          {
+            type: "markdown",
+            content: "### **Ukrayna Ceza Hukuku** ve Yabancılar İçin Riskler\n\nUkrayna yasalarına göre bazı eylemler, sizin kendi ülkenizde suç sayılmasa bile veya farklı değerlendirilse dahi, ağır yaptırımlarla karşılaşmanıza sebep olabilir. Gümrük kurallarının ihlali, evrakta sahtecilik iddiası gibi durumlarda, olay bir idari para cezasından ziyade ağır ceza dosyasına dönüşebilir.\n\nBir soruşturmaya müdahil olduğunuzda veya haksız yere suçlandığınızda tek yapmanız gereken paniğe kapılmamak ve hemen alanında uzman, referansları kuvvetli bir **Ukrayna ceza avukatından** rehberlik almaktır. Sizi temsil edecek kişinin aynı zamanda Ukrayna sisteminin kültürel ve kanuni reflekslerini anlayabilmesi, davanızın seyrini olumlu yönde etkileyecek en net unsurdur."
+          },
+          {
+            type: "quote",
+            text: "Adaletin kılıcı keskindir ancak doğru savuma kalkanı olmadan bu adaleti aramak yalnızlığa yürümektir.",
+            author: "Av. Lyudmyla Chubai Yönetimi"
+          }
+        ],
         requiredDocuments: ["Pasaport", "Gözaltı/tutuklama belgeleri", "İlgili deliller", "Tanık bilgileri"],
         processSteps: [
           { title: "Acil Müdahale", description: "Anında hukuki destek ve haklarınızın bilgilendirilmesi" },

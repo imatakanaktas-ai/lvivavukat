@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Phone, Clock, FileText, ChevronDown, ArrowRight } from "lucide-react";
+import { Phone, Clock, FileText, ChevronDown, ArrowRight, CheckCircle2, AlertCircle, Quote } from "lucide-react";
 import { allServices, getAllServiceSlugs, getServiceBySlug } from "@/data/services";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import {
@@ -33,6 +33,153 @@ export async function generateMetadata({
       type: "website",
     },
   };
+}
+
+// Block Renderer Component
+function BlockRenderer({ block, index }: { block: any, index: number }) {
+  if (block.type === "markdown") {
+    return (
+      <div key={index} className="prose prose-lg max-w-none text-foreground/80 leading-relaxed mb-10">
+        {block.content.split("\n\n").map((paragraph: string, i: number) => {
+          if (paragraph.startsWith("### ")) {
+            return (
+              <h3 key={i} className="text-xl font-serif font-bold text-foreground mt-6 mb-3">
+                {paragraph.replace("### ", "")}
+              </h3>
+            );
+          }
+          if (paragraph.startsWith("## ")) {
+            return (
+              <h2 key={i} className="text-2xl font-serif font-bold text-primary mt-8 mb-4">
+                {paragraph.replace("## ", "")}
+              </h2>
+            );
+          }
+          if (paragraph.startsWith("- ")) {
+            const items = paragraph.split("\n").filter((l) => l.startsWith("- "));
+            return (
+              <ul key={i} className="space-y-2 my-4">
+                {items.map((item, j) => {
+                  let text = item.replace("- ", "");
+                  // handle simple bolding markdown **text**
+                  const parts = text.split(/(\*\*.*?\*\*)/g);
+                  return (
+                    <li key={j} className="flex items-start gap-2">
+                      <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2.5 flex-shrink-0" />
+                      <span>
+                        {parts.map((part, k) => 
+                          part.startsWith("**") && part.endsWith("**") 
+                            ? <strong key={k} className="text-foreground">{part.slice(2, -2)}</strong> 
+                            : part
+                        )}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            );
+          }
+          // handle bolding in paragraphs
+          const parts = paragraph.split(/(\*\*.*?\*\*)/g);
+          return (
+            <p key={i} className="mb-4">
+              {parts.map((part, k) => 
+                part.startsWith("**") && part.endsWith("**") 
+                  ? <strong key={k} className="text-foreground font-semibold">{part.slice(2, -2)}</strong> 
+                  : part
+              )}
+            </p>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (block.type === "highlight") {
+    return (
+      <div key={index} className="my-10 p-8 rounded-2xl bg-primary text-white shadow-xl shadow-primary/10">
+        <h3 className="text-xl font-serif font-bold text-accent mb-3">{block.title}</h3>
+        <p className="text-white/80 leading-relaxed">{block.content}</p>
+      </div>
+    );
+  }
+
+  if (block.type === "stats") {
+    return (
+      <div key={index} className="my-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+        {block.items.map((stat: any, i: number) => (
+          <div key={i} className="p-6 rounded-2xl bg-card border border-border/50 text-center">
+            <div className="text-3xl font-bold text-accent mb-2">{stat.value}</div>
+            <div className="text-sm font-medium text-muted">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (block.type === "quote") {
+    return (
+      <div key={index} className="my-10 relative p-8 rounded-2xl bg-secondary/50 border-l-4 border-accent">
+        <Quote className="absolute top-4 right-4 w-12 h-12 text-accent/10" />
+        <p className="text-lg italic text-foreground/80 relative z-10">"{block.text}"</p>
+        {block.author && (
+          <p className="mt-4 font-semibold text-primary">— {block.author}</p>
+        )}
+      </div>
+    );
+  }
+
+  if (block.type === "features") {
+    return (
+      <div key={index} className="my-10">
+        <h3 className="text-2xl font-serif font-bold text-primary mb-6">{block.title}</h3>
+        <div className="grid sm:grid-cols-2 gap-6">
+          {block.items.map((item: any, i: number) => (
+            <div key={i} className="flex gap-4 p-5 rounded-2xl bg-card border border-border/50 hover:border-accent/50 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="w-5 h-5 text-accent" />
+              </div>
+              <div>
+                <h4 className="font-bold text-foreground mb-1">{item.title}</h4>
+                <p className="text-sm text-muted leading-relaxed">{item.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (block.type === "alert") {
+    const isWarning = block.level === "warning" || block.level === "danger";
+    return (
+      <div key={index} className={`my-10 p-6 rounded-2xl flex gap-4 ${isWarning ? "bg-red-50 text-red-900 border border-red-100" : "bg-blue-50 text-blue-900 border border-blue-100"}`}>
+        <AlertCircle className={`w-6 h-6 flex-shrink-0 ${isWarning ? "text-red-500" : "text-blue-500"}`} />
+        <div>
+          <h4 className={`font-bold mb-1 ${isWarning ? "text-red-800" : "text-blue-800"}`}>{block.title}</h4>
+          <p className={isWarning ? "text-red-700/90" : "text-blue-700/90"}>{block.content}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (block.type === "why_us") {
+    return (
+      <div key={index} className="my-10 p-8 rounded-2xl bg-gradient-to-br from-primary to-primary-light text-white">
+        <h3 className="text-2xl font-serif font-bold text-accent mb-6">{block.title}</h3>
+        <ul className="space-y-4">
+          {block.items.map((item: string, i: number) => (
+            <li key={i} className="flex items-start gap-3">
+              <ArrowRight className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
+              <span className="text-white/90 leading-relaxed">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 export default async function ServiceDetailPage({
@@ -115,32 +262,40 @@ export default async function ServiceDetailPage({
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Main content */}
             <div className="lg:col-span-2 space-y-12">
-              {/* Article content */}
-              <div className="prose prose-lg max-w-none text-foreground/80 leading-relaxed">
-                {service.content.split("\n\n").map((paragraph, i) => {
-                  if (paragraph.startsWith("## ")) {
-                    return (
-                      <h2 key={i} className="text-2xl font-serif font-bold text-foreground mt-8 mb-4">
-                        {paragraph.replace("## ", "")}
-                      </h2>
-                    );
-                  }
-                  if (paragraph.startsWith("- ")) {
-                    const items = paragraph.split("\n").filter((l) => l.startsWith("- "));
-                    return (
-                      <ul key={i} className="space-y-2 my-4">
-                        {items.map((item, j) => (
-                          <li key={j} className="flex items-start gap-2">
-                            <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2.5 flex-shrink-0" />
-                            <span>{item.replace("- ", "")}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    );
-                  }
-                  return <p key={i} className="mb-4">{paragraph}</p>;
-                })}
-              </div>
+              {/* Dynamic Content Blocks or Fallback */}
+              {service.contentBlocks && service.contentBlocks.length > 0 ? (
+                <div>
+                  {service.contentBlocks.map((block, i) => (
+                    <BlockRenderer key={i} block={block} index={i} />
+                  ))}
+                </div>
+              ) : (
+                <div className="prose prose-lg max-w-none text-foreground/80 leading-relaxed">
+                  {service.content.split("\n\n").map((paragraph, i) => {
+                    if (paragraph.startsWith("## ")) {
+                      return (
+                        <h2 key={i} className="text-2xl font-serif font-bold text-foreground mt-8 mb-4">
+                          {paragraph.replace("## ", "")}
+                        </h2>
+                      );
+                    }
+                    if (paragraph.startsWith("- ")) {
+                      const items = paragraph.split("\n").filter((l) => l.startsWith("- "));
+                      return (
+                        <ul key={i} className="space-y-2 my-4">
+                          {items.map((item, j) => (
+                            <li key={j} className="flex items-start gap-2">
+                              <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2.5 flex-shrink-0" />
+                              <span>{item.replace("- ", "")}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      );
+                    }
+                    return <p key={i} className="mb-4">{paragraph}</p>;
+                  })}
+                </div>
+              )}
 
               {/* Process steps */}
               <div>

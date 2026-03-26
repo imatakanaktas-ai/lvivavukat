@@ -1,28 +1,21 @@
-import { getReminders } from "./actions";
-import RemindersList from "./RemindersList";
+import { getAllEvents } from "./actions";
+import EventsDashboard from "./EventsDashboard";
 
-export default async function RemindersPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ show?: string }>;
-}) {
-  const params = await searchParams;
-  const showCompleted = params.show === "completed";
-
-  let reminders: Awaited<ReturnType<typeof getReminders>> = [];
+export default async function RemindersPage() {
+  let data: Awaited<ReturnType<typeof getAllEvents>> = { items: [], clients: [] };
   try {
-    reminders = await getReminders({ showCompleted });
+    data = await getAllEvents();
   } catch {
     // DB not connected
   }
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-7xl">
       <div>
-        <h1 className="text-2xl font-serif font-bold text-gray-900">Hatırlatmalar</h1>
-        <p className="text-sm text-gray-500 mt-1">Önemli tarihleri ve görevleri takip edin</p>
+        <h1 className="text-2xl font-serif font-bold text-gray-900">Takip Merkezi</h1>
+        <p className="text-sm text-gray-500 mt-1">Hatırlatmalar, ödemeler ve mahkeme tarihlerini tek yerden yönetin</p>
       </div>
-      <RemindersList initialReminders={reminders} showCompleted={showCompleted} />
+      <EventsDashboard initialItems={data.items} clientList={data.clients} />
     </div>
   );
 }

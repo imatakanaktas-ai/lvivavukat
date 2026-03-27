@@ -7,7 +7,6 @@ import {
   LayoutDashboard,
   Users,
   CalendarDays,
-  FileText,
   PenTool,
   MessageSquare,
   Settings,
@@ -53,11 +52,6 @@ const navItems = [
     label: "Belgeler",
     href: `/${ADMIN_PREFIX}/belgeler`,
     icon: FolderOpen,
-  },
-  {
-    label: "Şablonlar",
-    href: `/${ADMIN_PREFIX}/sablonlar`,
-    icon: FileText,
   },
   {
     label: "İletişim Formları",

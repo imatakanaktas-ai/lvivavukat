@@ -138,15 +138,35 @@ function UploadModal({
     setError("");
 
     try {
-      const formData = new FormData();
-      formData.append("clientId", clientId);
-      formData.append("title", title.trim());
-      formData.append("category", category);
-      files.forEach((f) => formData.append("files", f));
+      // Step 1: Upload files directly to Vercel Blob (bypasses serverless body limit)
+      const { upload } = await import("@vercel/blob/client");
+      const uploadedFiles: { url: string; fileName: string; fileSize: number; mimeType: string }[] = [];
 
+      for (const file of files) {
+        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+        const path = `documents/${clientId}/${safeName}`;
+        const blob = await upload(path, file, {
+          access: "public",
+          handleUploadUrl: "/api/documents/upload",
+        });
+        uploadedFiles.push({
+          url: blob.url,
+          fileName: file.name,
+          fileSize: file.size,
+          mimeType: file.type,
+        });
+      }
+
+      // Step 2: Save metadata to DB
       const res = await fetch("/api/documents", {
         method: "POST",
-        body: formData,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientId,
+          title: title.trim(),
+          category,
+          files: uploadedFiles,
+        }),
       });
 
       const contentType = res.headers.get("content-type");
@@ -167,7 +187,7 @@ function UploadModal({
       onClose();
     } catch (err) {
       console.error("Document upload error:", err);
-      setError("Bağlantı hatası. Tekrar deneyin.");
+      setError("Dosya yüklenirken hata oluştu. Tekrar deneyin.");
       setUploading(false);
     }
   }

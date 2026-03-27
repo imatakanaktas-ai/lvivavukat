@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { reminders, clients, payments, courtDates } from "@/lib/db/schema";
+import { reminders, clients, payments, courtDates, calendarEvents } from "@/lib/db/schema";
 import { reminderFormSchema } from "@/lib/validations";
 import { eq, asc, desc } from "drizzle-orm";
 import { auth } from "@/lib/auth/config";
@@ -166,15 +166,38 @@ export async function createReminder(
 
   try {
     const cId = parsed.data.clientId || null;
+    const dueDate = new Date(parsed.data.dueDate);
+    const rType = parsed.data.type;
+
     await db.insert(reminders).values({
       clientId: cId,
       title: parsed.data.title,
       description: parsed.data.description || null,
-      dueDate: new Date(parsed.data.dueDate),
-      type: parsed.data.type,
+      dueDate,
+      type: rType,
+    });
+
+    // Also create calendar event so it shows on the calendar
+    const eventTypeMap: Record<string, string> = {
+      mahkeme: "mahkeme", odeme: "odeme", devlet_islemi: "diger",
+      vergi: "odeme", deadline: "diger", ozel: "kisisel",
+    };
+    const colorMap: Record<string, string> = {
+      mahkeme: "#EF4444", odeme: "#F59E0B", devlet_islemi: "#6B7280",
+      vergi: "#F59E0B", deadline: "#6B7280", ozel: "#8B5CF6",
+    };
+    await db.insert(calendarEvents).values({
+      clientId: cId,
+      title: `Hatırlatma: ${parsed.data.title}`,
+      description: parsed.data.description || null,
+      startDate: dueDate,
+      eventType: eventTypeMap[rType] || "diger",
+      color: colorMap[rType] || "#8B5CF6",
+      isAllDay: true,
     });
 
     revalidatePath(`/${ADMIN_PREFIX}/hatirlatmalar`);
+    revalidatePath(`/${ADMIN_PREFIX}/takvim`);
     if (cId) revalidatePath(`/${ADMIN_PREFIX}/muvekiller/${cId}`);
     return { success: true, message: "Hatırlatma eklendi." };
   } catch {

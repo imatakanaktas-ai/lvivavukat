@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { getClientWithRelations } from "../actions";
 import ClientNotesSection from "./ClientNotesSection";
+import ClientDocumentsSection from "./ClientDocumentsSection";
 import DeleteClientButton from "./DeleteClientButton";
 import AddPaymentForm from "./AddPaymentForm";
 import AddCourtDateForm from "./AddCourtDateForm";
@@ -240,6 +241,12 @@ export default async function ClientDetailPage({
           />
         </div>
       </div>
+
+      {/* Documents Section - Full Width */}
+      <ClientDocumentsSection
+        clientId={client.id}
+        documents={client.documents}
+      />
     </div>
   );
 }

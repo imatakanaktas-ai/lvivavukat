@@ -52,7 +52,7 @@ export const clientsRelations = relations(clients, ({ many }) => ({
 }));
 
 // ============================================================
-// CLIENT DOCUMENTS (Müvekkil Belgeleri)
+// CLIENT DOCUMENTS (Müvekkil Belgeleri - Gruplar)
 // ============================================================
 export const clientDocuments = pgTable("client_documents", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -61,17 +61,37 @@ export const clientDocuments = pgTable("client_documents", {
     .notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   category: varchar("category", { length: 100 }).notNull(), // kimlik, sozlesme, mahkeme, devlet, diger
+  uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
+});
+
+export const clientDocumentsRelations = relations(clientDocuments, ({ one, many }) => ({
+  client: one(clients, {
+    fields: [clientDocuments.clientId],
+    references: [clients.id],
+  }),
+  files: many(clientDocumentFiles),
+}));
+
+// ============================================================
+// CLIENT DOCUMENT FILES (Belge Dosyaları)
+// ============================================================
+export const clientDocumentFiles = pgTable("client_document_files", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  documentId: uuid("document_id")
+    .references(() => clientDocuments.id, { onDelete: "cascade" })
+    .notNull(),
   fileUrl: text("file_url").notNull(),
   fileName: varchar("file_name", { length: 255 }).notNull(),
   fileSize: integer("file_size"),
   mimeType: varchar("mime_type", { length: 100 }),
+  sortOrder: integer("sort_order").default(0).notNull(),
   uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
 });
 
-export const clientDocumentsRelations = relations(clientDocuments, ({ one }) => ({
-  client: one(clients, {
-    fields: [clientDocuments.clientId],
-    references: [clients.id],
+export const clientDocumentFilesRelations = relations(clientDocumentFiles, ({ one }) => ({
+  document: one(clientDocuments, {
+    fields: [clientDocumentFiles.documentId],
+    references: [clientDocuments.id],
   }),
 }));
 
@@ -292,6 +312,7 @@ export type NewAdminUser = typeof adminUsers.$inferInsert;
 export type Client = typeof clients.$inferSelect;
 export type NewClient = typeof clients.$inferInsert;
 export type ClientDocument = typeof clientDocuments.$inferSelect;
+export type ClientDocumentFile = typeof clientDocumentFiles.$inferSelect;
 export type Payment = typeof payments.$inferSelect;
 export type Reminder = typeof reminders.$inferSelect;
 export type CourtDate = typeof courtDates.$inferSelect;

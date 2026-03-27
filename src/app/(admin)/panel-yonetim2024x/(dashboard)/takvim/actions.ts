@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { calendarEvents, clients } from "@/lib/db/schema";
+import { calendarEvents, clients, reminders, courtDates } from "@/lib/db/schema";
 import { calendarEventFormSchema } from "@/lib/validations";
-import { eq, gte, lte, and, desc } from "drizzle-orm";
+import { eq, gte, lte, and } from "drizzle-orm";
 import { auth } from "@/lib/auth/config";
 
 const ADMIN_PREFIX = process.env.ADMIN_ROUTE_PREFIX || "panel-yonetim2024x";
@@ -16,18 +16,52 @@ async function requireAuth() {
 
 export type CalendarActionState = { success: boolean; message: string } | null;
 
-export async function getCalendarEvents(startStr?: string, endStr?: string) {
+export type CalendarEvent = {
+  id: string;
+  title: string;
+  description: string | null;
+  startDate: Date;
+  endDate: Date | null;
+  eventType: string;
+  color: string | null;
+  isAllDay: boolean | null;
+  clientId: string | null;
+  clientFirstName: string | null;
+  clientLastName: string | null;
+  source: "calendar" | "reminder" | "courtDate";
+};
+
+const reminderTypeToEventType: Record<string, string> = {
+  mahkeme: "mahkeme",
+  odeme: "odeme",
+  devlet_islemi: "diger",
+  vergi: "odeme",
+  deadline: "diger",
+  ozel: "kisisel",
+};
+
+const reminderTypeColor: Record<string, string> = {
+  mahkeme: "#EF4444",
+  odeme: "#F59E0B",
+  devlet_islemi: "#6B7280",
+  vergi: "#F59E0B",
+  deadline: "#6B7280",
+  ozel: "#8B5CF6",
+};
+
+export async function getCalendarEvents(startStr?: string, endStr?: string): Promise<CalendarEvent[]> {
   await requireAuth();
 
-  const conditions = [];
-  if (startStr) conditions.push(gte(calendarEvents.startDate, new Date(startStr)));
-  if (endStr) conditions.push(lte(calendarEvents.startDate, new Date(endStr)));
+  // 1) Calendar events created manually (exclude auto-generated duplicates)
+  const calConditions = [];
+  if (startStr) calConditions.push(gte(calendarEvents.startDate, new Date(startStr)));
+  if (endStr) calConditions.push(lte(calendarEvents.startDate, new Date(endStr)));
 
-  const where = conditions.length > 0
-    ? conditions.length === 1 ? conditions[0] : and(...conditions)
+  const calWhere = calConditions.length > 0
+    ? calConditions.length === 1 ? calConditions[0] : and(...calConditions)
     : undefined;
 
-  const events = await db
+  const calRows = await db
     .select({
       id: calendarEvents.id,
       title: calendarEvents.title,
@@ -43,10 +77,108 @@ export async function getCalendarEvents(startStr?: string, endStr?: string) {
     })
     .from(calendarEvents)
     .leftJoin(clients, eq(calendarEvents.clientId, clients.id))
-    .where(where)
+    .where(calWhere)
     .orderBy(calendarEvents.startDate);
 
-  return events;
+  // 2) Reminders → calendar events
+  const reminderRows = await db
+    .select({
+      id: reminders.id,
+      title: reminders.title,
+      description: reminders.description,
+      dueDate: reminders.dueDate,
+      type: reminders.type,
+      isCompleted: reminders.isCompleted,
+      clientId: reminders.clientId,
+      clientFirstName: clients.firstName,
+      clientLastName: clients.lastName,
+    })
+    .from(reminders)
+    .leftJoin(clients, eq(reminders.clientId, clients.id))
+    .orderBy(reminders.dueDate);
+
+  // 3) Court dates → calendar events
+  const courtRows = await db
+    .select({
+      id: courtDates.id,
+      courtName: courtDates.courtName,
+      caseNumber: courtDates.caseNumber,
+      hearingDate: courtDates.hearingDate,
+      hearingTime: courtDates.hearingTime,
+      notes: courtDates.notes,
+      status: courtDates.status,
+      clientId: courtDates.clientId,
+      clientFirstName: clients.firstName,
+      clientLastName: clients.lastName,
+    })
+    .from(courtDates)
+    .leftJoin(clients, eq(courtDates.clientId, clients.id))
+    .orderBy(courtDates.hearingDate);
+
+  // Build a set of auto-generated calendar event titles + dates to avoid duplicates
+  const autoGenKeys = new Set<string>();
+
+  // Map reminders into calendar format
+  const reminderEvents: CalendarEvent[] = reminderRows.map((r) => {
+    const d = new Date(r.dueDate);
+    autoGenKeys.add(`Hatırlatma: ${r.title}|${d.toISOString().slice(0, 10)}`);
+    return {
+      id: `rem-${r.id}`,
+      title: r.title,
+      description: r.description,
+      startDate: d,
+      endDate: null,
+      eventType: reminderTypeToEventType[r.type] || "diger",
+      color: reminderTypeColor[r.type] || "#8B5CF6",
+      isAllDay: true,
+      clientId: r.clientId,
+      clientFirstName: r.clientFirstName,
+      clientLastName: r.clientLastName,
+      source: "reminder" as const,
+    };
+  });
+
+  // Map court dates into calendar format
+  const courtEvents: CalendarEvent[] = courtRows.map((c) => {
+    const d = new Date(c.hearingDate);
+    if (c.hearingTime) {
+      const [h, m] = c.hearingTime.split(":");
+      d.setHours(Number(h), Number(m));
+    }
+    autoGenKeys.add(`Duruşma: ${c.courtName}|${d.toISOString().slice(0, 10)}`);
+    return {
+      id: `court-${c.id}`,
+      title: `Duruşma: ${c.courtName}`,
+      description: c.caseNumber ? `Dosya No: ${c.caseNumber}` : c.notes,
+      startDate: d,
+      endDate: null,
+      eventType: "mahkeme",
+      color: "#EF4444",
+      isAllDay: !c.hearingTime,
+      clientId: c.clientId,
+      clientFirstName: c.clientFirstName,
+      clientLastName: c.clientLastName,
+      source: "courtDate" as const,
+    };
+  });
+
+  // Filter out auto-generated calendar events (duplicates of reminders/court dates)
+  const manualCalEvents: CalendarEvent[] = calRows
+    .filter((ev) => {
+      const dateKey = new Date(ev.startDate).toISOString().slice(0, 10);
+      const key = `${ev.title}|${dateKey}`;
+      return !autoGenKeys.has(key);
+    })
+    .map((ev) => ({
+      ...ev,
+      source: "calendar" as const,
+    }));
+
+  // Merge and sort by startDate
+  const all = [...manualCalEvents, ...reminderEvents, ...courtEvents];
+  all.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+
+  return all;
 }
 
 export async function createCalendarEvent(

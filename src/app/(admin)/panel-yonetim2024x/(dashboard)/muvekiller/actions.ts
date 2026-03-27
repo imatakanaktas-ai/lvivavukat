@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
-import { clients, clientNotes, payments, courtDates, reminders, calendarEvents } from "@/lib/db/schema";
+import { clients, clientNotes, payments, courtDates, reminders, calendarEvents, clientDocuments, clientDocumentFiles } from "@/lib/db/schema";
 import { clientFormSchema, paymentFormSchema } from "@/lib/validations";
-import { eq, desc, ilike, or, sql, count } from "drizzle-orm";
+import { eq, desc, ilike, or, sql, count, and } from "drizzle-orm";
 import { auth } from "@/lib/auth/config";
 
 const ADMIN_PREFIX = process.env.ADMIN_ROUTE_PREFIX || "panel-yonetim2024x";
@@ -83,6 +83,10 @@ export async function getClientWithRelations(id: string) {
       clientNotes: { orderBy: (n, { desc: d }) => [d(n.createdAt)] },
       reminders: { orderBy: (r, { asc: a }) => [a(r.dueDate)] },
       courtDates: { orderBy: (c, { asc: a }) => [a(c.hearingDate)] },
+      documents: {
+        orderBy: (d, { desc: dd }) => [dd(d.uploadedAt)],
+        with: { files: { orderBy: (f, { asc: a }) => [a(f.sortOrder)] } },
+      },
     },
   });
   return result || null;
@@ -363,5 +367,85 @@ export async function addClientReminder(
     return { success: true, message: "Hatırlatma eklendi." };
   } catch {
     return { success: false, message: "Hatırlatma eklenirken hata oluştu." };
+  }
+}
+
+// ============================================================
+// CLIENT DOCUMENTS
+// ============================================================
+
+export async function getClientDocuments(clientId: string, search?: string) {
+  await requireAuth();
+  const conditions = [eq(clientDocuments.clientId, clientId)];
+  if (search && search.trim()) {
+    conditions.push(ilike(clientDocuments.title, `%${search.trim()}%`));
+  }
+
+  return db.query.clientDocuments.findMany({
+    where: and(...conditions),
+    orderBy: (d, { desc: dd }) => [dd(d.uploadedAt)],
+    with: { files: { orderBy: (f, { asc: a }) => [a(f.sortOrder)] } },
+  });
+}
+
+export async function deleteDocument(
+  docId: string,
+  clientId: string
+): Promise<ClientActionState> {
+  await requireAuth();
+  try {
+    // Get file URLs for blob cleanup
+    const files = await db
+      .select({ fileUrl: clientDocumentFiles.fileUrl })
+      .from(clientDocumentFiles)
+      .where(eq(clientDocumentFiles.documentId, docId));
+
+    // Delete blob files
+    const { del } = await import("@vercel/blob");
+    await Promise.allSettled(files.map((f) => del(f.fileUrl)));
+
+    // Delete from DB (cascade deletes files)
+    await db.delete(clientDocuments).where(eq(clientDocuments.id, docId));
+
+    revalidatePath(`/${ADMIN_PREFIX}/muvekiller/${clientId}`);
+    return { success: true, message: "Belge silindi." };
+  } catch {
+    return { success: false, message: "Belge silinirken hata oluştu." };
+  }
+}
+
+export async function deleteDocumentFile(
+  fileId: string,
+  documentId: string,
+  clientId: string
+): Promise<ClientActionState> {
+  await requireAuth();
+  try {
+    const [file] = await db
+      .select({ fileUrl: clientDocumentFiles.fileUrl })
+      .from(clientDocumentFiles)
+      .where(eq(clientDocumentFiles.id, fileId));
+
+    if (file) {
+      const { del } = await import("@vercel/blob");
+      await del(file.fileUrl).catch(() => {});
+    }
+
+    await db.delete(clientDocumentFiles).where(eq(clientDocumentFiles.id, fileId));
+
+    // Check if document group is now empty → auto-delete
+    const [remaining] = await db
+      .select({ count: count() })
+      .from(clientDocumentFiles)
+      .where(eq(clientDocumentFiles.documentId, documentId));
+
+    if (remaining.count === 0) {
+      await db.delete(clientDocuments).where(eq(clientDocuments.id, documentId));
+    }
+
+    revalidatePath(`/${ADMIN_PREFIX}/muvekiller/${clientId}`);
+    return { success: true, message: "Dosya silindi." };
+  } catch {
+    return { success: false, message: "Dosya silinirken hata oluştu." };
   }
 }

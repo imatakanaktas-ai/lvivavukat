@@ -149,6 +149,13 @@ function UploadModal({
         body: formData,
       });
 
+      const contentType = res.headers.get("content-type");
+      if (!contentType?.includes("application/json")) {
+        setError(`Sunucu hatası (${res.status}). Lütfen tekrar deneyin.`);
+        setUploading(false);
+        return;
+      }
+
       const data = await res.json();
       if (!res.ok) {
         setError(data.error || "Yükleme sırasında hata oluştu.");
@@ -158,7 +165,8 @@ function UploadModal({
 
       onSuccess();
       onClose();
-    } catch {
+    } catch (err) {
+      console.error("Document upload error:", err);
       setError("Bağlantı hatası. Tekrar deneyin.");
       setUploading(false);
     }

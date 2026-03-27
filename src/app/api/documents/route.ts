@@ -33,6 +33,13 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      return NextResponse.json(
+        { error: "Dosya depolama yapılandırılmamış. BLOB_READ_WRITE_TOKEN eksik." },
+        { status: 500 }
+      );
+    }
+
     const formData = await request.formData();
     const clientId = formData.get("clientId") as string;
     const title = formData.get("title") as string;

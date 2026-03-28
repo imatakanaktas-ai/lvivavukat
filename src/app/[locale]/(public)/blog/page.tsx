@@ -32,7 +32,7 @@ export async function generateMetadata({
 }
 
 // Static placeholder posts until DB/admin is connected
-const placeholderPosts = [
+const placeholderPostsTr = [
   {
     slug: "ukraynada-oturum-izni-nasil-alinir",
     title: "Ukrayna'da Oturum İzni Nasıl Alınır? 2024 Kapsamlı Rehber",
@@ -89,13 +89,79 @@ const placeholderPosts = [
   },
 ];
 
-const categories = [
+const placeholderPostsUk = [
+  {
+    slug: "yak-oformyty-spadshchynu-u-lvovi",
+    title: "Як правильно оформити спадщину у Львові: покрокова інструкція",
+    excerpt:
+      "Строки прийняття спадщини, необхідні документи, черги спадкоємців за законом та за заповітом. Практичні поради від адвоката.",
+    category: "Спадкове право",
+    date: "2025-03-10",
+    readingTime: 9,
+  },
+  {
+    slug: "rozluchennya-v-ukrayini-2025",
+    title: "Розлучення в Україні у 2025 році: через РАЦС та суд",
+    excerpt:
+      "Як подати на розлучення, які документи потрібні, скільки коштує та як поділити майно. Повний юридичний гайд.",
+    category: "Сімейне право",
+    date: "2025-02-18",
+    readingTime: 8,
+  },
+  {
+    slug: "reyestratsiya-tov-u-lvovi",
+    title: "Реєстрація ТОВ у Львові: повний гайд для підприємців",
+    excerpt:
+      "Які документи потрібні для реєстрації ТОВ, скільки це коштує, статутний капітал та система оподаткування — усе в одній статті.",
+    category: "Бізнес право",
+    date: "2025-01-25",
+    readingTime: 10,
+  },
+  {
+    slug: "prava-pratsivnyka-pry-zvilnenni",
+    title: "Права працівника при звільненні: що потрібно знати у 2025",
+    excerpt:
+      "Підстави звільнення за КЗпП, вихідна допомога, строки розрахунку та як оскаржити незаконне звільнення.",
+    category: "Трудове право",
+    date: "2025-01-08",
+    readingTime: 7,
+  },
+  {
+    slug: "kupivlya-kvartiry-u-lvovi",
+    title: "Купівля квартири у Львові: юридичні нюанси та перевірка",
+    excerpt:
+      "Як перевірити квартиру перед купівлею, на що звернути увагу в договорі та які податки сплачуються при оформленні.",
+    category: "Нерухомість",
+    date: "2024-12-20",
+    readingTime: 9,
+  },
+  {
+    slug: "zakhyst-prav-spozhyvachiv",
+    title: "Захист прав споживачів: як повернути неякісний товар",
+    excerpt:
+      "Закон про захист прав споживачів, строки повернення, претензія продавцю та коли звертатися до суду.",
+    category: "Цивільне право",
+    date: "2024-12-05",
+    readingTime: 6,
+  },
+];
+
+const categoriesTr = [
   "Oturum İzni",
   "Aile Hukuku",
   "Ticaret Hukuku",
   "Çalışma İzni",
   "Gayrimenkul",
   "Vize",
+];
+
+const categoriesUk = [
+  "Спадкове право",
+  "Сімейне право",
+  "Бізнес право",
+  "Трудове право",
+  "Нерухомість",
+  "Цивільне право",
 ];
 
 export default async function BlogPage({
@@ -108,6 +174,11 @@ export default async function BlogPage({
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
   const homeHref = localizedHref("/", locale as Locale);
   const blogHref = localizedHref("/blog", locale as Locale);
+
+  const isUk = locale === "uk";
+  const placeholderPosts = isUk ? placeholderPostsUk : placeholderPostsTr;
+  const categories = isUk ? categoriesUk : categoriesTr;
+  const dateLocale = isUk ? "uk-UA" : "tr-TR";
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: dict.nav.home, url: `${siteUrl}${homeHref}` },
@@ -156,7 +227,7 @@ export default async function BlogPage({
                       </span>
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3.5 h-3.5" />
-                        {new Date(post.date).toLocaleDateString("tr-TR", {
+                        {new Date(post.date).toLocaleDateString(dateLocale, {
                           day: "numeric",
                           month: "long",
                           year: "numeric",
@@ -164,7 +235,7 @@ export default async function BlogPage({
                       </span>
                       <span className="flex items-center gap-1">
                         <Clock className="w-3.5 h-3.5" />
-                        {post.readingTime} dk okuma
+                        {post.readingTime} {dict.blog.minRead}
                       </span>
                     </div>
 
@@ -184,7 +255,7 @@ export default async function BlogPage({
                       className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent 
                         hover:text-accent-hover transition-colors"
                     >
-                      Devamını Oku
+                      {dict.blog.readMore || (isUk ? "Читати далі" : "Devamını Oku")}
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </article>
@@ -195,7 +266,9 @@ export default async function BlogPage({
               <div className="flex justify-center mt-10">
                 <div className="flex items-center gap-2 text-sm text-muted">
                   <BookOpen className="w-4 h-4" />
-                  Blog yazıları admin panelden eklenecek ve burada listelenecektir.
+                  {isUk
+                    ? "Статті блогу будуть додаватися з адмін-панелі."
+                    : "Blog yazıları admin panelden eklenecek ve burada listelenecektir."}
                 </div>
               </div>
             </div>
@@ -205,27 +278,29 @@ export default async function BlogPage({
               {/* Search */}
               <div className="p-6 rounded-2xl bg-card border border-border/50">
                 <h3 className="font-serif font-bold text-foreground mb-4">
-                  Blog&apos;da Ara
+                  {isUk ? "Пошук" : "Blog'da Ara"}
                 </h3>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
                   <input
                     type="text"
-                    placeholder="Anahtar kelime..."
+                    placeholder={dict.blog.search}
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-secondary border border-border/50 
                       text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 
                       focus:ring-accent/30 transition-shadow"
                     disabled
-                    aria-label="Blog arama"
+                    aria-label={isUk ? "Пошук статей" : "Blog arama"}
                   />
                 </div>
-                <p className="text-xs text-muted mt-2">Arama özelliği yakında aktif olacaktır.</p>
+                <p className="text-xs text-muted mt-2">
+                  {isUk ? "Функція пошуку незабаром буде активна." : "Arama özelliği yakında aktif olacaktır."}
+                </p>
               </div>
 
               {/* Categories */}
               <div className="p-6 rounded-2xl bg-card border border-border/50">
                 <h3 className="font-serif font-bold text-foreground mb-4">
-                  Kategoriler
+                  {dict.blog.categories}
                 </h3>
                 <ul className="space-y-1.5">
                   {categories.map((cat) => (
@@ -245,10 +320,12 @@ export default async function BlogPage({
               {/* CTA */}
               <div className="p-6 rounded-2xl bg-primary text-white">
                 <h3 className="font-serif font-bold text-lg mb-3">
-                  Hukuki Sorularınız mı Var?
+                  {isUk ? "Маєте юридичні запитання?" : "Hukuki Sorularınız mı Var?"}
                 </h3>
                 <p className="text-sm text-white/60 mb-5">
-                  Ukrayna hukuku hakkında sorularınız için bizimle iletişime geçin.
+                  {isUk
+                    ? "Зверніться до нас для безкоштовної первинної консультації."
+                    : "Ukrayna hukuku hakkında sorularınız için bizimle iletişime geçin."}
                 </p>
                 <a
                   href="https://wa.me/380000000000"
@@ -257,7 +334,7 @@ export default async function BlogPage({
                   className="flex items-center justify-center gap-2 w-full bg-accent hover:bg-accent-hover 
                     text-primary py-3 rounded-xl font-bold text-sm transition-colors"
                 >
-                  Ücretsiz Danışma
+                  {isUk ? "Безкоштовна консультація" : "Ücretsiz Danışma"}
                 </a>
               </div>
             </aside>

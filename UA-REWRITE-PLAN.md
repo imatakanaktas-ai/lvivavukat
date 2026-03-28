@@ -219,10 +219,10 @@ Every service page uses a MIX of these block types (not plain text):
 ### PHASE 8: Blog (UA)
 > 6 original Ukrainian blog posts. Different topics from TR blog — relevant to Ukrainian audience.
 
-- [ ] **8.1** Create 6 UA blog posts: slugs, titles, excerpts, full content (SEO-optimized)
-- [ ] **8.2** Update `blog/page.tsx` — show locale-based post list
-- [ ] **8.3** Update `blog/[slug]/page.tsx` — render UA post content
-- [ ] **8.4** Build & push
+- [x] **8.1** Create 6 UA blog posts: slugs, titles, excerpts, full content (SEO-optimized)
+- [x] **8.2** Update `blog/page.tsx` — show locale-based post list
+- [x] **8.3** Update `blog/[slug]/page.tsx` — render UA post content
+- [x] **8.4** Build & push
 
 ### PHASE 9: Legal Pages
 - [ ] **9.1** Privacy Policy — full UA version
@@ -316,7 +316,7 @@ durationUk: string;
 | 5 | Services Batch 4 (Family+Comm 10-12) | ✅ Complete | 4/4 |
 | 6 | Services Batch 5 (Commercial 13-15) | ✅ Complete | 4/4 |
 | 7 | Services Batch 6 (Remaining 16-19) | ✅ Complete | 5/5 |
-| 8 | Blog | ⬜ Not Started | 0/4 |
+| 8 | Blog | ✅ Complete | 4/4 |
 | 9 | Legal Pages | ⬜ Not Started | 0/3 |
 | 10 | Final QA & SEO | ⬜ Not Started | 0/6 |
 | **TOTAL** | | | **0/64** |

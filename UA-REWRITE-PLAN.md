@@ -168,13 +168,13 @@ Every service page uses a MIX of these block types (not plain text):
 ### PHASE 1: Homepage & Core Pages Content (SEO)
 > Rewrite uk.json + About page for Ukrainian audience. All SEO meta tags optimized.
 
-- [ ] **1.1** Rewrite `uk.json` — hero (for Ukrainian clients: "Юридичний захист у Львові")
-- [ ] **1.2** Rewrite `uk.json` — stats, whyUs, process, testimonials
-- [ ] **1.3** Rewrite `uk.json` — footer, servicesGrid labels
-- [ ] **1.4** Rewrite `uk.json` — services, about, contact section meta/content
-- [ ] **1.5** Rewrite About page (`hakkimizda/page.tsx`) — locale-branched content for UA (full original content, not translation)
-- [ ] **1.6** Verify Contact page — UA content, SEO meta
-- [ ] **1.7** Build & push
+- [x] **1.1** Rewrite `uk.json` — hero (for Ukrainian clients: "Юридичний захист у Львові")
+- [x] **1.2** Rewrite `uk.json` — stats, whyUs, process, testimonials
+- [x] **1.3** Rewrite `uk.json` — footer, servicesGrid labels
+- [x] **1.4** Rewrite `uk.json` — services, about, contact section meta/content
+- [x] **1.5** Rewrite About page (`hakkimizda/page.tsx`) — locale-branched content for UA (full original content, not translation)
+- [x] **1.6** Verify Contact page — UA content, SEO meta
+- [x] **1.7** Build & push
 
 ### PHASE 2: Services Batch 1 — Проживання та візи (1-3)
 > 1000-1500 words each. Rich content blocks. Full SEO+AEO.
@@ -309,7 +309,7 @@ durationUk: string;
 | Phase | Description | Status | Done |
 |-------|------------|--------|------|
 | 0 | Infrastructure (Slug Routing) | ✅ Complete | 18/18 |
-| 1 | Homepage & Core Pages | ⬜ Not Started | 0/7 |
+| 1 | Homepage & Core Pages | ✅ Complete | 7/7 |
 | 2 | Services Batch 1 (Visa 1-3) | ⬜ Not Started | 0/5 |
 | 3 | Services Batch 2 (Visa+Family 4-6) | ⬜ Not Started | 0/4 |
 | 4 | Services Batch 3 (Family 7-9) | ⬜ Not Started | 0/4 |

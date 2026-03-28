@@ -1,0 +1,273 @@
+{
+  "nav": {
+    "home": "Anasayfa",
+    "services": "Hizmetlerimiz",
+    "about": "Hakkımızda",
+    "blog": "Blog",
+    "contact": "İletişim",
+    "freeConsultation": "Ücretsiz Danışma",
+    "viewAllServices": "Tüm Hizmetleri Görüntüle"
+  },
+  "footer": {
+    "aboutTitle": "Hakkımızda",
+    "aboutText": "Ukrayna Lviv'de Türk vatandaşlarına profesyonel hukuki danışmanlık ve avukatlık hizmeti sunuyoruz. Oturum izni, çalışma izni, evlilik ve şirket kurma süreçlerinde yanınızdayız.",
+    "quickLinks": "Hızlı Bağlantılar",
+    "servicesTitle": "Hizmetlerimiz",
+    "contactTitle": "İletişim",
+    "address": "Svobody Ave, Lviv, Ukrayna 79000",
+    "hours": "Çalışma Saatleri",
+    "weekdays": "Pazartesi - Cuma: 09:00 - 18:00",
+    "saturday": "Cumartesi: 10:00 - 14:00",
+    "privacy": "Gizlilik Politikası",
+    "kvkk": "KVKK",
+    "copyright": "Tüm hakları saklıdır.",
+    "freeConsultation": "Ücretsiz Danışma Alın",
+    "freeConsultationDesc": "Hukuki süreçleriniz hakkında bilgi almak için hemen iletişime geçin."
+  },
+  "hero": {
+    "badge": "Ukrayna'da Güvenilir Hukuki Danışmanlık",
+    "title": "Ukrayna'da Hukuki Haklarınızı Koruyoruz",
+    "description": "Lviv'de yaşayan ve iş kuran Türk vatandaşlarına oturum izni, çalışma izni, evlilik, şirket kurma ve tüm hukuki süreçlerde profesyonel avukatlık hizmeti sunuyoruz.",
+    "ctaPrimary": "Ücretsiz Danışma",
+    "ctaSecondary": "Hizmetlerimiz",
+    "trustLicensed": "Lisanslı Avukat",
+    "trustTurkish": "Türkçe Hizmet",
+    "profileTitle": "Av. Lyudmyla Chubai",
+    "profileSubtitle": "Hukuk Danışmanı",
+    "serviceResidence": "Oturum İzni",
+    "serviceWork": "Çalışma İzni",
+    "serviceCompany": "Şirket Kurma"
+  },
+  "stats": {
+    "experience": "Yıllık Deneyim",
+    "clients": "Mutlu Müvekkil",
+    "cases": "Başarılı Dava",
+    "services": "Hukuki Hizmet"
+  },
+  "servicesGrid": {
+    "title": "Hizmetlerimiz",
+    "subtitle": "Ukrayna'da Türk vatandaşları için kapsamlı hukuki hizmetler sunuyoruz",
+    "viewAll": "Tüm Hizmetleri Görüntüle",
+    "details": "Detaylı Bilgi"
+  },
+  "whyUs": {
+    "title": "Neden Bizi Tercih Etmelisiniz?",
+    "subtitle": "Ukrayna'daki hukuki süreçlerinizde yanınızda olmak için buradayız",
+    "items": [
+      {
+        "title": "Türkçe İletişim",
+        "description": "Tüm hukuki süreçlerinizi Türkçe olarak yürütüyoruz. Dil bariyeri olmadan, her aşamada sizi bilgilendiriyoruz."
+      },
+      {
+        "title": "Yerel Uzmanlık",
+        "description": "Ukrayna hukuk sistemine hakim avukat kadromuz ile en doğru ve güncel bilgilerle hizmet veriyoruz."
+      },
+      {
+        "title": "Hızlı Süreç",
+        "description": "Tecrübemiz sayesinde başvuru süreçlerinizi en kısa sürede ve sorunsuz bir şekilde tamamlıyoruz."
+      },
+      {
+        "title": "Şeffaf Fiyatlandırma",
+        "description": "Tüm hizmetlerimizde net ve önceden belirlenen fiyatlar. Sürpriz masraf yok."
+      }
+    ]
+  },
+  "process": {
+    "title": "Nasıl Çalışıyoruz?",
+    "subtitle": "Basit ve etkili süreç yönetimimiz ile hukuki işlemlerinizi kolayca tamamlayın",
+    "steps": [
+      {
+        "title": "Ücretsiz Danışma",
+        "description": "WhatsApp veya telefon ile ücretsiz ön görüşme yapın. İhtiyacınızı belirleyelim."
+      },
+      {
+        "title": "Süreç Planı",
+        "description": "Size özel bir hukuki yol haritası oluşturuyoruz. Gerekli belgeler ve adımları belirliyoruz."
+      },
+      {
+        "title": "Belge Hazırlığı",
+        "description": "Tüm gerekli belgeleri sizin adınıza hazırlıyor, çevirileri yaptırıyor ve doğruluyoruz."
+      },
+      {
+        "title": "Başvuru & Takip",
+        "description": "İlgili kurumlara başvuruları yapıyor ve sonuçlanana kadar süreci takip ediyoruz."
+      }
+    ]
+  },
+  "testimonials": {
+    "title": "Müvekkillerimiz Ne Diyor?",
+    "subtitle": "Ukrayna'da hukuki süreçlerini başarıyla tamamlayan müvekkillerimizin görüşleri",
+    "items": [
+      {
+        "name": "Ahmet Yılmaz",
+        "role": "İş İnsanı, İstanbul",
+        "text": "Lviv'de şirket kurma sürecimde her adımda yanımda oldular. Türkçe iletişim kurabilmek büyük avantajdı."
+      },
+      {
+        "name": "Mehmet Kaya",
+        "role": "Yazılım Mühendisi",
+        "text": "Oturum izni başvurumda tüm belgeleri kusursuz hazırladılar. Süreç çok hızlı ve sorunsuz ilerledi."
+      },
+      {
+        "name": "Fatma Demir",
+        "role": "Öğretmen",
+        "text": "Eşimle Ukrayna'da evlilik işlemlerimizi sorunsuz tamamladılar. Her konuda bilgilendirildik."
+      }
+    ]
+  },
+  "faq": {
+    "title": "Sıkça Sorulan Sorular",
+    "subtitle": "Ukrayna'daki hukuki süreçlerle ilgili en çok merak edilen sorular ve cevapları",
+    "items": [
+      {
+        "question": "Ukrayna'da oturum izni almak ne kadar sürer?",
+        "answer": "Normal şartlarda oturum izni başvurusu 15-30 iş günü içinde sonuçlanır. Ancak belgelerin eksiksiz ve doğru hazırlanması sürecin hızlı tamamlanmasında kritik rol oynar. Profesyonel hukuki destek ile bu süreyi minimuma indiriyoruz."
+      },
+      {
+        "question": "Ukrayna'da evlilik işlemleri nasıl yapılır?",
+        "answer": "Ukrayna'da evlilik için her iki tarafın kimlik belgeleri, bekarlık belgesi (apostilli), doğum belgesi ve pasaport gereklidir. Türkçe belgeler yeminli tercüme edilmelidir. Başvuru sonrası 1 ay bekleme süresi vardır."
+      },
+      {
+        "question": "Ukrayna'da şirket kurmak için ne gerekir?",
+        "answer": "Ukrayna'da şirket kurmak için pasaport, vergi numarası ve şirket tüzüğü gereklidir. Limited şirket (TOV) en yaygın türdür. Süreç doğru yönetildiğinde 5-7 iş günü içinde tamamlanabilir."
+      },
+      {
+        "question": "Hukuki danışmanlık ücretleriniz nasıl belirleniyor?",
+        "answer": "Her hizmet için net ve şeffaf fiyatlandırma uyguluyoruz. İlk danışma görüşmesi ücretsizdir. Hizmet kapsamına göre sabit veya aşamalı ödeme seçenekleri sunuyoruz."
+      },
+      {
+        "question": "Uzaktan (online) hukuki danışmanlık alabilir miyim?",
+        "answer": "Evet! WhatsApp, Zoom veya telefon üzerinden uzaktan danışmanlık hizmeti sunuyoruz. Belge hazırlığı ve başvuru süreçleri de uzaktan yürütülebilir."
+      },
+      {
+        "question": "Ukrayna'da çalışma izni almak için ne yapmam gerekir?",
+        "answer": "Çalışma izni için Ukrayna'daki bir işverenin başvuru yapması gerekmektedir. İş sözleşmesi, diploma, sağlık raporu gibi belgeler gereklidir. Süreç 15-20 iş günü sürer."
+      }
+    ]
+  },
+  "cta": {
+    "title": "Hukuki Süreçlerinizde Yanınızdayız",
+    "description": "Ukrayna'daki hukuki haklarınızı korumak ve süreçlerinizi en verimli şekilde yönetmek için hemen iletişime geçin.",
+    "button": "Ücretsiz Danışma Alın",
+    "whatsapp": "WhatsApp ile İletişim"
+  },
+  "about": {
+    "title": "Hakkımızda",
+    "description": "Ukrayna Lviv'de Türk vatandaşlarına profesyonel hukuki danışmanlık hizmeti",
+    "heroTitle": "Hakkımızda",
+    "heroDescription": "Ukrayna'nın Lviv şehrinde, yabancı uyruklu vatandaşlara — özellikle Türk vatandaşlarına — hukuki danışmanlık ve avukatlık hizmeti sunuyoruz.",
+    "photoPlaceholder": "Fotoğraf yakında eklenecek",
+    "founderTitle": "Kurucu Avukat",
+    "bio1": "Lviv Ulusal Üniversitesi Hukuk Fakültesi mezunu olan Av. Lyudmyla Chubai, 10 yılı aşkın süredir Ukrayna'da yaşayan ve iş yapan Türk vatandaşlarına hukuki danışmanlık ve avukatlık hizmeti vermektedir.",
+    "bio2": "Göç hukuku, aile hukuku, ticaret hukuku ve gayrimenkul hukuku alanlarında uzmanlaşan Av. Chubai, 500'den fazla Türk vatandaşının Ukrayna'daki hukuki süreçlerini başarıyla yönetmiştir.",
+    "bio3": "Türkçe, Ukraynaca, Rusça ve İngilizce dillerinde akıcı konuşabilen Av. Chubai, müvekkillerinin dil bariyeri yaşamadan haklarını en etkili şekilde savunmalarını sağlamaktadır.",
+    "tagLocation": "Lviv, Ukrayna",
+    "tagExperience": "10+ Yıl Deneyim",
+    "tagSpecialty": "Göç Hukuku Uzmanı",
+    "tagLanguages": "4 Dil",
+    "statsYears": "Yıllık Deneyim",
+    "statsClients": "Mutlu Müvekkil",
+    "statsSuccess": "Başarı Oranı",
+    "statsLanguages": "Dil",
+    "valuesTitle": "Değerlerimiz",
+    "valuesDescription": "Hukuki hizmetlerimizi şekillendiren temel ilkelerimiz",
+    "values": [
+      { "title": "Güvenilirlik", "description": "Müvekkil bilgilerinin gizliliğine en üst düzeyde önem veriyoruz. Her işlemi şeffaf ve güvenilir bir şekilde yürütüyoruz." },
+      { "title": "Müvekkil Odaklılık", "description": "Her müvekkilimiz bizim için özeldir. Kişiselleştirilmiş hukuki çözümler sunarak ihtiyaçlarınıza tam olarak cevap veriyoruz." },
+      { "title": "Profesyonellik", "description": "Güncel hukuk bilgisi ve sürekli mesleki gelişim ile en yüksek kalitede hukuki hizmet sunmayı taahhüt ediyoruz." },
+      { "title": "Çok Dilli Hizmet", "description": "Türkçe, Ukraynaca, Rusça ve İngilizce dillerinde hizmet sunarak dil bariyerini tamamen ortadan kaldırıyoruz." }
+    ],
+    "milestonesTitle": "Kilometre Taşları",
+    "milestonesDescription": "Yıllar içindeki profesyonel gelişim yolculuğumuz",
+    "milestones": [
+      { "year": "2012", "text": "Lviv Ulusal Üniversitesi Hukuk Fakültesi'nden mezuniyet" },
+      { "year": "2013", "text": "Ukrayna Barolar Birliği'ne kabul" },
+      { "year": "2015", "text": "Göç hukuku uzmanlık sertifikası" },
+      { "year": "2017", "text": "Lviv Avukat ofisinin kurulması" },
+      { "year": "2019", "text": "500. başarılı dava tamamlandı" },
+      { "year": "2022", "text": "Uluslararası hukuk danışmanlığı genişlemesi" },
+      { "year": "2024", "text": "Dijital hukuk hizmetlerinin başlatılması" }
+    ],
+    "ctaTitle": "Hukuki Sürecinizde Yanınızdayız",
+    "ctaDescription": "Ukrayna'daki hukuki ihtiyaçlarınız için ücretsiz ilk görüşme randevunuzu alın.",
+    "ctaWhatsApp": "WhatsApp ile Ulaşın"
+  },
+  "contact": {
+    "title": "İletişim",
+    "description": "Hukuki danışmanlık almak için bizimle iletişime geçin",
+    "heroDescription": "Hukuki ihtiyaçlarınız için bizimle iletişime geçin. İlk görüşme ücretsizdir.",
+    "formTitle": "Bize Yazın",
+    "formDescription": "Formu doldurarak mesajınızı gönderin. En kısa sürede size dönüş yapacağız.",
+    "name": "Adınız Soyadınız",
+    "email": "E-posta Adresiniz",
+    "phone": "Telefon Numaranız",
+    "subject": "Konu",
+    "message": "Mesajınız",
+    "send": "Gönder",
+    "successTitle": "Mesajınız Gönderildi!",
+    "successMessage": "En kısa sürede size dönüş yapacağız.",
+    "infoTitle": "İletişim Bilgileri",
+    "address": "Adres",
+    "phoneLabel": "Telefon",
+    "emailLabel": "E-posta",
+    "hoursLabel": "Çalışma Saatleri",
+    "weekdays": "Pazartesi – Cuma: 09:00 – 18:00",
+    "saturday": "Cumartesi: 10:00 – 14:00",
+    "sunday": "Pazar: Kapalı",
+    "whatsappTitle": "Hızlı İletişim",
+    "whatsappDescription": "Acil sorularınız için WhatsApp üzerinden anında ulaşın.",
+    "whatsappButton": "WhatsApp ile Ulaşın",
+    "mapPlaceholder": "Google Maps entegrasyonu yakında eklenecek"
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Ukrayna'da hukuki süreçler, oturum izni, evlilik ve şirket kurma hakkında faydalı yazılar",
+    "heroTitle": "Blog",
+    "heroDescription": "Ukrayna'daki hukuki süreçler hakkında bilgilendirici ve güncel yazılar",
+    "search": "Blog yazılarında ara...",
+    "categories": "Kategoriler",
+    "allPosts": "Tüm Yazılar",
+    "readMore": "Devamını Oku",
+    "minRead": "dk okuma",
+    "noPosts": "Henüz blog yazısı bulunmuyor.",
+    "publishedAt": "Yayın Tarihi"
+  },
+  "services": {
+    "title": "Hizmetlerimiz",
+    "description": "Ukrayna'da Türk vatandaşları için sunduğumuz kapsamlı hukuki hizmetler",
+    "heroTitle": "Hizmetlerimiz",
+    "heroDescription": "Ukrayna'da yaşayan ve iş kuran Türk vatandaşlarına sunduğumuz kapsamlı hukuki hizmetler",
+    "details": "Detaylı Bilgi",
+    "requiredDocs": "Gerekli Belgeler",
+    "processSteps": "Süreç Adımları",
+    "faq": "Sıkça Sorulan Sorular",
+    "duration": "Tahmini Süre",
+    "ctaTitle": "Ücretsiz Danışma Alın",
+    "ctaDescription": "hakkında detaylı bilgi almak için hemen iletişime geçin.",
+    "ctaButton": "WhatsApp ile Ulaşın",
+    "otherServices": "Diğer Hizmetlerimiz"
+  },
+  "common": {
+    "readMore": "Devamını Oku",
+    "viewAll": "Tümünü Gör",
+    "loading": "Yükleniyor...",
+    "error": "Bir hata oluştu",
+    "errorDescription": "Bu sayfa yüklenirken bir sorun oluştu. Lütfen tekrar deneyin.",
+    "retry": "Tekrar Dene",
+    "home": "Ana Sayfa",
+    "search": "Ara...",
+    "backToHome": "Anasayfaya Dön",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "switchLanguage": "Українською",
+    "learnMore": "Daha Fazla Bilgi"
+  },
+  "privacy": {
+    "title": "Gizlilik Politikası",
+    "description": "Lviv Avukat gizlilik politikası ve kişisel verilerin korunması"
+  },
+  "kvkk": {
+    "title": "KVKK Aydınlatma Metni",
+    "description": "Kişisel verilerin korunması kanunu kapsamında aydınlatma metni"
+  }
+}

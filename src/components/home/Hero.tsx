@@ -3,8 +3,12 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Phone, Shield, Award, Globe } from "lucide-react";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/get-dictionary";
 
-export default function Hero() {
+export default function Hero({ dict, locale }: { dict: Dictionary; locale: Locale }) {
+  const prefix = locale === "uk" ? "/ua" : "";
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background */}
@@ -37,7 +41,7 @@ export default function Hero() {
             >
               <Shield className="w-4 h-4 text-accent" />
               <span className="text-accent text-sm font-medium">
-                Ukrayna&apos;da Güvenilir Hukuki Danışmanlık
+                {dict.hero.badge}
               </span>
             </motion.div>
 
@@ -47,9 +51,7 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-white leading-tight"
             >
-              Ukrayna&apos;da{" "}
-              <span className="text-accent">Hukuki Haklarınızı</span>{" "}
-              Koruyoruz
+              {dict.hero.title}
             </motion.h1>
 
             <motion.p
@@ -58,9 +60,7 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mt-6 text-lg text-white/60 leading-relaxed max-w-xl"
             >
-              Lviv&apos;de Türk vatandaşlarına oturum izni, çalışma izni, evlilik 
-              işlemleri ve tüm hukuki süreçlerde profesyonel avukatlık hizmeti 
-              sunuyoruz. Av. Lyudmyla Chubai ile güvende olun.
+              {dict.hero.description}
             </motion.p>
 
             <motion.div
@@ -78,15 +78,15 @@ export default function Hero() {
                   hover:shadow-xl hover:shadow-accent/25 hover:-translate-y-0.5"
               >
                 <Phone className="w-5 h-5" />
-                Ücretsiz Danışma
+                {dict.hero.ctaPrimary}
               </a>
               <Link
-                href="/hizmetler"
+                href={`${prefix}/hizmetler`}
                 className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 
                   text-white px-8 py-4 rounded-xl font-semibold text-base transition-all duration-300 
                   border border-white/10 hover:border-white/20"
               >
-                Hizmetlerimiz
+                {dict.hero.ctaSecondary}
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </motion.div>
@@ -100,11 +100,11 @@ export default function Hero() {
             >
               <div className="flex items-center gap-2">
                 <Award className="w-5 h-5 text-accent" />
-                <span className="text-sm text-white/50">Lisanslı Avukat</span>
+                <span className="text-sm text-white/50">{dict.hero.trustLicensed}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Globe className="w-5 h-5 text-accent" />
-                <span className="text-sm text-white/50">Türkçe Hizmet</span>
+                <span className="text-sm text-white/50">{dict.hero.trustTurkish}</span>
               </div>
             </motion.div>
           </div>
@@ -126,15 +126,15 @@ export default function Hero() {
                   <div className="w-24 h-24 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-4xl font-serif font-bold text-accent">LC</span>
                   </div>
-                  <h3 className="text-xl font-serif font-bold text-white">Av. Lyudmyla Chubai</h3>
-                  <p className="text-accent text-sm mt-1">Hukuk Danışmanı</p>
+                  <h3 className="text-xl font-serif font-bold text-white">{dict.hero.profileTitle}</h3>
+                  <p className="text-accent text-sm mt-1">{dict.hero.profileSubtitle}</p>
                 </div>
 
                 <div className="space-y-4">
                   {[
-                    { label: "Oturum & Vize İşlemleri", count: "5 Hizmet" },
-                    { label: "Aile & Kişisel Hukuk", count: "5 Hizmet" },
-                    { label: "Ticari & Genel Hukuk", count: "9 Hizmet" },
+                    { label: dict.hero.serviceResidence, count: "5" },
+                    { label: dict.hero.serviceWork, count: "5" },
+                    { label: dict.hero.serviceCompany, count: "9" },
                   ].map((item) => (
                     <div
                       key={item.label}
@@ -150,7 +150,9 @@ export default function Hero() {
 
                 <div className="mt-6 pt-6 border-t border-white/10 text-center">
                   <p className="text-sm text-white/40">
-                    Toplam <span className="text-accent font-bold">19</span> farklı hizmet alanı
+                    {locale === "uk" ? "Всього" : "Toplam"}{" "}
+                    <span className="text-accent font-bold">19</span>{" "}
+                    {locale === "uk" ? "різних послуг" : "farklı hizmet alanı"}
                   </p>
                 </div>
               </div>

@@ -2,35 +2,11 @@
 
 import { motion } from "framer-motion";
 import { MessageSquare, FileText, Settings, CheckCircle } from "lucide-react";
+import type { Dictionary } from "@/i18n/get-dictionary";
 
-const steps = [
-  {
-    icon: MessageSquare,
-    step: "01",
-    title: "İletişim & Danışma",
-    description: "WhatsApp veya telefon ile bize ulaşın. İlk danışma tamamen ücretsizdir. Durumunuzu dinler, seçeneklerinizi belirleriz.",
-  },
-  {
-    icon: FileText,
-    step: "02",
-    title: "Belge Hazırlığı",
-    description: "Gerekli tüm belgelerin hazırlanması, tercümesi ve noter onay süreçlerini sizin için yönetiyoruz.",
-  },
-  {
-    icon: Settings,
-    step: "03",
-    title: "Süreç Yönetimi",
-    description: "Başvurularınızı takip ediyor, resmi kurumlarla olan tüm iletişimi ve süreci profesyonelce yönetiyoruz.",
-  },
-  {
-    icon: CheckCircle,
-    step: "04",
-    title: "Başarılı Sonuç",
-    description: "İşlemleriniz tamamlandıktan sonra da yanınızdayız. Gelecek süreçleriniz için danışmanlık desteğimiz devam eder.",
-  },
-];
+const stepIcons = [MessageSquare, FileText, Settings, CheckCircle];
 
-export default function Process() {
+export default function Process({ dict }: { dict: Dictionary }) {
   return (
     <section className="py-20 lg:py-28 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -41,22 +17,23 @@ export default function Process() {
           className="text-center mb-14"
         >
           <span className="text-accent text-sm font-bold uppercase tracking-widest">
-            Nasıl Çalışırız?
+            {dict.process.title}
           </span>
           <h2 className="mt-3 text-3xl sm:text-4xl font-serif font-bold text-foreground">
-            4 Adımda Hukuki Çözüm
+            {dict.process.title}
           </h2>
           <p className="mt-4 text-muted text-lg max-w-2xl mx-auto">
-            Sürecin her aşamasında yanınızdayız. Sizin için en doğru yolu belirler ve yönetiriz.
+            {dict.process.subtitle}
           </p>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {steps.map((step, i) => {
-            const Icon = step.icon;
+          {dict.process.steps.map((step, i) => {
+            const Icon = stepIcons[i] || CheckCircle;
+            const stepNum = String(i + 1).padStart(2, "0");
             return (
               <motion.div
-                key={step.step}
+                key={i}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -76,7 +53,7 @@ export default function Process() {
                     <Icon className="w-8 h-8 text-primary group-hover:text-accent transition-colors duration-500" />
                     <span className="absolute -top-2 -right-2 w-8 h-8 rounded-lg bg-accent text-primary 
                       text-xs font-bold flex items-center justify-center">
-                      {step.step}
+                      {stepNum}
                     </span>
                   </div>
                   <h3 className="text-lg font-serif font-bold text-foreground mb-2">{step.title}</h3>

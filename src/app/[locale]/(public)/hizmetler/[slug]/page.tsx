@@ -9,15 +9,21 @@ import {
   generateLegalServiceSchema,
   generateFAQSchema,
 } from "@/lib/seo/schemas";
+import { type Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
 
 export async function generateStaticParams() {
-  return getAllServiceSlugs().map((slug) => ({ slug }));
+  const slugs = getAllServiceSlugs();
+  const locales = ["tr", "uk"];
+  return locales.flatMap((locale) =>
+    slugs.map((slug) => ({ locale, slug }))
+  );
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
   const service = getServiceBySlug(slug);
@@ -180,16 +186,19 @@ function BlockRenderer({ block, index }: { block: any, index: number }) {
 export default async function ServiceDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+  const prefix = locale === "uk" ? "/ua" : "";
   const service = getServiceBySlug(slug);
   if (!service) notFound();
+  const dict = await getDictionary(locale as Locale);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "Anasayfa", url: "https://lvivavukat.com" },
-    { name: "Hizmetlerimiz", url: "https://lvivavukat.com/hizmetler" },
-    { name: service.title, url: `https://lvivavukat.com/hizmetler/${service.slug}` },
+    { name: dict.nav.home, url: `${siteUrl}${prefix}` },
+    { name: dict.services.title, url: `${siteUrl}${prefix}/hizmetler` },
+    { name: service.title, url: `${siteUrl}${prefix}/hizmetler/${service.slug}` },
   ]);
   const legalServiceSchema = generateLegalServiceSchema({
     name: service.title,
@@ -223,7 +232,7 @@ export default async function ServiceDetailPage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             items={[
-              { label: "Hizmetlerimiz", href: "/hizmetler" },
+              { label: dict.services.title, href: `${prefix}/hizmetler` },
               { label: service.title },
             ]}
           />
@@ -242,7 +251,7 @@ export default async function ServiceDetailPage({
                 <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg">
                   <Clock className="w-4 h-4 text-accent" />
                   <span className="text-sm text-white/80">
-                    Tahmini Süre: <strong className="text-accent">{service.duration}</strong>
+                    {dict.services.duration}: <strong className="text-accent">{service.duration}</strong>
                   </span>
                 </div>
               )}
@@ -295,7 +304,7 @@ export default async function ServiceDetailPage({
               {/* Process steps */}
               <div>
                 <h2 className="text-2xl font-serif font-bold text-foreground mb-6">
-                  Süreç Adımları
+                  {dict.services.processSteps}
                 </h2>
                 <div className="space-y-4">
                   {service.processSteps.map((step, i) => (
@@ -315,7 +324,7 @@ export default async function ServiceDetailPage({
               {/* Required documents */}
               <div>
                 <h2 className="text-2xl font-serif font-bold text-foreground mb-6">
-                  Gerekli Belgeler
+                  {dict.services.requiredDocs}
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {service.requiredDocuments.map((doc, i) => (
@@ -331,7 +340,7 @@ export default async function ServiceDetailPage({
               {service.faq.length > 0 && (
                 <div>
                   <h2 className="text-2xl font-serif font-bold text-foreground mb-6">
-                    Sıkça Sorulan Sorular
+                    {dict.services.faq}
                   </h2>
                   <div className="space-y-3">
                     {service.faq.map((faq, i) => (
@@ -356,10 +365,10 @@ export default async function ServiceDetailPage({
               <div className="sticky top-24 space-y-6">
                 <div className="p-6 rounded-2xl bg-primary text-white">
                   <h3 className="font-serif font-bold text-lg mb-3">
-                    Ücretsiz Danışma Alın
+                    {dict.services.ctaTitle}
                   </h3>
                   <p className="text-sm text-white/60 mb-5">
-                    {service.title} hakkında detaylı bilgi almak için hemen iletişime geçin.
+                    {service.title} {dict.services.ctaDescription}
                   </p>
                   <a
                     href="https://wa.me/380000000000"
@@ -369,20 +378,20 @@ export default async function ServiceDetailPage({
                       text-primary py-3 rounded-xl font-bold text-sm transition-colors"
                   >
                     <Phone className="w-4 h-4" />
-                    WhatsApp ile Ulaşın
+                    {dict.services.ctaButton}
                   </a>
                 </div>
 
                 {/* Other services */}
                 <div className="p-6 rounded-2xl bg-card border border-border/50">
                   <h3 className="font-serif font-bold text-foreground mb-4">
-                    Diğer Hizmetlerimiz
+                    {dict.services.otherServices}
                   </h3>
                   <ul className="space-y-2">
                     {otherServices.map((s) => (
                       <li key={s.slug}>
                         <Link
-                          href={`/hizmetler/${s.slug}`}
+                          href={`${prefix}/hizmetler/${s.slug}`}
                           className="flex items-center gap-2 py-2 px-3 rounded-lg text-sm text-foreground/70 
                             hover:bg-secondary hover:text-primary transition-all"
                         >

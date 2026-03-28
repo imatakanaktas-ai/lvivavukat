@@ -3,41 +3,62 @@ import { MapPin, Phone, Mail, Clock, MessageCircle } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
 import ContactForm from "./ContactForm";
+import { type Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
 
-export const metadata: Metadata = {
-  title: "İletişim | Lviv Avukat — Ücretsiz Hukuki Danışma",
-  description:
-    "Ukrayna Lviv'de hukuki danışmanlık için bizimle iletişime geçin. WhatsApp, telefon, e-posta veya iletişim formu ile ücretsiz ön görüşme alın.",
-  alternates: { canonical: "https://lvivavukat.com/iletisim" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as Locale);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
+  const prefix = locale === "uk" ? "/ua" : "";
 
-const contactInfo = [
-  {
-    icon: MapPin,
-    title: "Adres",
-    details: ["Svobody Ave, Lviv", "Lviv Oblast, 79000", "Ukrayna"],
-  },
-  {
-    icon: Phone,
-    title: "Telefon",
-    details: ["+380 00 000 00 00"],
-  },
-  {
-    icon: Mail,
-    title: "E-posta",
-    details: ["info@lvivavukat.com"],
-  },
-  {
-    icon: Clock,
-    title: "Çalışma Saatleri",
-    details: ["Pazartesi – Cuma: 09:00 – 18:00", "Cumartesi: 10:00 – 14:00", "Pazar: Kapalı"],
-  },
-];
+  return {
+    title: dict.contact.title,
+    description: dict.contact.description,
+    alternates: { canonical: `${siteUrl}${prefix}/iletisim` },
+  };
+}
 
-export default function ContactPage() {
+export default async function ContactPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as Locale);
+  const prefix = locale === "uk" ? "/ua" : "";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
+
+  const contactInfo = [
+    {
+      icon: MapPin,
+      title: dict.contact.address,
+      details: ["Svobody Ave, Lviv", "Lviv Oblast, 79000", "Ukrayna"],
+    },
+    {
+      icon: Phone,
+      title: dict.contact.phoneLabel,
+      details: ["+380 00 000 00 00"],
+    },
+    {
+      icon: Mail,
+      title: dict.contact.emailLabel,
+      details: ["info@lvivavukat.com"],
+    },
+    {
+      icon: Clock,
+      title: dict.contact.hoursLabel,
+      details: [dict.contact.weekdays, dict.contact.saturday, dict.contact.sunday],
+    },
+  ];
+
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "Anasayfa", url: "https://lvivavukat.com" },
-    { name: "İletişim", url: "https://lvivavukat.com/iletisim" },
+    { name: dict.nav.home, url: `${siteUrl}${prefix}` },
+    { name: dict.contact.title, url: `${siteUrl}${prefix}/iletisim` },
   ]);
 
   return (
@@ -50,12 +71,12 @@ export default function ContactPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb items={[{ label: "İletişim" }]} />
+          <Breadcrumb items={[{ label: dict.contact.title }]} />
           <h1 className="mt-6 text-4xl sm:text-5xl font-serif font-bold text-white">
-            İletişim
+            {dict.contact.title}
           </h1>
           <p className="mt-4 text-lg text-white/60 max-w-2xl">
-            Hukuki ihtiyaçlarınız için bizimle iletişime geçin. İlk görüşme ücretsizdir.
+            {dict.contact.heroDescription}
           </p>
         </div>
       </section>
@@ -68,10 +89,10 @@ export default function ContactPage() {
             <div className="lg:col-span-2">
               <div className="p-8 rounded-2xl bg-card border border-border/50">
                 <h2 className="text-2xl font-serif font-bold text-foreground mb-2">
-                  Bize Yazın
+                  {dict.contact.formTitle}
                 </h2>
                 <p className="text-muted text-sm mb-8">
-                  Formu doldurarak mesajınızı gönderin. En kısa sürede size dönüş yapacağız.
+                  {dict.contact.formDescription}
                 </p>
                 <ContactForm />
               </div>
@@ -106,10 +127,10 @@ export default function ContactPage() {
               <div className="p-6 rounded-2xl bg-primary text-white">
                 <div className="flex items-center gap-3 mb-3">
                   <MessageCircle className="w-8 h-8 text-accent" />
-                  <h3 className="font-serif font-bold text-lg">Hızlı İletişim</h3>
+                  <h3 className="font-serif font-bold text-lg">{dict.contact.whatsappTitle}</h3>
                 </div>
                 <p className="text-sm text-white/60 mb-5">
-                  Acil sorularınız için WhatsApp üzerinden anında ulaşın.
+                  {dict.contact.whatsappDescription}
                 </p>
                 <a
                   href="https://wa.me/380000000000"
@@ -119,7 +140,7 @@ export default function ContactPage() {
                     text-primary py-3 rounded-xl font-bold text-sm transition-colors"
                 >
                   <MessageCircle className="w-4 h-4" />
-                  WhatsApp ile Ulaşın
+                  {dict.contact.whatsappButton}
                 </a>
               </div>
             </aside>
@@ -135,7 +156,7 @@ export default function ContactPage() {
               <div className="text-center space-y-2">
                 <MapPin className="w-10 h-10 text-accent mx-auto" />
                 <p className="text-muted text-sm">
-                  Google Maps entegrasyonu yakında eklenecek
+                  {dict.contact.mapPlaceholder}
                 </p>
                 <p className="text-xs text-muted">
                   Svobody Ave, Lviv, Ukrayna 79000

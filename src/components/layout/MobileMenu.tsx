@@ -2,24 +2,37 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Phone, ChevronRight } from "lucide-react";
+import { Phone, ChevronRight, Globe } from "lucide-react";
 import { serviceCategories } from "@/data/services";
 import { useState } from "react";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/get-dictionary";
 
 interface MobileMenuProps {
   onClose: () => void;
+  locale: Locale;
+  dict: Dictionary;
 }
 
-const navItems = [
-  { label: "Anasayfa", href: "/" },
-  { label: "Hizmetlerimiz", href: "/hizmetler", hasSubmenu: true },
-  { label: "Hakkımızda", href: "/hakkimizda" },
-  { label: "Blog", href: "/blog" },
-  { label: "İletişim", href: "/iletisim" },
-];
-
-export default function MobileMenu({ onClose }: MobileMenuProps) {
+export default function MobileMenu({ onClose, locale, dict }: MobileMenuProps) {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
+  const prefix = locale === "uk" ? "/ua" : "";
+
+  const navItems = [
+    { label: dict.nav.home, href: `${prefix}/` },
+    { label: dict.nav.services, href: `${prefix}/hizmetler`, hasSubmenu: true },
+    { label: dict.nav.about, href: `${prefix}/hakkimizda` },
+    { label: dict.nav.blog, href: `${prefix}/blog` },
+    { label: dict.nav.contact, href: `${prefix}/iletisim` },
+  ];
+
+  const switchLocale = locale === "uk" ? "tr" : "uk";
+  const switchPath = locale === "uk" ? "/" : "/ua";
+
+  const handleLanguageSwitch = () => {
+    document.cookie = `NEXT_LOCALE=${switchLocale};path=/;max-age=${365 * 24 * 60 * 60};samesite=lax`;
+    onClose();
+  };
 
   return (
     <motion.div
@@ -67,7 +80,7 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
                             {cat.services.map((service) => (
                               <Link
                                 key={service.slug}
-                                href={`/hizmetler/${service.slug}`}
+                                href={`${prefix}/hizmetler/${service.slug}`}
                                 onClick={onClose}
                                 className="block py-2 px-4 text-sm text-white/70 hover:text-accent 
                                   transition-colors rounded-lg hover:bg-white/5"
@@ -93,6 +106,17 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
               )}
             </div>
           ))}
+
+          {/* Language Switcher */}
+          <Link
+            href={switchPath}
+            onClick={handleLanguageSwitch}
+            className="flex items-center gap-2 py-3 px-4 text-lg font-medium text-white/90 
+              hover:text-accent transition-colors rounded-lg hover:bg-white/5"
+          >
+            <Globe className="w-5 h-5" />
+            {dict.common.switchLanguage}
+          </Link>
         </nav>
 
         {/* CTA */}
@@ -105,7 +129,7 @@ export default function MobileMenu({ onClose }: MobileMenuProps) {
               text-primary py-3.5 rounded-xl font-bold text-base transition-colors"
           >
             <Phone className="w-5 h-5" />
-            Ücretsiz Danışma Al
+            {dict.nav.freeConsultation}
           </a>
         </div>
       </div>

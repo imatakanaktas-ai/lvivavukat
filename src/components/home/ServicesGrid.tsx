@@ -4,8 +4,11 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { serviceCategories } from "@/data/services";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/get-dictionary";
 
-export default function ServicesGrid() {
+export default function ServicesGrid({ dict, locale }: { dict: Dictionary; locale: Locale }) {
+  const prefix = locale === "uk" ? "/ua" : "";
   const allServices = serviceCategories.flatMap((c) => c.services).slice(0, 9);
 
   return (
@@ -18,14 +21,13 @@ export default function ServicesGrid() {
           className="text-center mb-14"
         >
           <span className="inline-block text-accent text-sm font-bold uppercase tracking-widest mb-3">
-            Hizmetlerimiz
+            {dict.servicesGrid.title}
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-foreground">
-            Kapsamlı Hukuki Çözümler
+            {dict.servicesGrid.title}
           </h2>
           <p className="mt-4 text-muted text-lg max-w-2xl mx-auto">
-            Ukrayna&apos;da Türk vatandaşlarının ihtiyaç duyabileceği tüm hukuki hizmetleri 
-            tek çatı altında sunuyoruz.
+            {dict.servicesGrid.subtitle}
           </p>
         </motion.div>
 
@@ -41,7 +43,7 @@ export default function ServicesGrid() {
                 transition={{ duration: 0.4, delay: i * 0.05 }}
               >
                 <Link
-                  href={`/hizmetler/${service.slug}`}
+                  href={`${prefix}/hizmetler/${service.slug}`}
                   className="group block p-6 rounded-2xl bg-card border border-border/50 
                     hover:border-accent/30 hover:shadow-xl hover:shadow-accent/5 
                     transition-all duration-500 h-full hover:-translate-y-1"
@@ -58,7 +60,7 @@ export default function ServicesGrid() {
                   </p>
                   <div className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-accent 
                     opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    Detaylı Bilgi
+                    {dict.servicesGrid.details}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </Link>
@@ -74,11 +76,11 @@ export default function ServicesGrid() {
           className="mt-12 text-center"
         >
           <Link
-            href="/hizmetler"
+            href={`${prefix}/hizmetler`}
             className="inline-flex items-center gap-2 bg-primary hover:bg-primary-light text-primary-foreground 
               px-8 py-3.5 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg"
           >
-            Tüm Hizmetlerimizi Görün
+            {dict.servicesGrid.viewAll}
             <ArrowRight className="w-5 h-5" />
           </Link>
         </motion.div>

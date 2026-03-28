@@ -3,13 +3,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useEffect, useState } from "react";
 import { Users, Clock, TrendingUp, Briefcase } from "lucide-react";
-
-const stats = [
-  { icon: Users, value: 500, suffix: "+", label: "Mutlu Müvekkil" },
-  { icon: Clock, value: 10, suffix: "+", label: "Yıllık Deneyim" },
-  { icon: TrendingUp, value: 98, suffix: "%", label: "Başarı Oranı" },
-  { icon: Briefcase, value: 19, suffix: "", label: "Hizmet Alanı" },
-];
+import type { Dictionary } from "@/i18n/get-dictionary";
 
 function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
   const [count, setCount] = useState(0);
@@ -41,7 +35,14 @@ function AnimatedCounter({ value, suffix }: { value: number; suffix: string }) {
   );
 }
 
-export default function Stats() {
+export default function Stats({ dict }: { dict: Dictionary }) {
+  const stats = [
+    { icon: Users, value: 500, suffix: "+", label: dict.stats.clients },
+    { icon: Clock, value: 10, suffix: "+", label: dict.stats.experience },
+    { icon: TrendingUp, value: 98, suffix: "%", label: dict.stats.cases },
+    { icon: Briefcase, value: 19, suffix: "", label: dict.stats.services },
+  ];
+
   return (
     <section className="relative py-16 bg-primary-light overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary-light to-primary opacity-80" />

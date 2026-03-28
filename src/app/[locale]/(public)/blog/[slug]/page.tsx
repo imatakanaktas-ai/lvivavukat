@@ -106,13 +106,16 @@ const allSlugs = [
 ];
 
 export function generateStaticParams() {
-  return allSlugs.map((slug) => ({ slug }));
+  const locales = ["tr", "uk"];
+  return locales.flatMap((locale) =>
+    allSlugs.map((slug) => ({ locale, slug }))
+  );
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
   const post = placeholderPostsContent[slug];
@@ -134,15 +137,16 @@ export async function generateMetadata({
 export default async function BlogPostPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+  const prefix = locale === "uk" ? "/ua" : "";
   const post = placeholderPostsContent[slug];
 
   if (!post) {
     // For slugs that exist in the static list but have no content yet
     if (allSlugs.includes(slug)) {
-      return <PlaceholderPost slug={slug} />;
+      return <PlaceholderPost slug={slug} prefix={prefix} />;
     }
     notFound();
   }
@@ -265,7 +269,7 @@ export default async function BlogPostPage({
           {/* Share + back */}
           <div className="mt-12 pt-8 border-t border-border/50 flex items-center justify-between">
             <Link
-              href="/blog"
+              href={`${prefix}/blog`}
               className="inline-flex items-center gap-2 text-sm font-semibold text-accent 
                 hover:text-accent-hover transition-colors"
             >
@@ -287,14 +291,14 @@ export default async function BlogPostPage({
   );
 }
 
-function PlaceholderPost({ slug }: { slug: string }) {
+function PlaceholderPost({ slug, prefix }: { slug: string; prefix: string }) {
   return (
     <>
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             items={[
-              { label: "Blog", href: "/blog" },
+              { label: "Blog", href: `${prefix}/blog` },
               { label: "Yazı" },
             ]}
           />
@@ -309,7 +313,7 @@ function PlaceholderPost({ slug }: { slug: string }) {
             Bu blog yazısı hazırlık aşamasındadır. Çok yakında yayınlanacaktır.
           </p>
           <Link
-            href="/blog"
+            href={`${prefix}/blog`}
             className="inline-flex items-center gap-2 text-sm font-semibold text-accent 
               hover:text-accent-hover transition-colors"
           >

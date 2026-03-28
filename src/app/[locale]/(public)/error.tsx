@@ -1,8 +1,24 @@
 "use client";
 
 import { useEffect } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { AlertTriangle, Home, RotateCcw } from "lucide-react";
+
+const errorTexts = {
+  tr: {
+    title: "Bir Hata Oluştu",
+    description: "Bu sayfa yüklenirken bir sorun oluştu. Lütfen tekrar deneyin.",
+    retry: "Tekrar Dene",
+    home: "Ana Sayfa",
+  },
+  uk: {
+    title: "Сталася помилка",
+    description: "Під час завантаження сторінки виникла проблема. Будь ласка, спробуйте ще раз.",
+    retry: "Спробувати знову",
+    home: "Головна",
+  },
+} as const;
 
 export default function ErrorPage({
   error,
@@ -11,6 +27,11 @@ export default function ErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const params = useParams<{ locale: string }>();
+  const locale = params.locale === "uk" ? "uk" : "tr";
+  const t = errorTexts[locale];
+  const prefix = locale === "uk" ? "/ua" : "";
+
   useEffect(() => {
     console.error(error);
   }, [error]);
@@ -22,10 +43,10 @@ export default function ErrorPage({
           <AlertTriangle className="w-8 h-8 text-red-400" />
         </div>
         <h2 className="text-xl font-bold text-[#0A1628] mb-2">
-          Bir Hata Oluştu
+          {t.title}
         </h2>
         <p className="text-gray-500 mb-8 text-sm">
-          Bu sayfa yüklenirken bir sorun oluştu. Lütfen tekrar deneyin.
+          {t.description}
         </p>
         <div className="flex items-center justify-center gap-3">
           <button
@@ -33,14 +54,14 @@ export default function ErrorPage({
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#0A1628] hover:bg-[#1B2A4A] text-white font-semibold rounded-xl transition-colors text-sm"
           >
             <RotateCcw className="w-4 h-4" />
-            Tekrar Dene
+            {t.retry}
           </button>
           <Link
-            href="/"
+            href={`${prefix}/`}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-colors text-sm"
           >
             <Home className="w-4 h-4" />
-            Ana Sayfa
+            {t.home}
           </Link>
         </div>
       </div>

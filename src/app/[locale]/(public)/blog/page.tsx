@@ -10,13 +10,25 @@ import {
 } from "lucide-react";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
+import { type Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
 
-export const metadata: Metadata = {
-  title: "Blog | Ukrayna Hukuk Rehberi — Oturum, Vize, Evlilik Bilgileri",
-  description:
-    "Ukrayna'da oturum izni, çalışma izni, evlilik, şirket kurma ve hukuki süreçler hakkında güncel blog yazıları ve rehberler.",
-  alternates: { canonical: "https://lvivavukat.com/blog" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as Locale);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
+  const prefix = locale === "uk" ? "/ua" : "";
+
+  return {
+    title: dict.blog.title,
+    description: dict.blog.description,
+    alternates: { canonical: `${siteUrl}${prefix}/blog` },
+  };
+}
 
 // Static placeholder posts until DB/admin is connected
 const placeholderPosts = [
@@ -85,10 +97,19 @@ const categories = [
   "Vize",
 ];
 
-export default function BlogPage() {
+export default async function BlogPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as Locale);
+  const prefix = locale === "uk" ? "/ua" : "";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
+
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "Anasayfa", url: "https://lvivavukat.com" },
-    { name: "Blog", url: "https://lvivavukat.com/blog" },
+    { name: dict.nav.home, url: `${siteUrl}${prefix}` },
+    { name: dict.blog.title, url: `${siteUrl}${prefix}/blog` },
   ]);
 
   return (
@@ -101,13 +122,12 @@ export default function BlogPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb items={[{ label: "Blog" }]} />
+          <Breadcrumb items={[{ label: dict.blog.title }]} />
           <h1 className="mt-6 text-4xl sm:text-5xl font-serif font-bold text-white">
-            Blog
+            {dict.blog.heroTitle}
           </h1>
           <p className="mt-4 text-lg text-white/60 max-w-2xl">
-            Ukrayna hukuku, oturum izinleri, iş kurma ve yaşam hakkında güncel
-            bilgi ve rehberlere ulaşın.
+            {dict.blog.heroDescription}
           </p>
         </div>
       </section>
@@ -146,7 +166,7 @@ export default function BlogPage() {
                       </span>
                     </div>
 
-                    <Link href={`/blog/${post.slug}`}>
+                    <Link href={`${prefix}/blog/${post.slug}`}>
                       <h2 className="text-xl font-serif font-bold text-foreground 
                         group-hover:text-primary transition-colors mb-2">
                         {post.title}
@@ -158,7 +178,7 @@ export default function BlogPage() {
                     </p>
 
                     <Link
-                      href={`/blog/${post.slug}`}
+                      href={`${prefix}/blog/${post.slug}`}
                       className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent 
                         hover:text-accent-hover transition-colors"
                     >

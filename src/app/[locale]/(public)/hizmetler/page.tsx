@@ -4,18 +4,39 @@ import { ArrowRight } from "lucide-react";
 import { serviceCategories } from "@/data/services";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
+import { type Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
 
-export const metadata: Metadata = {
-  title: "Hizmetlerimiz | Ukrayna'da Türkler İçin Hukuki Hizmetler",
-  description:
-    "Ukrayna Lviv'de Türk vatandaşlarına sunulan kapsamlı hukuki hizmetler: oturum izni, çalışma izni, evlilik, şirket kurma, gayrimenkul ve daha fazlası.",
-  alternates: { canonical: "https://lvivavukat.com/hizmetler" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as Locale);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
+  const prefix = locale === "uk" ? "/ua" : "";
 
-export default function ServicesPage() {
+  return {
+    title: dict.services.title,
+    description: dict.services.description,
+    alternates: { canonical: `${siteUrl}${prefix}/hizmetler` },
+  };
+}
+
+export default async function ServicesPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as Locale);
+  const prefix = locale === "uk" ? "/ua" : "";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
+
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "Anasayfa", url: "https://lvivavukat.com" },
-    { name: "Hizmetlerimiz", url: "https://lvivavukat.com/hizmetler" },
+    { name: dict.nav.home, url: `${siteUrl}${prefix}` },
+    { name: dict.services.title, url: `${siteUrl}${prefix}/hizmetler` },
   ]);
 
   return (
@@ -28,13 +49,12 @@ export default function ServicesPage() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb items={[{ label: "Hizmetlerimiz" }]} />
+          <Breadcrumb items={[{ label: dict.services.title }]} />
           <h1 className="mt-6 text-4xl sm:text-5xl font-serif font-bold text-white">
-            Hizmetlerimiz
+            {dict.services.heroTitle}
           </h1>
           <p className="mt-4 text-lg text-white/60 max-w-2xl">
-            Ukrayna&apos;da Türk vatandaşlarının ihtiyaç duyabileceği tüm hukuki hizmetleri
-            profesyonel ve güvenilir şekilde sunuyoruz.
+            {dict.services.heroDescription}
           </p>
         </div>
       </section>
@@ -58,7 +78,7 @@ export default function ServicesPage() {
                   return (
                     <Link
                       key={service.slug}
-                      href={`/hizmetler/${service.slug}`}
+                      href={`${prefix}/hizmetler/${service.slug}`}
                       className="group p-6 rounded-2xl bg-card border border-border/50 
                         hover:border-accent/30 hover:shadow-xl hover:shadow-accent/5 
                         transition-all duration-500 hover:-translate-y-1"
@@ -75,12 +95,12 @@ export default function ServicesPage() {
                       </p>
                       {service.duration && (
                         <p className="mt-3 text-xs text-accent font-semibold">
-                          Süre: {service.duration}
+                          {dict.services.duration}: {service.duration}
                         </p>
                       )}
                       <div className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-accent 
                         opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                        Detaylı Bilgi
+                        {dict.services.details}
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </div>
                     </Link>

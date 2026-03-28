@@ -7,17 +7,20 @@ import {
   Scale,
 } from "lucide-react";
 import { serviceCategories } from "@/data/services";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/get-dictionary";
 
-const quickLinks = [
-  { label: "Anasayfa", href: "/" },
-  { label: "Hizmetlerimiz", href: "/hizmetler" },
-  { label: "Hakkımızda", href: "/hakkimizda" },
-  { label: "Blog", href: "/blog" },
-  { label: "İletişim", href: "/iletisim" },
-];
-
-export default function Footer() {
+export default function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
+  const prefix = locale === "uk" ? "/ua" : "";
   const topServices = serviceCategories.flatMap((c) => c.services).slice(0, 8);
+
+  const quickLinks = [
+    { label: dict.nav.home, href: `${prefix}/` },
+    { label: dict.nav.services, href: `${prefix}/hizmetler` },
+    { label: dict.nav.about, href: `${prefix}/hakkimizda` },
+    { label: dict.nav.blog, href: `${prefix}/blog` },
+    { label: dict.nav.contact, href: `${prefix}/iletisim` },
+  ];
 
   return (
     <footer className="bg-primary text-white/80">
@@ -31,7 +34,9 @@ export default function Footer() {
               </div>
               <div>
                 <p className="text-white font-serif text-lg font-bold">LYUDMYLA CHUBAI</p>
-                <p className="text-accent text-xs tracking-[0.2em] uppercase">Hukuk & Danışmanlık</p>
+                <p className="text-accent text-xs tracking-[0.2em] uppercase">
+                  {locale === "uk" ? "Юридичні послуги" : "Hukuk & Danışmanlık"}
+                </p>
               </div>
             </div>
             <a
@@ -41,7 +46,7 @@ export default function Footer() {
               className="bg-accent hover:bg-accent-hover text-primary px-6 py-3 rounded-lg 
                 font-semibold text-sm transition-all hover:shadow-lg hover:shadow-accent/25"
             >
-              Ücretsiz Danışma Al
+              {dict.footer.freeConsultation}
             </a>
           </div>
         </div>
@@ -52,22 +57,21 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* About */}
           <div>
-            <h3 className="text-white font-serif text-lg font-bold mb-4">Hakkımızda</h3>
+            <h3 className="text-white font-serif text-lg font-bold mb-4">{dict.footer.aboutTitle}</h3>
             <p className="text-sm leading-relaxed text-white/60 mb-4">
-              Ukrayna Lviv&apos;de Türk vatandaşlarına oturum izni, çalışma izni, evlilik işlemleri 
-              ve tüm hukuki süreçlerde profesyonel avukatlık ve danışmanlık hizmeti sunuyoruz.
+              {dict.footer.aboutText}
             </p>
             <div className="flex items-center gap-2 text-accent">
               <Scale className="w-4 h-4" />
               <span className="text-xs font-semibold uppercase tracking-wider">
-                Lisanslı Avukat
+                {locale === "uk" ? "Ліцензований адвокат" : "Lisanslı Avukat"}
               </span>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-white font-serif text-lg font-bold mb-4">Hızlı Bağlantılar</h3>
+            <h3 className="text-white font-serif text-lg font-bold mb-4">{dict.footer.quickLinks}</h3>
             <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.href}>
@@ -84,12 +88,12 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h3 className="text-white font-serif text-lg font-bold mb-4">Hizmetlerimiz</h3>
+            <h3 className="text-white font-serif text-lg font-bold mb-4">{dict.footer.servicesTitle}</h3>
             <ul className="space-y-2.5">
               {topServices.map((service) => (
                 <li key={service.slug}>
                   <Link
-                    href={`/hizmetler/${service.slug}`}
+                    href={`${prefix}/hizmetler/${service.slug}`}
                     className="text-sm text-white/60 hover:text-accent transition-colors"
                   >
                     {service.title}
@@ -101,12 +105,12 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-white font-serif text-lg font-bold mb-4">İletişim</h3>
+            <h3 className="text-white font-serif text-lg font-bold mb-4">{dict.footer.contactTitle}</h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
                 <span className="text-sm text-white/60">
-                  Svobody Ave, Lviv, Ukrayna 79000
+                  {dict.footer.address}
                 </span>
               </li>
               <li className="flex items-center gap-3">
@@ -124,8 +128,8 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <Clock className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
                 <div className="text-sm text-white/60">
-                  <p>Pazartesi - Cuma: 09:00 - 18:00</p>
-                  <p>Cumartesi: 10:00 - 14:00</p>
+                  <p>{dict.footer.weekdays}</p>
+                  <p>{dict.footer.saturday}</p>
                 </div>
               </li>
             </ul>
@@ -138,14 +142,14 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs text-white/40">
-              © {new Date().getFullYear()} Lviv Avukat - Av. Lyudmyla Chubai. Tüm hakları saklıdır.
+              © {new Date().getFullYear()} {locale === "uk" ? "Адвокат у Львові" : "Lviv Avukat"} - Av. Lyudmyla Chubai. {dict.footer.copyright}
             </p>
             <div className="flex items-center gap-4">
-              <Link href="/gizlilik-politikasi" className="text-xs text-white/40 hover:text-accent transition-colors">
-                Gizlilik Politikası
+              <Link href={`${prefix}/gizlilik-politikasi`} className="text-xs text-white/40 hover:text-accent transition-colors">
+                {dict.footer.privacy}
               </Link>
-              <Link href="/kvkk" className="text-xs text-white/40 hover:text-accent transition-colors">
-                KVKK
+              <Link href={`${prefix}/kvkk`} className="text-xs text-white/40 hover:text-accent transition-colors">
+                {dict.footer.kvkk}
               </Link>
             </div>
           </div>

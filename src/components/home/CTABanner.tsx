@@ -3,8 +3,12 @@
 import { motion } from "framer-motion";
 import { Phone, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/get-dictionary";
 
-export default function CTABanner() {
+export default function CTABanner({ dict, locale }: { dict: Dictionary; locale: Locale }) {
+  const prefix = locale === "uk" ? "/ua" : "";
+
   return (
     <section className="py-20 lg:py-28 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-light to-primary" />
@@ -20,13 +24,10 @@ export default function CTABanner() {
           viewport={{ once: true }}
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white leading-tight">
-            Ukrayna&apos;da Hukuki Desteğe mi
-            <br />
-            <span className="text-accent">İhtiyacınız Var?</span>
+            {dict.cta.title}
           </h2>
           <p className="mt-5 text-lg text-white/60 max-w-2xl mx-auto">
-            İlk danışma görüşmeniz ücretsizdir. Durumunuzu değerlendirelim ve 
-            size en uygun çözümü birlikte belirleyelim.
+            {dict.cta.description}
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
             <a
@@ -38,15 +39,15 @@ export default function CTABanner() {
                 hover:shadow-xl hover:shadow-accent/25 hover:-translate-y-0.5"
             >
               <Phone className="w-5 h-5" />
-              WhatsApp ile Ulaşın
+              {dict.cta.whatsapp}
             </a>
             <Link
-              href="/iletisim"
+              href={`${prefix}/iletisim`}
               className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 
                 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 
                 border border-white/10 hover:border-white/20"
             >
-              İletişim Formu
+              {dict.cta.button}
               <ArrowRight className="w-5 h-5" />
             </Link>
           </div>

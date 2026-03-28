@@ -1,22 +1,40 @@
 import type { Metadata } from "next";
 import Breadcrumb from "@/components/ui/Breadcrumb";
+import { getDictionary } from "@/i18n/get-dictionary";
+import { getLocalePrefix } from "@/i18n/locale-utils";
+import type { Locale } from "@/i18n/config";
 
-export const metadata: Metadata = {
-  title: "KVKK Aydınlatma Metni",
-  description:
-    "Lviv Avukat KVKK (Kişisel Verilerin Korunması Kanunu) kapsamında aydınlatma metni.",
-  alternates: { canonical: "https://lvivavukat.com/kvkk" },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as Locale);
+  return {
+    title: dict.kvkk.title,
+    description: dict.kvkk.description,
+    alternates: { canonical: "https://lvivavukat.com/kvkk" },
+  };
+}
 
-export default function KVKKPage() {
+export default async function KVKKPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const dict = await getDictionary(locale as Locale);
+  const prefix = getLocalePrefix(locale as Locale);
+
   return (
     <>
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             items={[
-              { label: "Anasayfa", href: "/" },
-              { label: "KVKK Aydınlatma Metni" },
+              { label: dict.common.home, href: `${prefix}/` },
+              { label: dict.kvkk.title },
             ]}
           />
           <h1 className="text-3xl md:text-4xl font-bold text-white font-[family-name:var(--font-playfair)] mt-4">

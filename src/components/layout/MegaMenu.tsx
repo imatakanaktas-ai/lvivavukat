@@ -3,12 +3,18 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { serviceCategories } from "@/data/services";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/get-dictionary";
 
 interface MegaMenuProps {
   onClose: () => void;
+  locale: Locale;
+  dict: Dictionary;
 }
 
-export default function MegaMenu({ onClose }: MegaMenuProps) {
+export default function MegaMenu({ onClose, locale, dict }: MegaMenuProps) {
+  const prefix = locale === "uk" ? "/ua" : "";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10, scale: 0.98 }}
@@ -31,7 +37,7 @@ export default function MegaMenu({ onClose }: MegaMenuProps) {
                   return (
                     <li key={service.slug}>
                       <Link
-                        href={`/hizmetler/${service.slug}`}
+                        href={`${prefix}/hizmetler/${service.slug}`}
                         onClick={onClose}
                         className="flex items-center gap-2.5 py-1.5 px-2 rounded-lg text-sm text-foreground/80 
                           hover:bg-secondary hover:text-primary transition-all group"
@@ -48,12 +54,12 @@ export default function MegaMenu({ onClose }: MegaMenuProps) {
         </div>
         <div className="mt-5 pt-4 border-t border-border">
           <Link
-            href="/hizmetler"
+            href={`${prefix}/hizmetler`}
             onClick={onClose}
             className="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary-light 
               text-primary-foreground text-sm font-semibold transition-colors"
           >
-            Tüm Hizmetleri Görüntüle →
+            {dict.nav.viewAllServices} →
           </Link>
         </div>
       </div>

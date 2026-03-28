@@ -3,35 +3,9 @@
 import { motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import type { Dictionary } from "@/i18n/get-dictionary";
 
-const faqs = [
-  {
-    question: "Ukrayna'da Türk vatandaşları vize olmadan ne kadar kalabilir?",
-    answer: "Türk vatandaşları Ukrayna'ya vizesiz olarak giriş yapabilir ve 90 gün süreyle kalabilir. Bu süre 180 günlük dönem içinde geçerlidir. Sürenizi uzatmak veya kalıcı çözüm için oturum izni başvurusu yapmanız gerekmektedir.",
-  },
-  {
-    question: "Oturum izni başvurusu ne kadar sürer?",
-    answer: "Geçici oturum izni başvurusu genellikle 15-30 iş günü içinde sonuçlanır. Başvuru gerekçesine, belgelerin eksiksizliğine ve mevsimsel yoğunluğa göre bu süre değişebilir.",
-  },
-  {
-    question: "Ukrayna'da evlilik Türkiye'de geçerli midir?",
-    answer: "Evet, Ukrayna'da usulüne uygun yapılan evlilik, Türk Konsolosluğuna tescil ettirildikten sonra Türkiye'de de tam geçerliliğe sahiptir. Tescil işlemleri için de destek sunuyoruz.",
-  },
-  {
-    question: "Danışmanlık ücreti ne kadardır?",
-    answer: "İlk danışma görüşmemiz tamamen ücretsizdir. Durumunuzu değerlendirdikten sonra hizmet kapsamı ve ücretlendirme hakkında şeffaf bilgi veriyoruz. Sürpriz masraf yoktur.",
-  },
-  {
-    question: "Hizmetleriniz sadece Lviv ile mi sınırlı?",
-    answer: "Ofisimiz Lviv'de bulunmakla birlikte, Ukrayna genelinde hukuki destek sunuyoruz. Kyiv, Odessa, Kharkiv gibi diğer şehirlerdeki işlemleriniz için de yardımcı oluyoruz.",
-  },
-  {
-    question: "Şirket kurmak için Ukrayna'da bulunmam gerekiyor mu?",
-    answer: "Şirket kuruluş sürecinin belirli aşamalarında Ukrayna'da bulunmanız gerekebilir. Ancak vekâletname ile birçok işlem sizin adınıza gerçekleştirilebilir.",
-  },
-];
-
-export default function FAQ() {
+export default function FAQ({ dict }: { dict: Dictionary }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
@@ -44,15 +18,15 @@ export default function FAQ() {
           className="text-center mb-14"
         >
           <span className="text-accent text-sm font-bold uppercase tracking-widest">
-            Sıkça Sorulan Sorular
+            {dict.faq.title}
           </span>
           <h2 className="mt-3 text-3xl sm:text-4xl font-serif font-bold text-foreground">
-            Merak Ettikleriniz
+            {dict.faq.title}
           </h2>
         </motion.div>
 
         <div className="space-y-3">
-          {faqs.map((faq, i) => (
+          {dict.faq.items.map((faq, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 10 }}

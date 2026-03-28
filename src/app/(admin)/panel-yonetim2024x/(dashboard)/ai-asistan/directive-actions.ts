@@ -42,7 +42,7 @@ export async function getDirectives(): Promise<{
       })),
     };
   } catch {
-    return { success: false, error: "Yönergeler yüklenemedi." };
+    return { success: false, error: "Не вдалося завантажити директиви." };
   }
 }
 
@@ -54,7 +54,7 @@ export async function createDirective(data: {
   try {
     await requireAuth();
     if (!data.title.trim() || !data.content.trim()) {
-      return { success: false, error: "Başlık ve içerik zorunludur." };
+      return { success: false, error: "Назва та зміст є обов'язковими." };
     }
     const [row] = await db
       .insert(aiDirectives)
@@ -69,7 +69,7 @@ export async function createDirective(data: {
       directive: { ...row, category: row.category as DirectiveCategory },
     };
   } catch {
-    return { success: false, error: "Yönerge oluşturulamadı." };
+    return { success: false, error: "Не вдалося створити директиву." };
   }
 }
 
@@ -87,7 +87,7 @@ export async function updateDirective(
     await db.update(aiDirectives).set(updates).where(eq(aiDirectives.id, id));
     return { success: true };
   } catch {
-    return { success: false, error: "Yönerge güncellenemedi." };
+    return { success: false, error: "Не вдалося оновити директиву." };
   }
 }
 
@@ -97,7 +97,7 @@ export async function deleteDirective(id: string): Promise<{ success: boolean; e
     await db.delete(aiDirectives).where(eq(aiDirectives.id, id));
     return { success: true };
   } catch {
-    return { success: false, error: "Yönerge silinemedi." };
+    return { success: false, error: "Не вдалося видалити директиву." };
   }
 }
 
@@ -121,11 +121,11 @@ export async function getActiveDirectivesText(): Promise<string> {
 
 function getCategoryLabel(cat: DirectiveCategory): string {
   const labels: Record<DirectiveCategory, string> = {
-    tone: "ÜSİLUP",
-    knowledge: "BİLGİ",
-    rules: "KURAL",
-    examples: "ÖRNEK",
-    general: "GENEL",
+    tone: "СТИЛЬ",
+    knowledge: "ЗНАННЯ",
+    rules: "ПРАВИЛО",
+    examples: "ПРИКЛАД",
+    general: "ЗАГАЛЬНЕ",
   };
-  return labels[cat] || "GENEL";
+  return labels[cat] || "ЗАГАЛЬНЕ";
 }

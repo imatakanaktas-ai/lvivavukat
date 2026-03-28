@@ -50,7 +50,7 @@ export async function sendAIMessage(
     let systemPrompt = ASSISTANT_SYSTEM_PROMPT;
     const directivesText = await getActiveDirectivesText();
     if (directivesText) {
-      systemPrompt += "\n\n--- AVUKATIN EĞİTİM YÖNERGELERİ ---\nAşağıdaki yönergeleri her yanıtında mutlaka uygula:\n\n" + directivesText;
+      systemPrompt += "\n\n--- НАВЧАЛЬНІ ДИРЕКТИВИ АДВОКАТА ---\nОбов'язково застосовуй наступні директиви у кожній відповіді:\n\n" + directivesText;
     }
 
     const reply = await generateContent(message, systemPrompt);

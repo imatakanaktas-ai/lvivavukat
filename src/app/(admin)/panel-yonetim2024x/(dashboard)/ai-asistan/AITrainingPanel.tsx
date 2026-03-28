@@ -34,31 +34,31 @@ const CATEGORY_CONFIG: Record<
   { label: string; icon: typeof Brain; color: string; bgColor: string }
 > = {
   tone: {
-    label: "Ton & Üslup",
+    label: "Тон і стиль",
     icon: MessageSquareQuote,
     color: "text-violet-600",
     bgColor: "bg-violet-50 border-violet-200",
   },
   knowledge: {
-    label: "Bilgi & Uzmanlık",
+    label: "Знання та експертиза",
     icon: BookOpen,
     color: "text-blue-600",
     bgColor: "bg-blue-50 border-blue-200",
   },
   rules: {
-    label: "Kurallar & Kısıtlamalar",
+    label: "Правила та обмеження",
     icon: Shield,
     color: "text-amber-600",
     bgColor: "bg-amber-50 border-amber-200",
   },
   examples: {
-    label: "Örnek Yanıtlar",
+    label: "Приклади відповідей",
     icon: Lightbulb,
     color: "text-emerald-600",
     bgColor: "bg-emerald-50 border-emerald-200",
   },
   general: {
-    label: "Genel Yönerge",
+    label: "Загальна директива",
     icon: Zap,
     color: "text-gray-600",
     bgColor: "bg-gray-50 border-gray-200",
@@ -67,27 +67,27 @@ const CATEGORY_CONFIG: Record<
 
 const PRESET_TEMPLATES: { title: string; content: string; category: DirectiveCategory }[] = [
   {
-    title: "Samimi ama profesyonel ton",
+    title: "Привітний, але професійний тон",
     content:
-      "Müvekkillere her zaman nazik, sıcak ve profesyonel bir dille yanıt ver. Hukuki terimleri basit Türkçe/Ukraynaca ile açıkla. Resmi ama soğuk olma, samimi ama laubali olma.",
+      "Завжди відповідай клієнтам ввічливо, тепло та професійно. Юридичні терміни пояснюй простою українською/турецькою мовою. Будь офіційним, але не холодним, привітним, але не фамільярним.",
     category: "tone",
   },
   {
-    title: "2025 oturum izni değişiklikleri",
+    title: "Зміни у посвідках на проживання 2025",
     content:
-      "2025 yılı itibarıyla Ukrayna'da geçici oturum izni başvurularında dijital başvuru sistemi devreye alınmıştır. ДМС artık e-başvuru kabul etmektedir. Süre 15 iş gününe düşürülmüştür.",
+      "Станом на 2025 рік в Україні запроваджено цифрову систему подачі заявок на тимчасове посвідчення на проживання. ДМС тепер приймає електронні заявки. Термін скорочено до 15 робочих днів.",
     category: "knowledge",
   },
   {
-    title: "Ceza hukuku kısıtlaması",
+    title: "Обмеження щодо кримінального права",
     content:
-      "Ceza hukuku konularında kesin hukuki tavsiye verme. Bunun yerine genel bilgi sun ve 'bu konuda detaylı bir inceleme yapmam gerekiyor' de. Ceza davalarında strateji önerisi yapma.",
+      "З питань кримінального права не давай категоричних юридичних порад. Натомість надавай загальну інформацію та кажи: 'з цього питання мені потрібно провести детальний аналіз'. Не пропонуй стратегії у кримінальних справах.",
     category: "rules",
   },
   {
-    title: "Oturum izni sorusu örneği",
+    title: "Приклад відповіді про посвідку на проживання",
     content:
-      'Müvekkil oturum izni süreci sorarsa şu formatta cevap ver:\n1. Başvuru şartları (madde madde)\n2. Gerekli belgeler (liste halinde)\n3. Süre ve maliyet\n4. "Belgelerin hazırlanmasında size yardımcı olabilirim" ile bitir.',
+      'Якщо клієнт запитує про процес отримання посвідки на проживання, відповідай у такому форматі:\n1. Вимоги для подачі (по пунктах)\n2. Необхідні документи (списком)\n3. Терміни та вартість\n4. Завершуй фразою: "Я можу допомогти вам з підготовкою документів".',
     category: "examples",
   },
 ];
@@ -196,10 +196,10 @@ export default function AITrainingPanel() {
             <GraduationCap className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-gray-900">AI Eğitim Paneli</h2>
+            <h2 className="text-lg font-bold text-gray-900">Панель навчання AI</h2>
             <p className="text-xs text-gray-500">
-              {activeCount} aktif yönerge
-              {directives.length > activeCount && ` / ${directives.length} toplam`}
+              {activeCount} активних директив
+              {directives.length > activeCount && ` / ${directives.length} всього`}
             </p>
           </div>
         </div>
@@ -212,7 +212,7 @@ export default function AITrainingPanel() {
             hover:bg-[#1B2A4A] transition-colors"
         >
           <Plus className="w-3.5 h-3.5" />
-          Yeni Ekle
+          Додати
         </button>
       </div>
 
@@ -221,7 +221,7 @@ export default function AITrainingPanel() {
         <div className="mb-4 p-4 rounded-2xl bg-white border-2 border-purple-200 shadow-lg shadow-purple-100/50 animate-in slide-in-from-top-2">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-bold text-gray-800">
-              {editingId ? "✏️ Yönergeyi Düzenle" : "✨ Yeni Yönerge"}
+              {editingId ? "✏️ Редагувати директиву" : "✨ Нова директива"}
             </h3>
             <button onClick={resetForm} className="p-1 rounded-lg hover:bg-gray-100 text-gray-400">
               <X className="w-4 h-4" />
@@ -232,7 +232,7 @@ export default function AITrainingPanel() {
             type="text"
             value={formTitle}
             onChange={(e) => setFormTitle(e.target.value)}
-            placeholder="Yönerge başlığı..."
+            placeholder="Назва директиви..."
             className="w-full px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-800
               focus:outline-none focus:ring-2 focus:ring-purple-300 mb-2"
           />
@@ -240,7 +240,7 @@ export default function AITrainingPanel() {
           <textarea
             value={formContent}
             onChange={(e) => setFormContent(e.target.value)}
-            placeholder="AI'ya vermek istediğiniz talimatı yazın...&#10;&#10;Örnek: Müvekkillere her zaman Türkçe ve Ukraynaca seçenekleri sun. Hukuki terimleri basit bir dille açıkla."
+            placeholder="Напишіть інструкцію для AI...&#10;&#10;Приклад: Завжди пропонуй клієнтам варіанти українською та турецькою мовами. Пояснюй юридичні терміни простою мовою."
             rows={4}
             className="w-full px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-sm text-gray-800
               resize-none focus:outline-none focus:ring-2 focus:ring-purple-300 mb-2"
@@ -277,13 +277,13 @@ export default function AITrainingPanel() {
                 hover:bg-purple-700 transition-colors disabled:opacity-40"
             >
               <Check className="w-3.5 h-3.5" />
-              {editingId ? "Güncelle" : "Kaydet"}
+              {editingId ? "Оновити" : "Зберегти"}
             </button>
             <button
               onClick={resetForm}
               className="px-4 py-2 rounded-xl border border-gray-200 text-xs text-gray-600 hover:bg-gray-50 transition-colors"
             >
-              İptal
+              Скасувати
             </button>
           </div>
         </div>
@@ -299,7 +299,7 @@ export default function AITrainingPanel() {
         >
           <span className="flex items-center gap-2 font-medium">
             <Sparkles className="w-3.5 h-3.5" />
-            Hazır Şablonlar
+            Готові шаблони
           </span>
           {showTemplates ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
         </button>
@@ -333,17 +333,17 @@ export default function AITrainingPanel() {
         {isLoading && directives.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-gray-400">
             <Brain className="w-10 h-10 mb-2 animate-pulse" />
-            <p className="text-xs">Yükleniyor...</p>
+            <p className="text-xs">Завантаження...</p>
           </div>
         ) : directives.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center px-4">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-100 to-indigo-100 flex items-center justify-center mb-3">
               <Brain className="w-7 h-7 text-purple-500" />
             </div>
-            <h3 className="text-sm font-bold text-gray-700 mb-1">Henüz yönerge eklenmedi</h3>
+            <h3 className="text-sm font-bold text-gray-700 mb-1">Директив ще не додано</h3>
             <p className="text-xs text-gray-400 max-w-[240px] mb-4">
-              AI asistanın nasıl yanıt vermesi gerektiğini öğretmek için yönergeler ekleyin.
-              Her yönerge kalıcı olarak saklanır.
+              Додайте директиви, щоб навчити AI-асистента як відповідати.
+              Кожна директива зберігається постійно.
             </p>
             <button
               onClick={() => setShowForm(true)}
@@ -351,7 +351,7 @@ export default function AITrainingPanel() {
                 hover:bg-purple-700 transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
-              İlk Yönergeyi Ekle
+              Додати першу директиву
             </button>
           </div>
         ) : (
@@ -382,7 +382,7 @@ export default function AITrainingPanel() {
                           d.isActive ? "bg-emerald-50 text-emerald-600" : "bg-gray-100 text-gray-400"
                         }`}
                       >
-                        {d.isActive ? "Aktif" : "Pasif"}
+                        {d.isActive ? "Активна" : "Неактивна"}
                       </span>
                     </div>
                     <p
@@ -395,7 +395,7 @@ export default function AITrainingPanel() {
                         onClick={() => setExpandedId(isExpanded ? null : d.id)}
                         className="text-[10px] text-purple-500 hover:text-purple-700 mt-0.5 font-medium"
                       >
-                        {isExpanded ? "Daha az" : "Devamını gör"}
+                        {isExpanded ? "Менше" : "Показати більше"}
                       </button>
                     )}
                   </div>
@@ -405,7 +405,7 @@ export default function AITrainingPanel() {
                     <button
                       onClick={() => handleToggle(d)}
                       className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                      title={d.isActive ? "Devre dışı bırak" : "Aktifleştir"}
+                      title={d.isActive ? "Деактивувати" : "Активувати"}
                     >
                       {d.isActive ? (
                         <ToggleRight className="w-4 h-4 text-emerald-500" />
@@ -416,14 +416,14 @@ export default function AITrainingPanel() {
                     <button
                       onClick={() => handleEdit(d)}
                       className="p-1.5 rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-600 transition-colors"
-                      title="Düzenle"
+                      title="Редагувати"
                     >
                       <Pencil className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => handleDelete(d.id)}
                       className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
-                      title="Sil"
+                      title="Видалити"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -441,7 +441,7 @@ export default function AITrainingPanel() {
           <p className="text-[11px] text-purple-600 flex items-center gap-1.5">
             <Brain className="w-3 h-3" />
             <span>
-              <strong>{activeCount} aktif yönerge</strong> her AI yanıtında otomatik olarak uygulanır.
+              <strong>{activeCount} активних директив</strong> автоматично застосовуються до кожної відповіді AI.
             </span>
           </p>
         </div>

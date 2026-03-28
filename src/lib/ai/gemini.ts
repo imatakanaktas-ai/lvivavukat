@@ -9,18 +9,17 @@ function getApiKey() {
   return apiKey;
 }
 
-function getProjectConfig() {
+function getProjectId() {
   const project = process.env.GOOGLE_CLOUD_PROJECT;
-  const location = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
   if (!project) {
     throw new Error("GOOGLE_CLOUD_PROJECT is not set");
   }
-  return { project, location };
+  return project;
 }
 
 function getEndpoint(model: string, method: string) {
-  const { project, location } = getProjectConfig();
-  return `https://${location}-aiplatform.googleapis.com/v1/projects/${project}/locations/${location}/publishers/google/models/${model}:${method}`;
+  const project = getProjectId();
+  return `https://aiplatform.googleapis.com/v1/projects/${project}/locations/global/publishers/google/models/${model}:${method}?key=${getApiKey()}`;
 }
 
 interface GeminiMessage {
@@ -62,10 +61,7 @@ export async function generateContent(
   const endpoint = getEndpoint(TEXT_MODEL, "generateContent");
   const res = await fetch(endpoint, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-goog-api-key": getApiKey(),
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
 
@@ -105,10 +101,7 @@ export async function generateContentStream(
 
   const res = await fetch(streamEndpoint, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-goog-api-key": getApiKey(),
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
 
@@ -141,10 +134,7 @@ export async function generateImage(
 
   const res = await fetch(endpoint, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-goog-api-key": getApiKey(),
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       instances: [{ prompt }],
       parameters: {

@@ -16,8 +16,8 @@ export default function NewClientPage() {
           <ArrowLeft className="w-4 h-4" />
         </Link>
         <div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900">Yeni Müvekkil</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Yeni müvekkil kaydı oluşturun</p>
+          <h1 className="text-2xl font-serif font-bold text-gray-900">Новий клієнт</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Створіть новий запис клієнта</p>
         </div>
       </div>
       <ClientForm />

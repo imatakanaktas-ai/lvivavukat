@@ -122,7 +122,7 @@ export default async function BlogPage({
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb items={[{ label: dict.blog.title }]} />
+          <Breadcrumb items={[{ label: dict.blog.title }]} homeLabel={dict.nav.home} />
           <h1 className="mt-6 text-4xl sm:text-5xl font-serif font-bold text-white">
             {dict.blog.heroTitle}
           </h1>

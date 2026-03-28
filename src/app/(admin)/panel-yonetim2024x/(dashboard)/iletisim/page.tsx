@@ -20,16 +20,16 @@ export default async function ContactSubmissionsPage({
   return (
     <div className="space-y-6 max-w-5xl">
       <div>
-        <h1 className="text-2xl font-serif font-bold text-gray-900">İletişim Formları</h1>
+        <h1 className="text-2xl font-serif font-bold text-gray-900">Контактні форми</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Toplam {data.total} iletişim formu
+          Всього {data.total} контактних форм
         </p>
       </div>
 
       {data.submissions.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-gray-200/80">
           <MessageSquare className="w-12 h-12 text-gray-200 mb-4" />
-          <p className="text-gray-500 font-medium">Henüz iletişim formu gönderilmemiş</p>
+          <p className="text-gray-500 font-medium">Контактних форм поки немає</p>
         </div>
       ) : (
         <SubmissionsList

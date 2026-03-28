@@ -3,8 +3,11 @@
 import { useActionState } from "react";
 import { Send, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { submitContactForm, type ContactFormState } from "./actions";
+import type { Dictionary } from "@/i18n/get-dictionary";
 
-export default function ContactForm() {
+type ContactDict = Dictionary["contact"];
+
+export default function ContactForm({ dict }: { dict: ContactDict }) {
   const [state, formAction, isPending] = useActionState<ContactFormState, FormData>(
     submitContactForm,
     null
@@ -15,7 +18,7 @@ export default function ContactForm() {
       <div className="p-8 rounded-2xl bg-success/10 border border-success/20 text-center">
         <CheckCircle className="w-12 h-12 text-success mx-auto mb-4" />
         <h3 className="text-xl font-serif font-bold text-foreground mb-2">
-          Mesajınız Gönderildi!
+          {dict.successTitle}
         </h3>
         <p className="text-muted">{state.message}</p>
       </div>
@@ -40,7 +43,7 @@ export default function ContactForm() {
       <div className="grid sm:grid-cols-2 gap-5">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-foreground mb-1.5">
-            Ad Soyad <span className="text-destructive">*</span>
+            {dict.nameLabel} <span className="text-destructive">*</span>
           </label>
           <input
             type="text"
@@ -52,12 +55,12 @@ export default function ContactForm() {
             className="w-full px-4 py-3 rounded-xl bg-secondary border border-border/50 text-foreground 
               placeholder:text-muted text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 
               focus:border-accent/30 transition-shadow"
-            placeholder="Adınız ve soyadınız"
+            placeholder={dict.namePlaceholder}
           />
         </div>
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-foreground mb-1.5">
-            E-posta <span className="text-destructive">*</span>
+            {dict.emailLabel2} <span className="text-destructive">*</span>
           </label>
           <input
             type="email"
@@ -67,7 +70,7 @@ export default function ContactForm() {
             className="w-full px-4 py-3 rounded-xl bg-secondary border border-border/50 text-foreground 
               placeholder:text-muted text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 
               focus:border-accent/30 transition-shadow"
-            placeholder="ornek@email.com"
+            placeholder={dict.emailPlaceholder}
           />
         </div>
       </div>
@@ -75,7 +78,7 @@ export default function ContactForm() {
       <div className="grid sm:grid-cols-2 gap-5">
         <div>
           <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-1.5">
-            Telefon
+            {dict.phoneLabel2}
           </label>
           <input
             type="tel"
@@ -84,12 +87,12 @@ export default function ContactForm() {
             className="w-full px-4 py-3 rounded-xl bg-secondary border border-border/50 text-foreground 
               placeholder:text-muted text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 
               focus:border-accent/30 transition-shadow"
-            placeholder="+90 5XX XXX XX XX"
+            placeholder={dict.phonePlaceholder}
           />
         </div>
         <div>
           <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-1.5">
-            Konu <span className="text-destructive">*</span>
+            {dict.subjectLabel} <span className="text-destructive">*</span>
           </label>
           <select
             id="subject"
@@ -101,23 +104,23 @@ export default function ContactForm() {
             defaultValue=""
           >
             <option value="" disabled>
-              Konu seçin
+              {dict.subjectPlaceholder}
             </option>
-            <option value="Oturum İzni">Oturum İzni</option>
-            <option value="Çalışma İzni">Çalışma İzni</option>
-            <option value="Evlilik İşlemleri">Evlilik İşlemleri</option>
-            <option value="Şirket Kurma">Şirket Kurma</option>
-            <option value="Gayrimenkul">Gayrimenkul</option>
-            <option value="Vize İşlemleri">Vize İşlemleri</option>
-            <option value="Tercüme/Apostil">Tercüme/Apostil</option>
-            <option value="Diğer">Diğer</option>
+            <option value="residence">{dict.subjectResidence}</option>
+            <option value="work">{dict.subjectWork}</option>
+            <option value="marriage">{dict.subjectMarriage}</option>
+            <option value="company">{dict.subjectCompany}</option>
+            <option value="realEstate">{dict.subjectRealEstate}</option>
+            <option value="visa">{dict.subjectVisa}</option>
+            <option value="translation">{dict.subjectTranslation}</option>
+            <option value="other">{dict.subjectOther}</option>
           </select>
         </div>
       </div>
 
       <div>
         <label htmlFor="message" className="block text-sm font-medium text-foreground mb-1.5">
-          Mesajınız <span className="text-destructive">*</span>
+          {dict.messageLabel} <span className="text-destructive">*</span>
         </label>
         <textarea
           id="message"
@@ -129,7 +132,7 @@ export default function ContactForm() {
           className="w-full px-4 py-3 rounded-xl bg-secondary border border-border/50 text-foreground 
             placeholder:text-muted text-sm focus:outline-none focus:ring-2 focus:ring-accent/30 
             focus:border-accent/30 transition-shadow resize-y"
-          placeholder="Hukuki durumunuzla ilgili detayları yazın..."
+          placeholder={dict.messagePlaceholder}
         />
       </div>
 
@@ -143,18 +146,18 @@ export default function ContactForm() {
         {isPending ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
-            Gönderiliyor...
+            {dict.sending}
           </>
         ) : (
           <>
             <Send className="w-4 h-4" />
-            Mesaj Gönder
+            {dict.sendButton}
           </>
         )}
       </button>
 
       <p className="text-xs text-muted text-center">
-        Kişisel verileriniz gizlilik politikamız kapsamında korunmaktadır.
+        {dict.privacy}
       </p>
     </form>
   );

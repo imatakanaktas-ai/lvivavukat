@@ -8,14 +8,15 @@ interface BreadcrumbItem {
 
 interface BreadcrumbProps {
   items: BreadcrumbItem[];
+  homeLabel?: string;
 }
 
-export default function Breadcrumb({ items }: BreadcrumbProps) {
+export default function Breadcrumb({ items, homeLabel }: BreadcrumbProps) {
   return (
     <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-muted">
       <Link href="/" className="flex items-center gap-1 hover:text-accent transition-colors">
         <Home className="w-3.5 h-3.5" />
-        <span className="sr-only">Anasayfa</span>
+        <span className="sr-only">{homeLabel || "Home"}</span>
       </Link>
       {items.map((item, i) => (
         <span key={i} className="flex items-center gap-1.5">

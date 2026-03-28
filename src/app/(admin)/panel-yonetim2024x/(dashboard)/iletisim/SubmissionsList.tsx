@@ -94,7 +94,7 @@ export default function SubmissionsList({
                 </h3>
                 <span className="text-[11px] text-gray-400 flex-shrink-0 ml-2 flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  {new Date(sub.createdAt).toLocaleDateString("tr-TR", {
+                  {new Date(sub.createdAt).toLocaleDateString("uk-UA", {
                     day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
                   })}
                 </span>
@@ -178,7 +178,7 @@ export default function SubmissionsList({
               </div>
               <p className="text-xs text-gray-400 flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                {new Date(selected.createdAt).toLocaleString("tr-TR")}
+                {new Date(selected.createdAt).toLocaleString("uk-UA")}
               </p>
             </div>
           </div>

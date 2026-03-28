@@ -1,6 +1,9 @@
 "use server";
 
 import { contactFormSchema } from "@/lib/validations";
+import { cookies } from "next/headers";
+import type { Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
 
 export type ContactFormState = {
   success: boolean;
@@ -11,6 +14,10 @@ export async function submitContactForm(
   _prev: ContactFormState,
   formData: FormData
 ): Promise<ContactFormState> {
+  const cookieStore = await cookies();
+  const locale = (cookieStore.get("NEXT_LOCALE")?.value || "tr") as Locale;
+  const dict = await getDictionary(locale);
+
   const raw = {
     name: formData.get("name"),
     email: formData.get("email"),
@@ -24,27 +31,16 @@ export async function submitContactForm(
   const result = contactFormSchema.safeParse(raw);
   if (!result.success) {
     const firstError = result.error.issues[0];
-    return { success: false, message: firstError?.message || "Form verileri geçersiz." };
+    return { success: false, message: firstError?.message || dict.contact.errorValidation };
   }
 
   // Honeypot check
   if (result.data.honeypot) {
     // Silently reject bot submissions
-    return { success: true, message: "Mesajınız başarıyla gönderildi." };
+    return { success: true, message: dict.contact.successMessage };
   }
 
   try {
-    // TODO: Save to DB when Neon is connected
-    // const { db } = await import("@/lib/db");
-    // const { contactSubmissions } = await import("@/lib/db/schema");
-    // await db.insert(contactSubmissions).values({
-    //   name: result.data.name,
-    //   email: result.data.email,
-    //   phone: result.data.phone || null,
-    //   subject: result.data.subject,
-    //   message: result.data.message,
-    // });
-
     // For now, log (remove in production)
     console.log("Contact form submitted:", {
       name: result.data.name,
@@ -54,12 +50,12 @@ export async function submitContactForm(
 
     return {
       success: true,
-      message: "Mesajınız başarıyla gönderildi! En kısa sürede size dönüş yapacağız.",
+      message: dict.contact.successMessage,
     };
   } catch {
     return {
       success: false,
-      message: "Bir hata oluştu. Lütfen daha sonra tekrar deneyin veya WhatsApp ile ulaşın.",
+      message: dict.contact.errorGeneric,
     };
   }
 }

@@ -27,11 +27,18 @@ export default function MobileMenu({ onClose, locale, dict }: MobileMenuProps) {
   ];
 
   const switchLocale = locale === "uk" ? "tr" : "uk";
-  const switchPath = locale === "uk" ? "/" : "/ua";
 
-  const handleLanguageSwitch = () => {
+  const handleLanguageSwitch = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
     document.cookie = `NEXT_LOCALE=${switchLocale};path=/;max-age=${365 * 24 * 60 * 60};samesite=lax`;
     onClose();
+    const path = window.location.pathname;
+    if (locale === "uk") {
+      const stripped = path.replace(/^\/ua\/?/, "/");
+      window.location.href = stripped || "/";
+    } else {
+      window.location.href = `/ua${path === "/" ? "" : path}`;
+    }
   };
 
   return (
@@ -108,15 +115,15 @@ export default function MobileMenu({ onClose, locale, dict }: MobileMenuProps) {
           ))}
 
           {/* Language Switcher */}
-          <Link
-            href={switchPath}
+          <a
+            href="#"
             onClick={handleLanguageSwitch}
             className="flex items-center gap-2 py-3 px-4 text-lg font-medium text-white/90 
               hover:text-accent transition-colors rounded-lg hover:bg-white/5"
           >
             <Globe className="w-5 h-5" />
             {dict.common.switchLanguage}
-          </Link>
+          </a>
         </nav>
 
         {/* CTA */}

@@ -12,8 +12,8 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <h1 className="text-2xl font-serif font-bold text-gray-900">Ayarlar</h1>
-        <p className="text-sm text-gray-500 mt-1">Site ayarları ve güvenlik</p>
+        <h1 className="text-2xl font-serif font-bold text-gray-900">Налаштування</h1>
+        <p className="text-sm text-gray-500 mt-1">Налаштування сайту та безпека</p>
       </div>
       <SettingsPanel initialSettings={settings} />
     </div>

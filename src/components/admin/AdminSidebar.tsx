@@ -24,47 +24,47 @@ const ADMIN_PREFIX = process.env.NEXT_PUBLIC_ADMIN_ROUTE_PREFIX || "panel-yoneti
 
 const navItems = [
   {
-    label: "Dashboard",
+    label: "Огляд",
     href: `/${ADMIN_PREFIX}`,
     icon: LayoutDashboard,
   },
   {
-    label: "Müvekkiller",
+    label: "Клієнти",
     href: `/${ADMIN_PREFIX}/muvekiller`,
     icon: Users,
   },
   {
-    label: "Takvim",
+    label: "Календар",
     href: `/${ADMIN_PREFIX}/takvim`,
     icon: CalendarDays,
   },
   {
-    label: "Hatırlatmalar",
+    label: "Нагадування",
     href: `/${ADMIN_PREFIX}/hatirlatmalar`,
     icon: Bell,
   },
   {
-    label: "Blog Yazıları",
+    label: "Блог",
     href: `/${ADMIN_PREFIX}/blog`,
     icon: PenTool,
   },
   {
-    label: "Belgeler",
+    label: "Документи",
     href: `/${ADMIN_PREFIX}/belgeler`,
     icon: FolderOpen,
   },
   {
-    label: "İletişim Formları",
+    label: "Контактні форми",
     href: `/${ADMIN_PREFIX}/iletisim`,
     icon: MessageSquare,
   },
   {
-    label: "AI Asistan",
+    label: "AI Асистент",
     href: `/${ADMIN_PREFIX}/ai-asistan`,
     icon: Bot,
   },
   {
-    label: "Ayarlar",
+    label: "Налаштування",
     href: `/${ADMIN_PREFIX}/ayarlar`,
     icon: Settings,
   },
@@ -90,7 +90,7 @@ export default function AdminSidebar() {
         {!collapsed && (
           <div className="min-w-0">
             <p className="text-sm font-bold text-white truncate">Lviv Avukat</p>
-            <p className="text-[10px] text-white/40">Yönetim Paneli</p>
+            <p className="text-[10px] text-white/40">Панель управління</p>
           </div>
         )}
       </div>
@@ -129,7 +129,7 @@ export default function AdminSidebar() {
             hover:text-white hover:bg-white/5 transition-colors w-full"
         >
           <ChevronLeft className={`w-[18px] h-[18px] transition-transform ${collapsed ? "rotate-180" : ""}`} />
-          {!collapsed && <span>Daralt</span>}
+          {!collapsed && <span>Згорнути</span>}
         </button>
         <button
           onClick={handleSignOut}
@@ -138,7 +138,7 @@ export default function AdminSidebar() {
             ${collapsed ? "justify-center" : ""}`}
         >
           <LogOut className="w-[18px] h-[18px]" />
-          {!collapsed && <span>Çıkış Yap</span>}
+          {!collapsed && <span>Вийти</span>}
         </button>
       </div>
     </div>
@@ -151,7 +151,7 @@ export default function AdminSidebar() {
         onClick={() => setMobileOpen(true)}
         className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 rounded-xl bg-[#0A1628] border border-white/10 
           flex items-center justify-center text-white/70 hover:text-white transition-colors"
-        aria-label="Menüyü aç"
+        aria-label="Відкрити меню"
       >
         <Menu className="w-5 h-5" />
       </button>

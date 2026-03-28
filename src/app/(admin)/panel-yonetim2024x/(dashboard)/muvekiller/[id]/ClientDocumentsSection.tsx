@@ -47,11 +47,11 @@ interface Document {
 // ============================================================
 
 const CATEGORIES: Record<string, { label: string; color: string }> = {
-  kimlik: { label: "Kimlik", color: "bg-blue-100 text-blue-700" },
-  sozlesme: { label: "Sözleşme", color: "bg-purple-100 text-purple-700" },
-  mahkeme: { label: "Mahkeme", color: "bg-red-100 text-red-700" },
-  devlet: { label: "Devlet", color: "bg-emerald-100 text-emerald-700" },
-  diger: { label: "Diğer", color: "bg-gray-100 text-gray-600" },
+  kimlik: { label: "Посвідчення", color: "bg-blue-100 text-blue-700" },
+  sozlesme: { label: "Договір", color: "bg-purple-100 text-purple-700" },
+  mahkeme: { label: "Суд", color: "bg-red-100 text-red-700" },
+  devlet: { label: "Державне", color: "bg-emerald-100 text-emerald-700" },
+  diger: { label: "Інше", color: "bg-gray-100 text-gray-600" },
 };
 
 function formatFileSize(bytes: number | null): string {
@@ -126,11 +126,11 @@ function UploadModal({
 
   async function handleUpload() {
     if (!title.trim()) {
-      setError("Belge başlığı gereklidir.");
+      setError("Назва документа обов'язкова.");
       return;
     }
     if (files.length === 0) {
-      setError("En az bir dosya seçin.");
+      setError("Оберіть хоча б один файл.");
       return;
     }
 
@@ -171,14 +171,14 @@ function UploadModal({
 
       const contentType = res.headers.get("content-type");
       if (!contentType?.includes("application/json")) {
-        setError(`Sunucu hatası (${res.status}). Lütfen tekrar deneyin.`);
+        setError(`Помилка сервера (${res.status}). Спробуйте ще раз.`);
         setUploading(false);
         return;
       }
 
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error || "Yükleme sırasında hata oluştu.");
+        setError(data.error || "Помилка при завантаженні.");
         setUploading(false);
         return;
       }
@@ -187,7 +187,7 @@ function UploadModal({
       onClose();
     } catch (err) {
       console.error("Document upload error:", err);
-      setError("Dosya yüklenirken hata oluştu. Tekrar deneyin.");
+      setError("Помилка при завантаженні файлу. Спробуйте ще раз.");
       setUploading(false);
     }
   }
@@ -199,7 +199,7 @@ function UploadModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-5 border-b border-gray-100">
-          <h3 className="text-base font-semibold text-gray-900">Belge Yükle</h3>
+          <h3 className="text-base font-semibold text-gray-900">Завантажити документ</h3>
           <button onClick={onClose} className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center">
             <X className="w-4 h-4 text-gray-500" />
           </button>
@@ -208,12 +208,12 @@ function UploadModal({
         <div className="p-5 space-y-4">
           {/* Title */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1.5">Belge Başlığı</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1.5">Назва документа</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="ör. Pasaport Fotokopisi"
+              placeholder="напр. Копія паспорта"
               className="w-full px-3 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]/50"
             />
@@ -221,7 +221,7 @@ function UploadModal({
 
           {/* Category */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1.5">Kategori</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1.5">Категорія</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
@@ -239,7 +239,7 @@ function UploadModal({
           {/* Drop zone */}
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1.5">
-              Dosyalar <span className="text-gray-400 font-normal">(birden fazla seçilebilir)</span>
+              Файли <span className="text-gray-400 font-normal">(можна обрати кілька)</span>
             </label>
             <div
               ref={dropZoneRef}
@@ -254,9 +254,9 @@ function UploadModal({
             >
               <Upload className={`w-8 h-8 mx-auto mb-2 ${dragOver ? "text-[#C9A84C]" : "text-gray-300"}`} />
               <p className="text-sm text-gray-500">
-                Dosyaları sürükleyip bırakın veya <span className="text-[#C9A84C] font-medium">seçin</span>
+                Перетягніть файли або <span className="text-[#C9A84C] font-medium">оберіть</span>
               </p>
-              <p className="text-[11px] text-gray-400 mt-1">PDF, Resim, Word, Excel — max 20MB</p>
+              <p className="text-[11px] text-gray-400 mt-1">PDF, Зображення, Word, Excel — макс 20MB</p>
             </div>
             <input
               ref={fileInputRef}
@@ -304,7 +304,7 @@ function UploadModal({
             className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600
               hover:bg-gray-50 disabled:opacity-40 transition-colors"
           >
-            İptal
+            Скасувати
           </button>
           <button
             onClick={handleUpload}
@@ -315,12 +315,12 @@ function UploadModal({
             {uploading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Yükleniyor...
+                Завантаження...
               </>
             ) : (
               <>
                 <Upload className="w-4 h-4" />
-                Yükle ({files.length} dosya)
+                Завантажити ({files.length} файлів)
               </>
             )}
           </button>
@@ -351,7 +351,7 @@ function PreviewModal({ file, onClose }: { file: DocFile; onClose: () => void })
               href={file.fileUrl}
               download={file.fileName}
               className="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"
-              title="İndir"
+              title="Завантажити"
             >
               <Download className="w-4 h-4 text-gray-500" />
             </a>
@@ -400,14 +400,14 @@ function DocumentCard({
   const cat = CATEGORIES[doc.category] || CATEGORIES.diger;
 
   function handleDeleteDoc() {
-    if (!confirm(`"${doc.title}" belgesini ve tüm dosyalarını silmek istediğinize emin misiniz?`)) return;
+    if (!confirm(`"Видалити документ "${doc.title}" та всі його файли?`)) return;
     startTransition(async () => {
       await deleteDocument(doc.id, clientId);
     });
   }
 
   function handleDeleteFile(fileId: string) {
-    if (!confirm("Bu dosyayı silmek istediğinize emin misiniz?")) return;
+    if (!confirm("Видалити цей файл?")) return;
     startTransition(async () => {
       await deleteDocumentFile(fileId, doc.id, clientId);
     });
@@ -431,14 +431,14 @@ function DocumentCard({
             </span>
           </div>
           <p className="text-[11px] text-gray-400">
-            {doc.files.length} dosya · {new Date(doc.uploadedAt).toLocaleDateString("tr-TR")}
+            {doc.files.length} файлів · {new Date(doc.uploadedAt).toLocaleDateString("uk-UA")}
           </p>
         </div>
         <div className="flex items-center gap-1">
           <button
             onClick={(e) => { e.stopPropagation(); handleDeleteDoc(); }}
             className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors"
-            title="Belgeyi sil"
+            title="Видалити документ"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
@@ -468,7 +468,7 @@ function DocumentCard({
                     <button
                       onClick={() => onPreview(file)}
                       className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                      title="Önizleme"
+                      title="Попередній перегляд"
                     >
                       <Eye className="w-3.5 h-3.5" />
                     </button>
@@ -477,14 +477,14 @@ function DocumentCard({
                     href={file.fileUrl}
                     download={file.fileName}
                     className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
-                    title="İndir"
+                    title="Завантажити"
                   >
                     <Download className="w-3.5 h-3.5" />
                   </a>
                   <button
                     onClick={() => handleDeleteFile(file.id)}
                     className="w-7 h-7 rounded-lg flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-colors"
-                    title="Sil"
+                    title="Видалити"
                   >
                     <Trash2 className="w-3 h-3" />
                   </button>
@@ -532,7 +532,7 @@ export default function ClientDocumentsSection({
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
             <FileText className="w-4 h-4 text-gray-400" />
-            Belgeler
+            Документи
             {documents.length > 0 && (
               <span className="text-[11px] font-normal text-gray-400">({documents.length})</span>
             )}
@@ -543,7 +543,7 @@ export default function ClientDocumentsSection({
               hover:bg-[#1B2A4A] transition-colors"
           >
             <Plus className="w-3.5 h-3.5" />
-            Belge Ekle
+            Додати документ
           </button>
         </div>
 
@@ -556,7 +556,7 @@ export default function ClientDocumentsSection({
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Belge veya dosya adı ara..."
+                placeholder="Пошук документів або файлів..."
                 className="w-full pl-9 pr-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm
                   focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]/50"
               />
@@ -575,7 +575,7 @@ export default function ClientDocumentsSection({
               className="px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-600
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
             >
-              <option value="all">Tümü</option>
+              <option value="all">Всі</option>
               {Object.entries(CATEGORIES).map(([key, { label }]) => (
                 <option key={key} value={key}>
                   {label}
@@ -591,18 +591,18 @@ export default function ClientDocumentsSection({
             {documents.length === 0 ? (
               <>
                 <FolderOpen className="w-10 h-10 text-gray-200 mx-auto mb-2" />
-                <p className="text-sm text-gray-400">Henüz belge yüklenmemiş</p>
+                <p className="text-sm text-gray-400">Документів поки немає</p>
                 <button
                   onClick={() => setShowUpload(true)}
                   className="mt-3 text-sm text-[#C9A84C] hover:underline"
                 >
-                  İlk belgeyi yükleyin
+                  Завантажити перший документ
                 </button>
               </>
             ) : (
               <>
                 <Search className="w-8 h-8 text-gray-200 mx-auto mb-2" />
-                <p className="text-sm text-gray-400">Aramanızla eşleşen belge bulunamadı</p>
+                <p className="text-sm text-gray-400">Документів за вашим запитом не знайдено</p>
               </>
             )}
           </div>

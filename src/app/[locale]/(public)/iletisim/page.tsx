@@ -71,7 +71,7 @@ export default async function ContactPage({
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb items={[{ label: dict.contact.title }]} />
+          <Breadcrumb items={[{ label: dict.contact.title }]} homeLabel={dict.nav.home} />
           <h1 className="mt-6 text-4xl sm:text-5xl font-serif font-bold text-white">
             {dict.contact.title}
           </h1>
@@ -94,7 +94,7 @@ export default async function ContactPage({
                 <p className="text-muted text-sm mb-8">
                   {dict.contact.formDescription}
                 </p>
-                <ContactForm />
+                <ContactForm dict={dict.contact} />
               </div>
             </div>
 

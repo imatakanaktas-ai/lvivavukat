@@ -22,35 +22,35 @@ const eventTypeConfig: Record<
   { label: string; color: string; bgColor: string; borderColor: string; icon: typeof Gavel }
 > = {
   toplanti: {
-    label: "Toplantı",
+    label: "Зустріч",
     color: "text-blue-700",
     bgColor: "bg-blue-50",
     borderColor: "border-l-blue-500",
     icon: Users,
   },
   mahkeme: {
-    label: "Mahkeme",
+    label: "Суд",
     color: "text-red-700",
     bgColor: "bg-red-50",
     borderColor: "border-l-red-500",
     icon: Gavel,
   },
   odeme: {
-    label: "Ödeme",
+    label: "Оплата",
     color: "text-amber-700",
     bgColor: "bg-amber-50",
     borderColor: "border-l-amber-500",
     icon: DollarSign,
   },
   kisisel: {
-    label: "Kişisel",
+    label: "Особисте",
     color: "text-purple-700",
     bgColor: "bg-purple-50",
     borderColor: "border-l-purple-500",
     icon: Star,
   },
   diger: {
-    label: "Diğer",
+    label: "Інше",
     color: "text-gray-700",
     bgColor: "bg-gray-50",
     borderColor: "border-l-gray-400",
@@ -85,12 +85,12 @@ function isSameDay(a: Date, b: Date) {
 }
 
 const MONTHS_TR = [
-  "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
-  "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık",
+  "Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень",
+  "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень",
 ];
 
-const DAYS_TR = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
-const DAYS_FULL_TR = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
+const DAYS_TR = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"];
+const DAYS_FULL_TR = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця", "Субота", "Неділя"];
 
 const HOURS = Array.from({ length: 17 }, (_, i) => i + 6); // 06:00 - 22:00
 
@@ -231,7 +231,7 @@ export default function CalendarView({
   }
 
   function formatTime(ev: CalendarEvent): string {
-    return new Date(ev.startDate).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+    return new Date(ev.startDate).toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" });
   }
 
   // ================== Render ==================
@@ -263,7 +263,7 @@ export default function CalendarView({
             className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-white border border-gray-200
               text-gray-600 hover:bg-gray-50 transition-colors"
           >
-            Bugün
+            Сьогодні
           </button>
         </div>
 
@@ -275,7 +275,7 @@ export default function CalendarView({
               className={`px-3 py-1.5 text-xs font-semibold transition-colors
                 ${viewMode === "month" ? "bg-[#0A1628] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
             >
-              Aylık
+              Місяць
             </button>
             <button
               onClick={() => {
@@ -286,7 +286,7 @@ export default function CalendarView({
               className={`px-3 py-1.5 text-xs font-semibold transition-colors
                 ${viewMode === "week" ? "bg-[#0A1628] text-white" : "bg-white text-gray-600 hover:bg-gray-50"}`}
             >
-              Haftalık
+              Тиждень
             </button>
           </div>
 
@@ -309,7 +309,7 @@ export default function CalendarView({
               px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Yeni Etkinlik
+            Нова подія
           </button>
         </div>
       </div>
@@ -375,7 +375,7 @@ export default function CalendarView({
                           );
                         })}
                         {dayEvents.length > 3 && (
-                          <p className="text-[10px] text-gray-400 pl-1.5">+{dayEvents.length - 3} daha</p>
+                          <p className="text-[10px] text-gray-400 pl-1.5">+{dayEvents.length - 3} ще</p>
                         )}
                       </div>
                     </>
@@ -421,7 +421,7 @@ export default function CalendarView({
             return (
               <div className="grid grid-cols-[56px_repeat(7,1fr)] border-b border-gray-200 bg-gray-50/30">
                 <div className="px-1 py-2 border-r border-gray-100 flex items-start justify-end">
-                  <span className="text-[9px] text-gray-400 font-medium leading-tight text-right">Tüm<br />gün</span>
+                  <span className="text-[9px] text-gray-400 font-medium leading-tight text-right">Весь<br />день</span>
                 </div>
                 {weekDays.map((d, i) => {
                   const allDayEvs = getWeekDayEvents(d).filter((ev) => ev.isAllDay);
@@ -525,10 +525,10 @@ export default function CalendarView({
                 <p className={`text-xs font-semibold ${(eventTypeConfig[selectedEvent.eventType] || eventTypeConfig.diger).color}`}>
                   {(eventTypeConfig[selectedEvent.eventType] || eventTypeConfig.diger).label}
                   {selectedEvent.source === "reminder" && (
-                    <span className="ml-1.5 text-gray-400 font-normal">· Hatırlatma</span>
+                    <span className="ml-1.5 text-gray-400 font-normal">· Нагадування</span>
                   )}
                   {selectedEvent.source === "courtDate" && (
-                    <span className="ml-1.5 text-gray-400 font-normal">· Mahkeme Dosyası</span>
+                    <span className="ml-1.5 text-gray-400 font-normal">· Судова справа</span>
                   )}
                 </p>
                 <h3 className="text-lg font-bold text-gray-900 mt-1">{selectedEvent.title}</h3>
@@ -545,10 +545,10 @@ export default function CalendarView({
                 <Clock className="w-4 h-4" />
                 <span>
                   {selectedEvent.isAllDay
-                    ? new Date(selectedEvent.startDate).toLocaleDateString("tr-TR", {
+                    ? new Date(selectedEvent.startDate).toLocaleDateString("uk-UA", {
                         day: "numeric", month: "long", year: "numeric",
-                      }) + " · Tüm gün"
-                    : new Date(selectedEvent.startDate).toLocaleString("tr-TR", {
+                      }) + " · Весь день"
+                    : new Date(selectedEvent.startDate).toLocaleString("uk-UA", {
                         day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit",
                       })}
                 </span>
@@ -573,11 +573,11 @@ export default function CalendarView({
                   ) : (
                     <Trash2 className="w-4 h-4" />
                   )}
-                  Sil
+                  Видалити
                 </button>
               ) : (
                 <p className="text-xs text-gray-400 italic">
-                  {selectedEvent.source === "reminder" ? "Hatırlatmalar" : "Müvekkil"} sayfasından yönetilebilir
+                  Можна керувати зі сторінки {selectedEvent.source === "reminder" ? "Нагадування" : "Клієнт"}
                 </p>
               )}
             </div>
@@ -590,7 +590,7 @@ export default function CalendarView({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-900">Yeni Etkinlik</h3>
+              <h3 className="text-lg font-bold text-gray-900">Нова подія</h3>
               <button onClick={() => setShowModal(false)} className="p-1 hover:bg-gray-100 rounded-lg">
                 <X className="w-5 h-5 text-gray-400" />
               </button>
@@ -605,7 +605,7 @@ export default function CalendarView({
 
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Başlık <span className="text-red-400">*</span>
+                  Назва <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -613,25 +613,25 @@ export default function CalendarView({
                   required
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-                  placeholder="Etkinlik başlığı"
+                  placeholder="Назва події"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Açıklama</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Опис</label>
                 <textarea
                   name="description"
                   rows={2}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 resize-none
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-                  placeholder="Etkinlik açıklaması (isteğe bağlı)"
+                  placeholder="Опис події (необов'язково)"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-medium text-gray-600 mb-1">
-                    Başlangıç <span className="text-red-400">*</span>
+                    Початок <span className="text-red-400">*</span>
                   </label>
                   <input
                     type="datetime-local"
@@ -643,7 +643,7 @@ export default function CalendarView({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Bitiş</label>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Кінець</label>
                   <input
                     type="datetime-local"
                     name="endDate"
@@ -656,7 +656,7 @@ export default function CalendarView({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-medium text-gray-600 mb-1">
-                    Etkinlik Türü <span className="text-red-400">*</span>
+                    Тип події <span className="text-red-400">*</span>
                   </label>
                   <select
                     name="eventType"
@@ -664,15 +664,15 @@ export default function CalendarView({
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                       focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
                   >
-                    <option value="toplanti">Toplantı</option>
-                    <option value="mahkeme">Mahkeme</option>
-                    <option value="odeme">Ödeme</option>
-                    <option value="kisisel">Kişisel</option>
-                    <option value="diger">Diğer</option>
+                    <option value="toplanti">Зустріч</option>
+                    <option value="mahkeme">Суд</option>
+                    <option value="odeme">Оплата</option>
+                    <option value="kisisel">Особисте</option>
+                    <option value="diger">Інше</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-gray-600 mb-1">Tüm Gün</label>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Весь день</label>
                   <div className="flex items-center h-[42px]">
                     <label className="relative inline-flex items-center cursor-pointer">
                       <input type="checkbox" name="isAllDay" value="true" className="sr-only peer" />
@@ -694,7 +694,7 @@ export default function CalendarView({
                   onClick={() => setShowModal(false)}
                   className="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
                 >
-                  İptal
+                  Скасувати
                 </button>
                 <button
                   type="submit"
@@ -703,7 +703,7 @@ export default function CalendarView({
                     bg-[#0A1628] hover:bg-[#1B2A4A] text-white transition-colors disabled:opacity-50"
                 >
                   {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                  Ekle
+                  Додати
                 </button>
               </div>
             </form>

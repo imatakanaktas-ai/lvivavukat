@@ -24,7 +24,7 @@ export default function AddReminderForm({ clientId }: { clientId: string }) {
       if (result?.success) {
         setOpen(false);
       } else {
-        setError(result?.message || "Hata oluştu.");
+        setError(result?.message || "Помилка.");
       }
     });
   }
@@ -43,34 +43,34 @@ export default function AddReminderForm({ clientId }: { clientId: string }) {
   return (
     <div className="mt-3 p-4 rounded-xl bg-gray-50 border border-gray-200">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-xs font-semibold text-gray-700">Yeni Hatırlatma</p>
+        <p className="text-xs font-semibold text-gray-700">Нове нагадування</p>
         <button onClick={() => setOpen(false)} className="p-1 hover:bg-gray-200 rounded-lg">
           <X className="w-4 h-4 text-gray-400" />
         </button>
       </div>
       {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
       <form onSubmit={handleSubmit} className="space-y-2">
-        <input type="text" name="title" required placeholder="Başlık *"
+        <input type="text" name="title" required placeholder="Назва *"
           className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30" />
-        <input type="text" name="description" placeholder="Açıklama"
+        <input type="text" name="description" placeholder="Опис"
           className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30" />
         <div className="grid grid-cols-2 gap-2">
           <input type="datetime-local" name="dueDate" required
             className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30" />
           <select name="type" defaultValue="ozel"
             className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30">
-            <option value="mahkeme">Mahkeme</option>
-            <option value="odeme">Ödeme</option>
-            <option value="devlet_islemi">Devlet İşlemi</option>
-            <option value="vergi">Vergi</option>
-            <option value="deadline">Deadline</option>
-            <option value="ozel">Özel</option>
+            <option value="mahkeme">Суд</option>
+            <option value="odeme">Оплата</option>
+            <option value="devlet_islemi">Державна справа</option>
+            <option value="vergi">Податок</option>
+            <option value="deadline">Дедлайн</option>
+            <option value="ozel">Особисте</option>
           </select>
         </div>
         <button type="submit" disabled={isPending}
           className="w-full py-2 rounded-lg bg-[#0A1628] hover:bg-[#1B2A4A] text-white text-sm font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
           {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-          Hatırlatma Ekle
+          Додати нагадування
         </button>
       </form>
     </div>

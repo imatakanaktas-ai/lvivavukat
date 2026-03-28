@@ -39,9 +39,9 @@ export default function SettingsPanel({
       const result = await updateSiteSetting(key, value);
       if (result?.success) {
         setSettings((prev) => ({ ...prev, [key]: value }));
-        setSaveMsg({ type: "success", text: `"${key}" güncellendi.` });
+        setSaveMsg({ type: "success", text: `"${key}" оновлено.` });
       } else {
-        setSaveMsg({ type: "error", text: result?.message || "Hata oluştu." });
+        setSaveMsg({ type: "error", text: result?.message || "Помилка." });
       }
       setTimeout(() => setSaveMsg(null), 3000);
     });
@@ -50,11 +50,11 @@ export default function SettingsPanel({
   const handlePasswordChange = () => {
     setPwMsg(null);
     if (newPw !== confirmPw) {
-      setPwMsg({ type: "error", text: "Şifreler eşleşmiyor." });
+      setPwMsg({ type: "error", text: "Паролі не збігаються." });
       return;
     }
     if (newPw.length < 8) {
-      setPwMsg({ type: "error", text: "Yeni şifre en az 8 karakter olmalıdır." });
+      setPwMsg({ type: "error", text: "Новий пароль повинен містити щонайменше 8 символів." });
       return;
     }
     startPwSave(async () => {
@@ -65,18 +65,18 @@ export default function SettingsPanel({
         setNewPw("");
         setConfirmPw("");
       } else {
-        setPwMsg({ type: "error", text: result?.message || "Hata oluştu." });
+        setPwMsg({ type: "error", text: result?.message || "Помилка." });
       }
     });
   };
 
   const settingsFields = [
-    { key: "site_title", label: "Site Başlığı", placeholder: "Lviv Avukat", icon: Globe },
-    { key: "site_description", label: "Site Açıklaması", placeholder: "Ukrayna'da Türkler İçin Hukuki Danışmanlık", icon: Globe },
-    { key: "whatsapp_number", label: "WhatsApp Numarası", placeholder: "+380XXXXXXXXX", icon: Phone },
-    { key: "contact_email", label: "İletişim E-posta", placeholder: "info@lvivavukat.com", icon: Globe },
-    { key: "contact_phone", label: "Telefon", placeholder: "+380 XX XXX XXXX", icon: Phone },
-    { key: "office_address", label: "Ofis Adresi", placeholder: "Lviv, Ukrayna", icon: Globe },
+    { key: "site_title", label: "Назва сайту", placeholder: "Lviv Avukat", icon: Globe },
+    { key: "site_description", label: "Опис сайту", placeholder: "Юридичні послуги для турків в Україні", icon: Globe },
+    { key: "whatsapp_number", label: "Номер WhatsApp", placeholder: "+380XXXXXXXXX", icon: Phone },
+    { key: "contact_email", label: "Контактна ел. пошта", placeholder: "info@lvivavukat.com", icon: Globe },
+    { key: "contact_phone", label: "Телефон", placeholder: "+380 XX XXX XXXX", icon: Phone },
+    { key: "office_address", label: "Адреса офісу", placeholder: "Львів, Україна", icon: Globe },
   ];
 
   return (
@@ -101,7 +101,7 @@ export default function SettingsPanel({
       <div className="p-6 rounded-2xl bg-white border border-gray-200/80 space-y-5">
         <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
           <Settings className="w-4 h-4 text-gray-400" />
-          Site Ayarları
+          Налаштування сайту
         </h2>
         <div className="space-y-4">
           {settingsFields.map((field) => {
@@ -140,7 +140,7 @@ export default function SettingsPanel({
       <div className="p-6 rounded-2xl bg-white border border-gray-200/80 space-y-5">
         <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
           <Shield className="w-4 h-4 text-gray-400" />
-          Şifre Değiştir
+          Змінити пароль
         </h2>
 
         {pwMsg && (
@@ -160,7 +160,7 @@ export default function SettingsPanel({
 
         <div className="space-y-3">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Mevcut Şifre</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Поточний пароль</label>
             <div className="relative">
               <input
                 type={showPw ? "text" : "password"}
@@ -179,18 +179,18 @@ export default function SettingsPanel({
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Yeni Şifre</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Новий пароль</label>
             <input
               type="password"
               value={newPw}
               onChange={(e) => setNewPw(e.target.value)}
               className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-              placeholder="En az 8 karakter"
+              placeholder="Щонайменше 8 символів"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Yeni Şifre (Tekrar)</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Новий пароль (повтор)</label>
             <input
               type="password"
               value={confirmPw}
@@ -206,7 +206,7 @@ export default function SettingsPanel({
               bg-[#0A1628] hover:bg-[#1B2A4A] text-white transition-colors disabled:opacity-50"
           >
             {isPwSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Lock className="w-4 h-4" />}
-            Şifreyi Değiştir
+            Змінити пароль
           </button>
         </div>
       </div>
@@ -215,16 +215,16 @@ export default function SettingsPanel({
       <div className="p-6 rounded-2xl bg-white border border-gray-200/80 space-y-3">
         <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
           <Globe className="w-4 h-4 text-gray-400" />
-          SEO Durumu
+          Статус SEO
         </h2>
         <div className="grid sm:grid-cols-2 gap-3">
           {[
-            { label: "robots.txt", status: "Aktif", ok: true },
-            { label: "sitemap.xml", status: "Otomatik", ok: true },
-            { label: "JSON-LD Schema", status: "Tüm sayfalarda", ok: true },
-            { label: "Open Graph", status: "Aktif", ok: true },
-            { label: "Canonical URL", status: "Aktif", ok: true },
-            { label: "Meta Açıklamalar", status: "Tüm sayfalarda", ok: true },
+            { label: "robots.txt", status: "Активно", ok: true },
+            { label: "sitemap.xml", status: "Автоматично", ok: true },
+            { label: "JSON-LD Schema", status: "На всіх сторінках", ok: true },
+            { label: "Open Graph", status: "Активно", ok: true },
+            { label: "Canonical URL", status: "Активно", ok: true },
+            { label: "Мета описи", status: "На всіх сторінках", ok: true },
           ].map((item) => (
             <div key={item.label} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-50">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />

@@ -29,9 +29,9 @@ import AddReminderForm from "./AddReminderForm";
 const ADMIN_PREFIX = process.env.ADMIN_ROUTE_PREFIX || "panel-yonetim2024x";
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof UserCheck }> = {
-  active: { label: "Aktif", color: "bg-emerald-100 text-emerald-700", icon: UserCheck },
-  inactive: { label: "Pasif", color: "bg-gray-100 text-gray-600", icon: UserX },
-  pending: { label: "Bekliyor", color: "bg-amber-100 text-amber-700", icon: Clock },
+  active: { label: "Активний", color: "bg-emerald-100 text-emerald-700", icon: UserCheck },
+  inactive: { label: "Неактивний", color: "bg-gray-100 text-gray-600", icon: UserX },
+  pending: { label: "Очікує", color: "bg-amber-100 text-amber-700", icon: Clock },
 };
 
 const paymentStatusColors: Record<string, string> = {
@@ -94,7 +94,7 @@ export default async function ClientDetailPage({
               px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors"
           >
             <Edit className="w-4 h-4" />
-            Düzenle
+            Редагувати
           </Link>
           <DeleteClientButton clientId={client.id} clientName={`${client.firstName} ${client.lastName}`} />
         </div>
@@ -105,15 +105,15 @@ export default async function ClientDetailPage({
         <div className="lg:col-span-2 space-y-6">
           {/* Info card */}
           <div className="p-6 rounded-2xl bg-white border border-gray-200/80">
-            <h2 className="text-sm font-semibold text-gray-800 mb-4">Kişisel Bilgiler</h2>
+            <h2 className="text-sm font-semibold text-gray-800 mb-4">Особиста інформація</h2>
             <div className="grid sm:grid-cols-2 gap-4">
               {[
-                { icon: Globe, label: "Uyruk", value: client.nationality },
-                { icon: FileText, label: "Pasaport No", value: client.passportNo },
-                { icon: Phone, label: "Telefon", value: client.phone },
-                { icon: Mail, label: "E-posta", value: client.email },
-                { icon: MapPin, label: "Adres", value: client.address },
-                { icon: CalendarDays, label: "Kayıt Tarihi", value: new Date(client.createdAt).toLocaleDateString("tr-TR") },
+                { icon: Globe, label: "Громадянство", value: client.nationality },
+                { icon: FileText, label: "Номер паспорта", value: client.passportNo },
+                { icon: Phone, label: "Телефон", value: client.phone },
+                { icon: Mail, label: "Ел. пошта", value: client.email },
+                { icon: MapPin, label: "Адреса", value: client.address },
+                { icon: CalendarDays, label: "Дата реєстрації", value: new Date(client.createdAt).toLocaleDateString("uk-UA") },
               ].map((item) => {
                 const Icon = item.icon;
                 return (
@@ -131,7 +131,7 @@ export default async function ClientDetailPage({
             </div>
             {client.notes && (
               <div className="mt-4 pt-4 border-t border-gray-100">
-                <p className="text-[11px] text-gray-400 mb-1">Genel Notlar</p>
+                <p className="text-[11px] text-gray-400 mb-1">Загальні нотатки</p>
                 <p className="text-sm text-gray-600 whitespace-pre-wrap">{client.notes}</p>
               </div>
             )}
@@ -142,12 +142,12 @@ export default async function ClientDetailPage({
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
                 <DollarSign className="w-4 h-4 text-gray-400" />
-                Ödemeler
+                Оплати
               </h2>
               <AddPaymentForm clientId={client.id} />
             </div>
             {client.payments.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-6">Henüz ödeme kaydı yok</p>
+              <p className="text-sm text-gray-400 text-center py-6">Оплат поки немає</p>
             ) : (
               <div className="space-y-3">
                 {client.payments.map((payment) => (
@@ -162,7 +162,7 @@ export default async function ClientDetailPage({
                       </p>
                       <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-medium 
                         ${paymentStatusColors[payment.status] || "bg-gray-100 text-gray-500"}`}>
-                        {payment.status === "paid" ? "Ödendi" : payment.status === "pending" ? "Bekliyor" : payment.status === "overdue" ? "Gecikmiş" : "İptal"}
+                        {payment.status === "paid" ? "Оплачено" : payment.status === "pending" ? "Очікує" : payment.status === "overdue" ? "Протерміновано" : "Скасовано"}
                       </span>
                     </div>
                   </div>
@@ -176,19 +176,19 @@ export default async function ClientDetailPage({
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
                 <Gavel className="w-4 h-4 text-gray-400" />
-                Mahkeme Tarihleri
+                Судові дати
               </h2>
               <AddCourtDateForm clientId={client.id} />
             </div>
             {client.courtDates.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-6">Henüz mahkeme tarihi yok</p>
+              <p className="text-sm text-gray-400 text-center py-6">Судових дат поки немає</p>
             ) : (
               <div className="space-y-3">
                 {client.courtDates.map((court) => (
                   <div key={court.id} className="flex items-center gap-4 p-3 rounded-xl bg-gray-50">
                     <div className="w-12 h-12 rounded-lg bg-red-50 flex flex-col items-center justify-center flex-shrink-0">
                       <span className="text-[10px] text-red-400 font-medium">
-                        {new Date(court.hearingDate).toLocaleDateString("tr-TR", { month: "short" })}
+                        {new Date(court.hearingDate).toLocaleDateString("uk-UA", { month: "short" })}
                       </span>
                       <span className="text-sm font-bold text-red-600">
                         {new Date(court.hearingDate).getDate()}
@@ -197,7 +197,7 @@ export default async function ClientDetailPage({
                     <div>
                       <p className="text-sm font-medium text-gray-800">{court.courtName}</p>
                       {court.caseNumber && (
-                        <p className="text-[11px] text-gray-400">Dosya: {court.caseNumber}</p>
+                        <p className="text-[11px] text-gray-400">Справа: {court.caseNumber}</p>
                       )}
                     </div>
                   </div>
@@ -214,19 +214,19 @@ export default async function ClientDetailPage({
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
                 <Bell className="w-4 h-4 text-gray-400" />
-                Hatırlatmalar
+                Нагадування
               </h2>
               <AddReminderForm clientId={client.id} />
             </div>
             {client.reminders.length === 0 ? (
-              <p className="text-sm text-gray-400 text-center py-6">Hatırlatma yok</p>
+              <p className="text-sm text-gray-400 text-center py-6">Нагадувань немає</p>
             ) : (
               <div className="space-y-2">
                 {client.reminders.map((reminder) => (
                   <div key={reminder.id} className={`p-3 rounded-xl text-sm ${reminder.isCompleted ? "bg-gray-50 line-through text-gray-400" : "bg-amber-50 text-gray-700"}`}>
                     <p className="font-medium">{reminder.title}</p>
                     <p className="text-[11px] mt-0.5 text-gray-400">
-                      {new Date(reminder.dueDate).toLocaleDateString("tr-TR")}
+                      {new Date(reminder.dueDate).toLocaleDateString("uk-UA")}
                     </p>
                   </div>
                 ))}

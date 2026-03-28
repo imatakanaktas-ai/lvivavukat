@@ -21,12 +21,12 @@ export default function LoginForm() {
           <h1 className="text-2xl font-serif font-bold text-white">
             Lviv Avukat
           </h1>
-          <p className="text-sm text-white/40 mt-1">Yönetim Paneli</p>
+          <p className="text-sm text-white/40 mt-1">Панель управління</p>
         </div>
 
         {/* Form Card */}
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-          <h2 className="text-lg font-semibold text-white mb-6">Giriş Yap</h2>
+          <h2 className="text-lg font-semibold text-white mb-6">Увійти</h2>
 
           {state && !state.success && (
             <div className="flex items-center gap-2 p-3 mb-5 rounded-xl bg-red-500/10 border border-red-500/20">
@@ -38,7 +38,7 @@ export default function LoginForm() {
           <form action={formAction} className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-white/70 mb-1.5">
-                E-posta
+                Електронна пошта
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
@@ -59,7 +59,7 @@ export default function LoginForm() {
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-white/70 mb-1.5">
-                Şifre
+                Пароль
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
@@ -89,12 +89,12 @@ export default function LoginForm() {
               {isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Giriş yapılıyor...
+                  Вхід...
                 </>
               ) : (
                 <>
                   <Lock className="w-4 h-4" />
-                  Giriş Yap
+                  Увійти
                 </>
               )}
             </button>
@@ -102,7 +102,7 @@ export default function LoginForm() {
         </div>
 
         <p className="text-center text-xs text-white/20 mt-6">
-          © {new Date().getFullYear()} Lviv Avukat — Yönetim Paneli
+          © {new Date().getFullYear()} Lviv Avukat — Панель управління
         </p>
       </div>
     </div>

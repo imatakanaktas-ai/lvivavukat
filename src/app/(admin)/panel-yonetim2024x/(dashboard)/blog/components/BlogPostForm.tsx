@@ -105,7 +105,7 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
           if (result.meta.keywords) setMetaKeywords(result.meta.keywords.join(", "));
         }
       } else {
-        setAiError(result.error || "AI içerik oluşturulamadı.");
+        setAiError(result.error || "AI не зміг створити контент.");
       }
     });
   };
@@ -129,29 +129,29 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
           <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200/60">
             <h3 className="text-sm font-bold text-purple-900 mb-3 flex items-center gap-2">
               <Bot className="w-4 h-4" />
-              AI İçerik Üretici
+              AI генератор контенту
             </h3>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-purple-800 mb-1">Konu</label>
+                <label className="block text-xs font-medium text-purple-800 mb-1">Тема</label>
                 <input
                   type="text"
                   value={aiTopic}
                   onChange={(e) => setAiTopic(e.target.value)}
-                  placeholder="Ör: Ukrayna'da oturum izni nasıl alınır?"
+                  placeholder="Нпр: Як отримати посвідку на проживання в Україні?"
                   className="w-full px-4 py-2.5 rounded-xl border border-purple-200 text-sm text-gray-800 bg-white
                     focus:outline-none focus:ring-2 focus:ring-purple-300/50 placeholder:text-gray-400"
                 />
               </div>
               <div>
                 <label className="block text-xs font-medium text-purple-800 mb-1">
-                  Hedef Anahtar Kelime (opsiyonel)
+                  Цільове ключове слово (опціонально)
                 </label>
                 <input
                   type="text"
                   value={aiKeyword}
                   onChange={(e) => setAiKeyword(e.target.value)}
-                  placeholder="Ör: ukrayna oturum izni"
+                  placeholder="Нпр: посвідка на проживання україна"
                   className="w-full px-4 py-2.5 rounded-xl border border-purple-200 text-sm text-gray-800 bg-white
                     focus:outline-none focus:ring-2 focus:ring-purple-300/50 placeholder:text-gray-400"
                 />
@@ -176,7 +176,7 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
                   ) : (
                     <Sparkles className="w-4 h-4" />
                   )}
-                  {aiIsGenerating ? "Oluşturuluyor..." : "İçerik Üret"}
+                  {aiIsGenerating ? "Створення..." : "Створити контент"}
                 </button>
                 <button
                   type="button"
@@ -190,12 +190,12 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
                   ) : (
                     <Wand2 className="w-4 h-4" />
                   )}
-                  Başlık Öner
+                  Пропонувати заголовок
                 </button>
               </div>
               {titleSuggestions.length > 0 && (
                 <div className="space-y-1.5 mt-2">
-                  <p className="text-xs font-semibold text-purple-800">Başlık Önerileri:</p>
+                  <p className="text-xs font-semibold text-purple-800">Пропозиції заголовків:</p>
                   {titleSuggestions.map((t, i) => (
                     <button
                       key={i}
@@ -234,7 +234,7 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
             <div className="space-y-4">
               <div>
                 <label htmlFor="title" className="block text-xs font-medium text-gray-600 mb-1">
-                  Başlık <span className="text-red-400">*</span>
+                  Заголовок <span className="text-red-400">*</span>
                 </label>
                 <input
                   id="title"
@@ -245,7 +245,7 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
                   required
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 text-base font-semibold text-gray-800
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-                  placeholder="Blog yazısının başlığı"
+                  placeholder="Заголовок статті"
                 />
               </div>
               <div>
@@ -275,7 +275,7 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
             <div className="flex items-center justify-between mb-3">
               <label htmlFor="content" className="text-xs font-medium text-gray-600 flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-gray-400" />
-                İçerik (Markdown) <span className="text-red-400">*</span>
+                Контент (Markdown) <span className="text-red-400">*</span>
               </label>
               <button
                 type="button"
@@ -283,7 +283,7 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
                 className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
               >
                 {showPreview ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
-                {showPreview ? "Düzenle" : "Önizle"}
+                {showPreview ? "Редагувати" : "Перегляд"}
               </button>
             </div>
             {showPreview ? (
@@ -301,7 +301,7 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
                 rows={20}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 
                   font-mono resize-y focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-                placeholder="Markdown formatında blog içeriği..."
+                  placeholder="Контент статті у форматі Markdown..."
               />
             )}
           </div>
@@ -324,7 +324,7 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
                 bg-[#0A1628] hover:bg-[#1B2A4A] text-white transition-colors disabled:opacity-50"
             >
               {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              {isEdit ? "Güncelle" : "Kaydet"}
+              {isEdit ? "Оновити" : "Зберегти"}
             </button>
             {!isEdit && (
               <button
@@ -335,7 +335,7 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
                   bg-emerald-600 hover:bg-emerald-700 text-white transition-colors disabled:opacity-50"
               >
                 <Globe className="w-4 h-4" />
-                Yayınla
+                Опублікувати
               </button>
             )}
           </div>
@@ -348,25 +348,25 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
         <div className="p-5 rounded-2xl bg-white border border-gray-200/80 space-y-4">
           <h3 className="text-sm font-bold text-gray-800 flex items-center gap-2">
             <FileText className="w-4 h-4 text-gray-400" />
-            Ayarlar
+            Налаштування
           </h3>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Durum</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Статус</label>
             <select
               value={statusVal}
               onChange={(e) => setStatusVal(e.target.value)}
               className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
             >
-              <option value="draft">Taslak</option>
-              <option value="published">Yayında</option>
-              <option value="archived">Arşiv</option>
+              <option value="draft">Чернетка</option>
+              <option value="published">Опубліковано</option>
+              <option value="archived">Архів</option>
             </select>
           </div>
           {isAiGenerated && (
             <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-purple-50 text-purple-700 text-xs font-semibold">
               <Bot className="w-3.5 h-3.5" />
-              AI ile oluşturuldu
+              Створено AI
             </div>
           )}
         </div>
@@ -378,32 +378,32 @@ export default function BlogPostForm({ post, aiMode = false }: BlogFormProps) {
             SEO
           </h3>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Özet</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Опис</label>
             <textarea
               value={excerpt}
               onChange={(e) => setExcerpt(e.target.value)}
               rows={2}
               className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm text-gray-800 resize-none
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-              placeholder="Kısa özet (max 200 karakter)"
+              placeholder="Короткий опис (макс 200 символів)"
             />
             <p className="text-[10px] text-gray-400 mt-1">{excerpt.length}/200</p>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Meta Açıklama</label>
+            <label className="block text-xs font-medium text-gray-600 mb-1">Мета опис</label>
             <textarea
               value={metaDesc}
               onChange={(e) => setMetaDesc(e.target.value)}
               rows={2}
               className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm text-gray-800 resize-none
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-              placeholder="Meta açıklama (max 155 karakter)"
+              placeholder="Мета опис (макс 155 символів)"
             />
             <p className="text-[10px] text-gray-400 mt-1">{metaDesc.length}/155</p>
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1 flex items-center gap-1">
-              <Tag className="w-3 h-3" /> Anahtar Kelimeler
+              <Tag className="w-3 h-3" /> Ключові слова
             </label>
             <input
               type="text"

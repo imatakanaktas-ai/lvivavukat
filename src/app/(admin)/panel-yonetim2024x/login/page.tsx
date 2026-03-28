@@ -4,7 +4,7 @@ import { auth } from "@/lib/auth/config";
 import LoginForm from "./LoginForm";
 
 export const metadata: Metadata = {
-  title: "Giriş | Yönetim Paneli",
+  title: "Вхід | Панель управління",
   robots: { index: false, follow: false },
 };
 

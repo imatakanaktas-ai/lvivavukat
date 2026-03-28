@@ -16,9 +16,9 @@ import { getBlogPosts } from "./actions";
 const ADMIN_PREFIX = process.env.ADMIN_ROUTE_PREFIX || "panel-yonetim2024x";
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle2 }> = {
-  published: { label: "Yayında", color: "bg-emerald-100 text-emerald-700", icon: CheckCircle2 },
-  draft: { label: "Taslak", color: "bg-amber-100 text-amber-700", icon: FileText },
-  archived: { label: "Arşiv", color: "bg-gray-100 text-gray-500", icon: Archive },
+  published: { label: "Опубліковано", color: "bg-emerald-100 text-emerald-700", icon: CheckCircle2 },
+  draft: { label: "Чернетка", color: "bg-amber-100 text-amber-700", icon: FileText },
+  archived: { label: "Архів", color: "bg-gray-100 text-gray-500", icon: Archive },
 };
 
 export default async function BlogListPage({
@@ -43,8 +43,8 @@ export default async function BlogListPage({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900">Blog Yazıları</h1>
-          <p className="text-sm text-gray-500 mt-1">Toplam {data.total} yazı</p>
+          <h1 className="text-2xl font-serif font-bold text-gray-900">Блог</h1>
+          <p className="text-sm text-gray-500 mt-1">Всього {data.total} статей</p>
         </div>
         <div className="flex gap-3">
           <Link
@@ -53,7 +53,7 @@ export default async function BlogListPage({
               hover:from-purple-700 hover:to-indigo-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all"
           >
             <Bot className="w-4 h-4" />
-            AI ile Yaz
+            AI написати
           </Link>
           <Link
             href={`/${ADMIN_PREFIX}/blog/yeni`}
@@ -61,7 +61,7 @@ export default async function BlogListPage({
               px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Yeni Yazı
+            Нова стаття
           </Link>
         </div>
       </div>
@@ -74,7 +74,7 @@ export default async function BlogListPage({
             type="text"
             name="search"
             defaultValue={params.search}
-            placeholder="Başlık ara..."
+            placeholder="Пошук за назвою..."
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-gray-200 text-sm 
               text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
           />
@@ -91,7 +91,7 @@ export default async function BlogListPage({
                   : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
                 }`}
             >
-              {s === "all" ? "Tümü" : s === "published" ? "Yayında" : s === "draft" ? "Taslak" : "Arşiv"}
+              {s === "all" ? "Всі" : s === "published" ? "Опубліковані" : s === "draft" ? "Чернетки" : "Архів"}
             </Link>
           ))}
         </div>
@@ -101,9 +101,9 @@ export default async function BlogListPage({
       {data.posts.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-gray-200/80">
           <PenTool className="w-12 h-12 text-gray-200 mb-4" />
-          <p className="text-gray-500 font-medium">Henüz blog yazısı yok</p>
+          <p className="text-gray-500 font-medium">Поки немає статей</p>
           <p className="text-sm text-gray-400 mt-1">
-            {params.search ? "Aramanızla eşleşen sonuç bulunamadı." : "İlk yazınızı oluşturun."}
+            {params.search ? "Не знайдено результатів за вашим запитом." : "Створіть вашу першу статтю."}
           </p>
         </div>
       ) : (
@@ -160,12 +160,12 @@ export default async function BlogListPage({
                     <div className="flex items-center justify-between">
                       <p className="text-[11px] text-gray-400">
                         {post.publishedAt
-                          ? new Date(post.publishedAt).toLocaleDateString("tr-TR", {
+                          ? new Date(post.publishedAt).toLocaleDateString("uk-UA", {
                               day: "numeric",
                               month: "short",
                               year: "numeric",
                             })
-                          : new Date(post.createdAt).toLocaleDateString("tr-TR", {
+                          : new Date(post.createdAt).toLocaleDateString("uk-UA", {
                               day: "numeric",
                               month: "short",
                               year: "numeric",
@@ -177,7 +177,7 @@ export default async function BlogListPage({
                             href={`/blog/${post.slug}`}
                             target="_blank"
                             className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                            title="Önizle"
+                            title="Перегляд"
                           >
                             <Eye className="w-4 h-4" />
                           </Link>
@@ -185,7 +185,7 @@ export default async function BlogListPage({
                         <Link
                           href={`/${ADMIN_PREFIX}/blog/${post.id}/duzenle`}
                           className="p-1.5 rounded-lg text-gray-400 hover:text-[#C9A84C] hover:bg-amber-50 transition-colors"
-                          title="Düzenle"
+                          title="Редагувати"
                         >
                           <Pencil className="w-4 h-4" />
                         </Link>

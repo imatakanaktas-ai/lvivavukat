@@ -155,10 +155,10 @@ async function getDashboardData() {
 }
 
 const quickActions = [
-  { label: "Yeni Müvekkil", href: `/${ADMIN_PREFIX}/muvekiller/yeni`, icon: Users },
-  { label: "Blog Yazısı", href: `/${ADMIN_PREFIX}/blog/yeni`, icon: PenTool },
-  { label: "Takvim", href: `/${ADMIN_PREFIX}/takvim`, icon: CalendarDays },
-  { label: "AI Asistan", href: `/${ADMIN_PREFIX}/ai-asistan`, icon: TrendingUp },
+  { label: "Новий клієнт", href: `/${ADMIN_PREFIX}/muvekiller/yeni`, icon: Users },
+  { label: "Блог стаття", href: `/${ADMIN_PREFIX}/blog/yeni`, icon: PenTool },
+  { label: "Календар", href: `/${ADMIN_PREFIX}/takvim`, icon: CalendarDays },
+  { label: "AI Асистент", href: `/${ADMIN_PREFIX}/ai-asistan`, icon: TrendingUp },
 ];
 
 const eventTypeColors: Record<string, string> = {
@@ -170,12 +170,12 @@ const eventTypeColors: Record<string, string> = {
 };
 
 const reminderTypeConfig: Record<string, { label: string; color: string }> = {
-  mahkeme: { label: "Mahkeme", color: "bg-red-50 text-red-700" },
-  odeme: { label: "Ödeme", color: "bg-amber-50 text-amber-700" },
-  devlet_islemi: { label: "Devlet", color: "bg-blue-50 text-blue-700" },
-  vergi: { label: "Vergi", color: "bg-emerald-50 text-emerald-700" },
-  deadline: { label: "Deadline", color: "bg-orange-50 text-orange-700" },
-  ozel: { label: "Özel", color: "bg-purple-50 text-purple-700" },
+  mahkeme: { label: "Суд", color: "bg-red-50 text-red-700" },
+  odeme: { label: "Оплата", color: "bg-amber-50 text-amber-700" },
+  devlet_islemi: { label: "Державна", color: "bg-blue-50 text-blue-700" },
+  vergi: { label: "Податок", color: "bg-emerald-50 text-emerald-700" },
+  deadline: { label: "Дедлайн", color: "bg-orange-50 text-orange-700" },
+  ozel: { label: "Особисте", color: "bg-purple-50 text-purple-700" },
 };
 
 export default async function AdminDashboardPage() {
@@ -188,33 +188,33 @@ export default async function AdminDashboardPage() {
 
   const stats = [
     {
-      label: "Toplam Müvekkil",
+      label: "Всього клієнтів",
       value: String(data?.totalClients ?? 0),
-      change: `+${data?.newClientsThisMonth ?? 0} bu ay`,
+      change: `+${data?.newClientsThisMonth ?? 0} цей місяць`,
       icon: Users,
       color: "bg-blue-500/10 text-blue-600",
       href: `/${ADMIN_PREFIX}/muvekiller`,
     },
     {
-      label: "Bekleyen Ödeme",
+      label: "Очікує оплату",
       value: String(data?.pendingPayments ?? 0),
-      change: "bekleyen işlem",
+      change: "очікують операції",
       icon: FileText,
       color: "bg-emerald-500/10 text-emerald-600",
       href: `/${ADMIN_PREFIX}/hatirlatmalar`,
     },
     {
-      label: "Bu Ay Gelir",
-      value: `₴${(data?.monthlyRevenue ?? 0).toLocaleString("tr-TR")}`,
-      change: "ödenen toplam",
+      label: "Дохід за місяць",
+      value: `₴${(data?.monthlyRevenue ?? 0).toLocaleString("uk-UA")}`,
+      change: "оплачено загалом",
       icon: DollarSign,
       color: "bg-amber-500/10 text-amber-600",
       href: `/${ADMIN_PREFIX}/hatirlatmalar`,
     },
     {
-      label: "İletişim Formları",
+      label: "Контактні форми",
       value: String(data?.totalContactForms ?? 0),
-      change: `${data?.unreadContactForms ?? 0} okunmamış`,
+      change: `${data?.unreadContactForms ?? 0} непрочитаних`,
       icon: MessageSquare,
       color: "bg-purple-500/10 text-purple-600",
       href: `/${ADMIN_PREFIX}/iletisim`,
@@ -227,9 +227,9 @@ export default async function AdminDashboardPage() {
     <div className="space-y-8 max-w-7xl">
       {/* Page title */}
       <div>
-        <h1 className="text-2xl font-serif font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-2xl font-serif font-bold text-gray-900">Огляд</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Hoş geldiniz! İşte ofisinizin genel durumu.
+          Ласкаво просимо! Ось загальний стан вашого офісу.
         </p>
       </div>
 
@@ -284,16 +284,16 @@ export default async function AdminDashboardPage() {
         {/* Upcoming events + court dates */}
         <div className="p-6 rounded-2xl bg-white border border-gray-200/80">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-gray-800">Yaklaşan Etkinlikler</h2>
+            <h2 className="text-sm font-semibold text-gray-800">Ближчі події</h2>
             <Link href={`/${ADMIN_PREFIX}/takvim`} className="text-xs text-[#C9A84C] hover:underline">
-              Tümünü Gör
+              Переглянути всі
             </Link>
           </div>
           {(data?.upcomingEvents?.length || 0) + (data?.upcomingCourtDates?.length || 0) === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <CalendarDays className="w-10 h-10 text-gray-200 mb-3" />
-              <p className="text-sm text-gray-400">Henüz yaklaşan etkinlik yok</p>
-              <p className="text-xs text-gray-300 mt-1">Takvimden yeni etkinlik ekleyin</p>
+              <p className="text-sm text-gray-400">Поки немає ближчих подій</p>
+              <p className="text-xs text-gray-300 mt-1">Додайте нову подію з календаря</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -305,7 +305,7 @@ export default async function AdminDashboardPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-gray-800 truncate">{c.courtName}</p>
                     <p className="text-[10px] text-gray-400">
-                      {new Date(c.hearingDate).toLocaleDateString("tr-TR", { day: "numeric", month: "short" })}
+                      {new Date(c.hearingDate).toLocaleDateString("uk-UA", { day: "numeric", month: "short" })}
                       {c.hearingTime && ` · ${c.hearingTime}`}
                       {c.clientFirstName && ` · ${c.clientFirstName} ${c.clientLastName}`}
                     </p>
@@ -322,7 +322,7 @@ export default async function AdminDashboardPage() {
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-gray-800 truncate">{e.title}</p>
                       <p className="text-[10px] text-gray-400">
-                        {new Date(e.startDate).toLocaleDateString("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                        {new Date(e.startDate).toLocaleDateString("uk-UA", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                       </p>
                     </div>
                   </div>
@@ -335,16 +335,16 @@ export default async function AdminDashboardPage() {
         {/* Reminders */}
         <div className="p-6 rounded-2xl bg-white border border-gray-200/80">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-gray-800">Hatırlatmalar</h2>
+            <h2 className="text-sm font-semibold text-gray-800">Нагадування</h2>
             <Link href={`/${ADMIN_PREFIX}/hatirlatmalar`} className="text-xs text-[#C9A84C] hover:underline">
-              Tümünü Gör
+              Переглянути всі
             </Link>
           </div>
           {!data?.activeReminders?.length ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <Bell className="w-10 h-10 text-gray-200 mb-3" />
-              <p className="text-sm text-gray-400">Aktif hatırlatma yok</p>
-              <p className="text-xs text-gray-300 mt-1">Hatırlatma eklemek için tıklayın</p>
+              <p className="text-sm text-gray-400">Немає активних нагадувань</p>
+              <p className="text-xs text-gray-300 mt-1">Натисніть, щоб додати нагадування</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -359,12 +359,12 @@ export default async function AdminDashboardPage() {
                     <div className="flex items-center gap-2 mb-0.5">
                       <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${cfg.color}`}>{cfg.label}</span>
                       {isOverdue && (
-                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-100 text-red-700">Gecikmiş</span>
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-100 text-red-700">Прострочено</span>
                       )}
                     </div>
                     <p className="text-xs font-semibold text-gray-800 truncate">{r.title}</p>
                     <p className="text-[10px] text-gray-400 mt-0.5">
-                      {new Date(r.dueDate).toLocaleDateString("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                      {new Date(r.dueDate).toLocaleDateString("uk-UA", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                       {r.clientFirstName && ` · ${r.clientFirstName} ${r.clientLastName}`}
                     </p>
                   </div>
@@ -380,16 +380,16 @@ export default async function AdminDashboardPage() {
         {/* Recent contact submissions */}
         <div className="p-6 rounded-2xl bg-white border border-gray-200/80">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-gray-800">Son İletişim Formları</h2>
+            <h2 className="text-sm font-semibold text-gray-800">Останні контактні форми</h2>
             <Link href={`/${ADMIN_PREFIX}/iletisim`} className="text-xs text-[#C9A84C] hover:underline">
-              Tümünü Gör
+              Переглянути всі
             </Link>
           </div>
           {!data?.recentContacts?.length ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <MessageSquare className="w-10 h-10 text-gray-200 mb-3" />
-              <p className="text-sm text-gray-400">Henüz iletişim formu gelmedi</p>
-              <p className="text-xs text-gray-300 mt-1">Yeni formlar burada görünecek</p>
+              <p className="text-sm text-gray-400">Поки не надійшло контактних форм</p>
+              <p className="text-xs text-gray-300 mt-1">Нові форми з'являться тут</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -403,7 +403,7 @@ export default async function AdminDashboardPage() {
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-gray-800 truncate">{c.name} — {c.subject}</p>
                     <p className="text-[10px] text-gray-400">
-                      {new Date(c.createdAt).toLocaleDateString("tr-TR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                      {new Date(c.createdAt).toLocaleDateString("uk-UA", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
                     </p>
                   </div>
                 </Link>
@@ -415,13 +415,13 @@ export default async function AdminDashboardPage() {
         {/* Recent activity */}
         <div className="p-6 rounded-2xl bg-white border border-gray-200/80">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-semibold text-gray-800">Son İşlemler</h2>
+            <h2 className="text-sm font-semibold text-gray-800">Останні операції</h2>
           </div>
           {(data?.recentClients?.length || 0) + (data?.recentPayments?.length || 0) === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-center">
               <Clock className="w-10 h-10 text-gray-200 mb-3" />
-              <p className="text-sm text-gray-400">Henüz işlem kaydı yok</p>
-              <p className="text-xs text-gray-300 mt-1">Müvekkil ve dosya işlemleri burada listenecek</p>
+              <p className="text-sm text-gray-400">Поки немає записів операцій</p>
+              <p className="text-xs text-gray-300 mt-1">Операції з клієнтами та справами будуть тут</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -431,7 +431,7 @@ export default async function AdminDashboardPage() {
                   id: c.id,
                   type: "client" as const,
                   text: `${c.firstName} ${c.lastName}`,
-                  sub: c.status === "active" ? "Yeni müvekkil eklendi" : "Müvekkil güncellendi",
+                  sub: c.status === "active" ? "Новий клієнт додано" : "Клієнта оновлено",
                   date: new Date(c.createdAt),
                   icon: Users,
                   color: "bg-blue-50 text-blue-600",
@@ -439,10 +439,10 @@ export default async function AdminDashboardPage() {
                 ...(data?.recentPayments?.map((p) => ({
                   id: p.id,
                   type: "payment" as const,
-                  text: `${p.title} — ${Number(p.amount).toLocaleString("tr-TR")} ${p.currency}`,
+                  text: `${p.title} — ${Number(p.amount).toLocaleString("uk-UA")} ${p.currency}`,
                   sub: p.clientFirstName
-                    ? `${p.clientFirstName} ${p.clientLastName} · ${p.status === "paid" ? "Ödendi" : p.status === "pending" ? "Bekliyor" : p.status}`
-                    : p.status === "paid" ? "Ödendi" : "Bekliyor",
+                    ? `${p.clientFirstName} ${p.clientLastName} · ${p.status === "paid" ? "Оплачено" : p.status === "pending" ? "Очікує" : p.status}`
+                    : p.status === "paid" ? "Оплачено" : "Очікує",
                   date: new Date(p.createdAt),
                   icon: DollarSign,
                   color: p.status === "paid" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600",
@@ -460,7 +460,7 @@ export default async function AdminDashboardPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-gray-800 truncate">{item.text}</p>
                         <p className="text-[10px] text-gray-400">
-                          {item.sub} · {item.date.toLocaleDateString("tr-TR", { day: "numeric", month: "short" })}
+                          {item.sub} · {item.date.toLocaleDateString("uk-UA", { day: "numeric", month: "short" })}
                         </p>
                       </div>
                     </div>

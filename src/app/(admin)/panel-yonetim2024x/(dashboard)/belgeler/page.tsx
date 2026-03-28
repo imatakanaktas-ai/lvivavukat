@@ -16,9 +16,9 @@ export default async function DocumentsPage() {
   return (
     <div className="space-y-6 max-w-6xl">
       <div>
-        <h1 className="text-2xl font-serif font-bold text-gray-900">Belge Oluşturucu</h1>
+        <h1 className="text-2xl font-serif font-bold text-gray-900">Генератор документів</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Şablonlardan veya AI ile profesyonel hukuki belgeler oluşturun
+          Створюйте професійні юридичні документи з шаблонів або за допомогою AI
         </p>
       </div>
       <DocumentGenerator templates={templates} clients={clientsList} />

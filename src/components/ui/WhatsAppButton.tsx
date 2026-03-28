@@ -3,7 +3,7 @@
 import { MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function WhatsAppButton() {
+export default function WhatsAppButton({ tooltip, ariaLabel }: { tooltip?: string; ariaLabel?: string }) {
   return (
     <motion.a
       href="https://wa.me/380000000000"
@@ -15,7 +15,7 @@ export default function WhatsAppButton() {
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ delay: 1, type: "spring", stiffness: 200 }}
-      aria-label="WhatsApp ile iletişime geçin"
+      aria-label={ariaLabel || "WhatsApp"}
     >
       <MessageCircle className="w-7 h-7" />
       {/* Pulse ring */}
@@ -25,7 +25,7 @@ export default function WhatsAppButton() {
       <span className="absolute right-full mr-3 px-3 py-1.5 bg-white text-foreground text-sm 
         font-medium rounded-lg shadow-lg whitespace-nowrap opacity-0 group-hover:opacity-100 
         transition-opacity pointer-events-none">
-        Bize yazın!
+        {tooltip || "WhatsApp"}
       </span>
     </motion.a>
   );

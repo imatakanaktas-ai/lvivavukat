@@ -38,7 +38,7 @@ export default function ClientNotesSection({
     <div className="p-6 rounded-2xl bg-white border border-gray-200/80">
       <h2 className="text-sm font-semibold text-gray-800 flex items-center gap-2 mb-4">
         <StickyNote className="w-4 h-4 text-gray-400" />
-        Notlar
+        Нотатки
       </h2>
 
       {/* Add note */}
@@ -47,7 +47,7 @@ export default function ClientNotesSection({
           type="text"
           value={newNote}
           onChange={(e) => setNewNote(e.target.value)}
-          placeholder="Not ekle..."
+          placeholder="Додати нотатку..."
           className="flex-1 px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm
             focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
           onKeyDown={(e) => e.key === "Enter" && handleAdd()}
@@ -64,7 +64,7 @@ export default function ClientNotesSection({
 
       {/* Notes list */}
       {notes.length === 0 ? (
-        <p className="text-sm text-gray-400 text-center py-4">Henüz not eklenmemiş</p>
+        <p className="text-sm text-gray-400 text-center py-4">Нотаток поки немає</p>
       ) : (
         <div className="space-y-2 max-h-64 overflow-y-auto">
           {notes.map((note) => (
@@ -74,7 +74,7 @@ export default function ClientNotesSection({
                 onClick={() => handleDelete(note.id)}
                 className="opacity-0 group-hover:opacity-100 w-6 h-6 rounded flex items-center justify-center 
                   text-gray-300 hover:text-red-500 transition-all"
-                aria-label="Notu sil"
+                aria-label="Видалити нотатку"
               >
                 <Trash2 className="w-3 h-3" />
               </button>

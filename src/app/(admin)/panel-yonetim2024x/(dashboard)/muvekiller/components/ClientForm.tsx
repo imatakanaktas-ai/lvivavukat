@@ -69,13 +69,13 @@ export default function ClientForm({ client }: ClientFormProps) {
       <div className="p-6 rounded-2xl bg-white border border-gray-200/80">
         <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
           <User className="w-4 h-4 text-gray-400" />
-          Kişisel Bilgiler
+          Особиста інформація
         </h2>
 
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <label htmlFor="firstName" className="block text-xs font-medium text-gray-600 mb-1">
-              Ad <span className="text-red-400">*</span>
+              Ім'я <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
@@ -85,12 +85,12 @@ export default function ClientForm({ client }: ClientFormProps) {
               defaultValue={client?.firstName}
               className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]/30"
-              placeholder="Müvekkil adı"
+              placeholder="Ім'я клієнта"
             />
           </div>
           <div>
             <label htmlFor="lastName" className="block text-xs font-medium text-gray-600 mb-1">
-              Soyad <span className="text-red-400">*</span>
+              Прізвище <span className="text-red-400">*</span>
             </label>
             <input
               type="text"
@@ -100,25 +100,25 @@ export default function ClientForm({ client }: ClientFormProps) {
               defaultValue={client?.lastName}
               className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]/30"
-              placeholder="Müvekkil soyadı"
+              placeholder="Прізвище клієнта"
             />
           </div>
           <div>
             <label htmlFor="nationality" className="block text-xs font-medium text-gray-600 mb-1">
-              <Globe className="w-3 h-3 inline mr-1" />Uyruk
+              <Globe className="w-3 h-3 inline mr-1" />Громадянство
             </label>
             <input
               type="text"
               id="nationality"
               name="nationality"
-              defaultValue={client?.nationality || "Türk"}
+              defaultValue={client?.nationality || "Українець"}
               className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]/30"
             />
           </div>
           <div>
             <label htmlFor="passportNo" className="block text-xs font-medium text-gray-600 mb-1">
-              <FileText className="w-3 h-3 inline mr-1" />Pasaport No
+              <FileText className="w-3 h-3 inline mr-1" />Номер паспорта
             </label>
             <input
               type="text"
@@ -137,12 +137,12 @@ export default function ClientForm({ client }: ClientFormProps) {
       <div className="p-6 rounded-2xl bg-white border border-gray-200/80">
         <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
           <Phone className="w-4 h-4 text-gray-400" />
-          İletişim Bilgileri
+          Контактна інформація
         </h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <label htmlFor="phone" className="block text-xs font-medium text-gray-600 mb-1">
-              <Phone className="w-3 h-3 inline mr-1" />Telefon
+              <Phone className="w-3 h-3 inline mr-1" />Телефон
             </label>
             <input
               type="tel"
@@ -151,12 +151,12 @@ export default function ClientForm({ client }: ClientFormProps) {
               defaultValue={client?.phone || ""}
               className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]/30"
-              placeholder="+90 5XX XXX XX XX"
+              placeholder="+380 XX XXX XX XX"
             />
           </div>
           <div>
             <label htmlFor="email" className="block text-xs font-medium text-gray-600 mb-1">
-              <Mail className="w-3 h-3 inline mr-1" />E-posta
+              <Mail className="w-3 h-3 inline mr-1" />Ел. пошта
             </label>
             <input
               type="email"
@@ -165,12 +165,12 @@ export default function ClientForm({ client }: ClientFormProps) {
               defaultValue={client?.email || ""}
               className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]/30"
-              placeholder="ornek@email.com"
+              placeholder="example@email.com"
             />
           </div>
           <div className="sm:col-span-2">
             <label htmlFor="address" className="block text-xs font-medium text-gray-600 mb-1">
-              <MapPin className="w-3 h-3 inline mr-1" />Adres
+              <MapPin className="w-3 h-3 inline mr-1" />Адреса
             </label>
             <input
               type="text"
@@ -179,7 +179,7 @@ export default function ClientForm({ client }: ClientFormProps) {
               defaultValue={client?.address || ""}
               className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]/30"
-              placeholder="Adres bilgisi"
+              placeholder="Адреса проживання"
             />
           </div>
         </div>
@@ -189,12 +189,12 @@ export default function ClientForm({ client }: ClientFormProps) {
       <div className="p-6 rounded-2xl bg-white border border-gray-200/80">
         <h2 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2">
           <StickyNote className="w-4 h-4 text-gray-400" />
-          Durum ve Notlar
+          Статус та нотатки
         </h2>
         <div className="space-y-4">
           <div>
             <label htmlFor="status" className="block text-xs font-medium text-gray-600 mb-1">
-              Durum
+              Статус
             </label>
             <select
               id="status"
@@ -203,14 +203,14 @@ export default function ClientForm({ client }: ClientFormProps) {
               className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]/30"
             >
-              <option value="active">Aktif</option>
-              <option value="pending">Bekliyor</option>
-              <option value="inactive">Pasif</option>
+              <option value="active">Активний</option>
+              <option value="pending">Очікує</option>
+              <option value="inactive">Неактивний</option>
             </select>
           </div>
           <div>
             <label htmlFor="notes" className="block text-xs font-medium text-gray-600 mb-1">
-              Genel Notlar
+              Загальні нотатки
             </label>
             <textarea
               id="notes"
@@ -219,7 +219,7 @@ export default function ClientForm({ client }: ClientFormProps) {
               defaultValue={client?.notes || ""}
               className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-sm resize-y
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C]/30"
-              placeholder="Müvekkil hakkında genel notlar..."
+              placeholder="Загальні нотатки про клієнта..."
             />
           </div>
         </div>
@@ -237,12 +237,12 @@ export default function ClientForm({ client }: ClientFormProps) {
           {isPending ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Kaydediliyor...
+              Збереження...
             </>
           ) : (
             <>
               <Save className="w-4 h-4" />
-              {isEdit ? "Güncelle" : "Kaydet"}
+              {isEdit ? "Оновити" : "Зберегти"}
             </>
           )}
         </button>

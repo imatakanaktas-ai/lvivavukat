@@ -39,33 +39,33 @@ const ADMIN_PREFIX = process.env.NEXT_PUBLIC_ADMIN_ROUTE_PREFIX || "panel-yoneti
 /* ───────────── Config Maps ───────────── */
 
 const itemTypeConfig: Record<string, { label: string; color: string; bgColor: string; icon: typeof Bell }> = {
-  reminder: { label: "Hatırlatma", color: "text-purple-700", bgColor: "bg-purple-50", icon: Bell },
-  payment: { label: "Ödeme", color: "text-amber-700", bgColor: "bg-amber-50", icon: DollarSign },
-  courtDate: { label: "Mahkeme", color: "text-red-700", bgColor: "bg-red-50", icon: Gavel },
+  reminder: { label: "Нагадування", color: "text-purple-700", bgColor: "bg-purple-50", icon: Bell },
+  payment: { label: "Оплата", color: "text-amber-700", bgColor: "bg-amber-50", icon: DollarSign },
+  courtDate: { label: "Суд", color: "text-red-700", bgColor: "bg-red-50", icon: Gavel },
 };
 
 const typeConfig: Record<string, { label: string; color: string; bgColor: string; icon: typeof Gavel }> = {
-  mahkeme: { label: "Mahkeme", color: "text-red-700", bgColor: "bg-red-50", icon: Gavel },
-  odeme: { label: "Ödeme", color: "text-amber-700", bgColor: "bg-amber-50", icon: DollarSign },
-  devlet_islemi: { label: "Devlet İşlemi", color: "text-blue-700", bgColor: "bg-blue-50", icon: FileText },
-  vergi: { label: "Vergi", color: "text-emerald-700", bgColor: "bg-emerald-50", icon: Receipt },
-  deadline: { label: "Son Tarih", color: "text-orange-700", bgColor: "bg-orange-50", icon: Clock },
-  ozel: { label: "Özel", color: "text-purple-700", bgColor: "bg-purple-50", icon: Star },
-  avukat_ucreti: { label: "Avukat Ücreti", color: "text-indigo-700", bgColor: "bg-indigo-50", icon: DollarSign },
-  devlet_harci: { label: "Devlet Harcı", color: "text-teal-700", bgColor: "bg-teal-50", icon: Receipt },
-  noter: { label: "Noter", color: "text-cyan-700", bgColor: "bg-cyan-50", icon: FileText },
-  diger: { label: "Diğer", color: "text-gray-600", bgColor: "bg-gray-100", icon: Clock },
+  mahkeme: { label: "Суд", color: "text-red-700", bgColor: "bg-red-50", icon: Gavel },
+  odeme: { label: "Оплата", color: "text-amber-700", bgColor: "bg-amber-50", icon: DollarSign },
+  devlet_islemi: { label: "Державна справа", color: "text-blue-700", bgColor: "bg-blue-50", icon: FileText },
+  vergi: { label: "Податок", color: "text-emerald-700", bgColor: "bg-emerald-50", icon: Receipt },
+  deadline: { label: "Дедлайн", color: "text-orange-700", bgColor: "bg-orange-50", icon: Clock },
+  ozel: { label: "Особисте", color: "text-purple-700", bgColor: "bg-purple-50", icon: Star },
+  avukat_ucreti: { label: "Гонорар адвоката", color: "text-indigo-700", bgColor: "bg-indigo-50", icon: DollarSign },
+  devlet_harci: { label: "Державне мито", color: "text-teal-700", bgColor: "bg-teal-50", icon: Receipt },
+  noter: { label: "Нотаріус", color: "text-cyan-700", bgColor: "bg-cyan-50", icon: FileText },
+  diger: { label: "Інше", color: "text-gray-600", bgColor: "bg-gray-100", icon: Clock },
 };
 
 const statusLabels: Record<string, { label: string; color: string }> = {
-  active: { label: "Aktif", color: "bg-blue-50 text-blue-700" },
-  completed: { label: "Tamamlandı", color: "bg-emerald-50 text-emerald-700" },
-  pending: { label: "Bekliyor", color: "bg-amber-50 text-amber-700" },
-  paid: { label: "Ödendi", color: "bg-emerald-50 text-emerald-700" },
-  overdue: { label: "Gecikmiş", color: "bg-red-50 text-red-700" },
-  cancelled: { label: "İptal", color: "bg-gray-100 text-gray-500" },
-  scheduled: { label: "Planlandı", color: "bg-blue-50 text-blue-700" },
-  postponed: { label: "Ertelendi", color: "bg-orange-50 text-orange-700" },
+  active: { label: "Активний", color: "bg-blue-50 text-blue-700" },
+  completed: { label: "Завершено", color: "bg-emerald-50 text-emerald-700" },
+  pending: { label: "Очікує", color: "bg-amber-50 text-amber-700" },
+  paid: { label: "Оплачено", color: "bg-emerald-50 text-emerald-700" },
+  overdue: { label: "Протерміновано", color: "bg-red-50 text-red-700" },
+  cancelled: { label: "Скасовано", color: "bg-gray-100 text-gray-500" },
+  scheduled: { label: "Заплановано", color: "bg-blue-50 text-blue-700" },
+  postponed: { label: "Відкладено", color: "bg-orange-50 text-orange-700" },
 };
 
 type SortField = "date" | "amount" | "title" | "client";
@@ -171,12 +171,12 @@ export default function EventsDashboard({
           break;
         }
         case "title":
-          cmp = a.title.localeCompare(b.title, "tr");
+          cmp = a.title.localeCompare(b.title, "uk");
           break;
         case "client": {
           const na = a.clientFirstName || "";
           const nb = b.clientFirstName || "";
-          cmp = na.localeCompare(nb, "tr");
+          cmp = na.localeCompare(nb, "uk");
           break;
         }
       }
@@ -292,7 +292,7 @@ export default function EventsDashboard({
             {isOverdue && (
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold text-red-700 bg-red-100">
                 <AlertCircle className="w-3 h-3" />
-                Gecikmiş
+                Протерміновано
               </span>
             )}
           </div>
@@ -307,12 +307,12 @@ export default function EventsDashboard({
           <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-gray-400">
             <span className="flex items-center gap-1">
               <CalendarDays className="w-3 h-3" />
-              {d.toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" })}
+              {d.toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" })}
             </span>
             {item.amount && (
               <span className="flex items-center gap-1 font-bold text-gray-700">
                 <DollarSign className="w-3 h-3" />
-                {Number(item.amount).toLocaleString("tr-TR", { minimumFractionDigits: 2 })} {item.currency}
+                {Number(item.amount).toLocaleString("uk-UA", { minimumFractionDigits: 2 })} {item.currency}
               </span>
             )}
             {item.clientFirstName && (
@@ -348,10 +348,10 @@ export default function EventsDashboard({
       {/* Stats Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: "Hatırlatma", value: stats.totalReminders, icon: Bell, color: "text-purple-600", bg: "bg-purple-50" },
-          { label: "Ödeme", value: stats.totalPayments, icon: DollarSign, color: "text-amber-600", bg: "bg-amber-50" },
-          { label: "Mahkeme", value: stats.totalCourtDates, icon: Gavel, color: "text-red-600", bg: "bg-red-50" },
-          { label: "Gecikmiş", value: stats.overdueCount, icon: AlertCircle, color: "text-red-600", bg: "bg-red-50" },
+          { label: "Нагадування", value: stats.totalReminders, icon: Bell, color: "text-purple-600", bg: "bg-purple-50" },
+          { label: "Оплати", value: stats.totalPayments, icon: DollarSign, color: "text-amber-600", bg: "bg-amber-50" },
+          { label: "Суд", value: stats.totalCourtDates, icon: Gavel, color: "text-red-600", bg: "bg-red-50" },
+          { label: "Протерміновано", value: stats.overdueCount, icon: AlertCircle, color: "text-red-600", bg: "bg-red-50" },
         ].map((s) => {
           const Icon = s.icon;
           return (
@@ -380,7 +380,7 @@ export default function EventsDashboard({
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Ara... (başlık, açıklama, müvekkil)"
+              placeholder="Пошук... (назва, опис, клієнт)"
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
             />
@@ -396,7 +396,7 @@ export default function EventsDashboard({
               }`}
           >
             <SlidersHorizontal className="w-4 h-4" />
-            Filtre & Sırala
+            Фільтр та сортування
           </button>
 
           {/* New Reminder */}
@@ -406,7 +406,7 @@ export default function EventsDashboard({
               px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Yeni Hatırlatma
+            Нове нагадування
           </button>
         </div>
 
@@ -414,10 +414,10 @@ export default function EventsDashboard({
         <div className="flex flex-wrap gap-2">
           {(["all", "reminder", "payment", "courtDate"] as const).map((t) => {
             const labels: Record<string, string> = {
-              all: `Tümü (${initialItems.length})`,
-              reminder: `Hatırlatmalar (${initialItems.filter((i) => i.itemType === "reminder").length})`,
-              payment: `Ödemeler (${initialItems.filter((i) => i.itemType === "payment").length})`,
-              courtDate: `Mahkeme (${initialItems.filter((i) => i.itemType === "courtDate").length})`,
+              all: `Всі (${initialItems.length})`,
+              reminder: `Нагадування (${initialItems.filter((i) => i.itemType === "reminder").length})`,
+              payment: `Оплати (${initialItems.filter((i) => i.itemType === "payment").length})`,
+              courtDate: `Суд (${initialItems.filter((i) => i.itemType === "courtDate").length})`,
             };
             return (
               <button
@@ -443,7 +443,7 @@ export default function EventsDashboard({
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1.5">
                   <Users className="w-3 h-3 inline mr-1" />
-                  Müvekkil
+                  Клієнт
                 </label>
                 <select
                   value={filterClient}
@@ -451,7 +451,7 @@ export default function EventsDashboard({
                   className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-800
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
                 >
-                  <option value="all">Tüm Müvekkiller</option>
+                  <option value="all">Всі клієнти</option>
                   {clientList.map((c) => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
@@ -462,7 +462,7 @@ export default function EventsDashboard({
               <div>
                 <label className="block text-xs font-medium text-gray-500 mb-1.5">
                   <Filter className="w-3 h-3 inline mr-1" />
-                  Durum
+                  Статус
                 </label>
                 <select
                   value={filterStatus}
@@ -470,7 +470,7 @@ export default function EventsDashboard({
                   className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm text-gray-800
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
                 >
-                  <option value="all">Tüm Durumlar</option>
+                  <option value="all">Всі статуси</option>
                   {uniqueStatuses.map((s) => (
                     <option key={s} value={s}>{statusLabels[s]?.label || s}</option>
                   ))}
@@ -490,7 +490,7 @@ export default function EventsDashboard({
                   }}
                   className="px-4 py-2 rounded-lg text-xs font-semibold text-gray-500 border border-gray-200 hover:bg-gray-50 transition-colors"
                 >
-                  Filtreleri Temizle
+                  Очистити фільтри
                 </button>
               </div>
             </div>
@@ -499,13 +499,13 @@ export default function EventsDashboard({
             <div>
               <p className="text-xs font-medium text-gray-500 mb-2 flex items-center gap-1">
                 <ArrowUpDown className="w-3 h-3" />
-                Sıralama
+                Сортування
               </p>
               <div className="flex flex-wrap gap-2">
-                <SortBtn field="date" label="Tarih" />
-                <SortBtn field="amount" label="Tutar" />
-                <SortBtn field="title" label="Başlık" />
-                <SortBtn field="client" label="Müvekkil" />
+                <SortBtn field="date" label="Дата" />
+                <SortBtn field="amount" label="Сума" />
+                <SortBtn field="title" label="Назва" />
+                <SortBtn field="client" label="Клієнт" />
               </div>
             </div>
           </div>
@@ -515,16 +515,16 @@ export default function EventsDashboard({
       {/* Active filters summary */}
       {(filterClient !== "all" || filterStatus !== "all" || search) && (
         <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="text-gray-400 font-medium">Aktif filtreler:</span>
+          <span className="text-gray-400 font-medium">Активні фільтри:</span>
           {filterClient !== "all" && (
             <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-blue-50 text-blue-700 font-semibold">
-              Müvekkil: {clientList.find((c) => c.id === filterClient)?.name}
+              Клієнт: {clientList.find((c) => c.id === filterClient)?.name}
               <button onClick={() => setFilterClient("all")}><X className="w-3 h-3" /></button>
             </span>
           )}
           {filterStatus !== "all" && (
             <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 text-amber-700 font-semibold">
-              Durum: {statusLabels[filterStatus]?.label || filterStatus}
+              Статус: {statusLabels[filterStatus]?.label || filterStatus}
               <button onClick={() => setFilterStatus("all")}><X className="w-3 h-3" /></button>
             </span>
           )}
@@ -540,12 +540,12 @@ export default function EventsDashboard({
       {/* Results count */}
       <div className="flex items-center justify-between">
         <p className="text-xs text-gray-400 font-medium">
-          {filtered.length} kayıt gösteriliyor
-          {filtered.length !== initialItems.length && ` (toplam ${initialItems.length})`}
+          {filtered.length} записів показано
+          {filtered.length !== initialItems.length && ` (всього ${initialItems.length})`}
         </p>
         {stats.pendingPaymentTotal > 0 && filterType !== "courtDate" && filterType !== "reminder" && (
           <p className="text-xs font-bold text-amber-600">
-            Bekleyen toplam: {stats.pendingPaymentTotal.toLocaleString("tr-TR", { minimumFractionDigits: 2 })} UAH
+            Очікує всього: {stats.pendingPaymentTotal.toLocaleString("uk-UA", { minimumFractionDigits: 2 })} UAH
           </p>
         )}
       </div>
@@ -554,8 +554,8 @@ export default function EventsDashboard({
       {filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-gray-200/80">
           <LayoutGrid className="w-12 h-12 text-gray-200 mb-4" />
-          <p className="text-gray-500 font-medium">Kayıt bulunamadı</p>
-          <p className="text-sm text-gray-400 mt-1">Filtreleri değiştirin veya yeni kayıt ekleyin.</p>
+          <p className="text-gray-500 font-medium">Записів не знайдено</p>
+          <p className="text-sm text-gray-400 mt-1">Змініть фільтри або додайте новий запис.</p>
         </div>
       ) : (
         <div className="space-y-2">
@@ -568,7 +568,7 @@ export default function EventsDashboard({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-900">Yeni Hatırlatma</h3>
+              <h3 className="text-lg font-bold text-gray-900">Нове нагадування</h3>
               <button onClick={() => setShowModal(false)} className="p-1 hover:bg-gray-100 rounded-lg">
                 <X className="w-5 h-5 text-gray-400" />
               </button>
@@ -585,14 +585,14 @@ export default function EventsDashboard({
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
                   <Users className="w-3 h-3 inline mr-1" />
-                  Müvekkil
+                  Клієнт
                 </label>
                 <select
                   name="clientId"
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
                 >
-                  <option value="">Müvekkil Seçin (isteğe bağlı)</option>
+                  <option value="">Оберіть клієнта (необовʼязково)</option>
                   {clientList.map((c) => (
                     <option key={c.id} value={c.id}>{c.name}</option>
                   ))}
@@ -601,7 +601,7 @@ export default function EventsDashboard({
 
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Başlık <span className="text-red-400">*</span>
+                  Назва <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -609,25 +609,25 @@ export default function EventsDashboard({
                   required
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-                  placeholder="Hatırlatma başlığı"
+                  placeholder="Назва нагадування"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Açıklama</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Опис</label>
                 <textarea
                   name="description"
                   rows={2}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800 resize-none
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-                  placeholder="Detaylar (isteğe bağlı)"
+                  placeholder="Деталі (необовʼязково)"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-medium text-gray-600 mb-1">
-                    Tarih <span className="text-red-400">*</span>
+                    Дата <span className="text-red-400">*</span>
                   </label>
                   <input
                     type="datetime-local"
@@ -639,7 +639,7 @@ export default function EventsDashboard({
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-gray-600 mb-1">
-                    Tür <span className="text-red-400">*</span>
+                    Тип <span className="text-red-400">*</span>
                   </label>
                   <select
                     name="type"
@@ -647,12 +647,12 @@ export default function EventsDashboard({
                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                       focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
                   >
-                    <option value="mahkeme">Mahkeme</option>
-                    <option value="odeme">Ödeme</option>
-                    <option value="devlet_islemi">Devlet İşlemi</option>
-                    <option value="vergi">Vergi</option>
-                    <option value="deadline">Son Tarih</option>
-                    <option value="ozel">Özel</option>
+                    <option value="mahkeme">Суд</option>
+                    <option value="odeme">Оплата</option>
+                    <option value="devlet_islemi">Державна справа</option>
+                    <option value="vergi">Податок</option>
+                    <option value="deadline">Дедлайн</option>
+                    <option value="ozel">Особисте</option>
                   </select>
                 </div>
               </div>
@@ -663,7 +663,7 @@ export default function EventsDashboard({
                   onClick={() => setShowModal(false)}
                   className="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
                 >
-                  İptal
+                  Скасувати
                 </button>
                 <button
                   type="submit"
@@ -672,7 +672,7 @@ export default function EventsDashboard({
                     bg-[#0A1628] hover:bg-[#1B2A4A] text-white transition-colors disabled:opacity-50"
                 >
                   {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                  Ekle
+                  Додати
                 </button>
               </div>
             </form>

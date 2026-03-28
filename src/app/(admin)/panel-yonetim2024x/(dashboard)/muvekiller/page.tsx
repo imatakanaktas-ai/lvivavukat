@@ -15,9 +15,9 @@ import { getClients } from "./actions";
 const ADMIN_PREFIX = process.env.ADMIN_ROUTE_PREFIX || "panel-yonetim2024x";
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof UserCheck }> = {
-  active: { label: "Aktif", color: "bg-emerald-100 text-emerald-700", icon: UserCheck },
-  inactive: { label: "Pasif", color: "bg-gray-100 text-gray-600", icon: UserX },
-  pending: { label: "Bekliyor", color: "bg-amber-100 text-amber-700", icon: Clock },
+  active: { label: "Активний", color: "bg-emerald-100 text-emerald-700", icon: UserCheck },
+  inactive: { label: "Неактивний", color: "bg-gray-100 text-gray-600", icon: UserX },
+  pending: { label: "Очікує", color: "bg-amber-100 text-amber-700", icon: Clock },
 };
 
 export default async function ClientsListPage({
@@ -43,9 +43,9 @@ export default async function ClientsListPage({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900">Müvekkiller</h1>
+          <h1 className="text-2xl font-serif font-bold text-gray-900">Клієнти</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Toplam {data.total} müvekkil kayıtlı
+            Всього {data.total} клієнтів зареєстровано
           </p>
         </div>
         <Link
@@ -54,7 +54,7 @@ export default async function ClientsListPage({
             px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors"
         >
           <Plus className="w-4 h-4" />
-          Yeni Müvekkil
+          Новий клієнт
         </Link>
       </div>
 
@@ -66,7 +66,7 @@ export default async function ClientsListPage({
             type="text"
             name="search"
             defaultValue={params.search}
-            placeholder="İsim, e-posta veya telefon ara..."
+            placeholder="Ім'я, ел. пошта або телефон..."
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white border border-gray-200 text-sm 
               text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
           />
@@ -83,7 +83,7 @@ export default async function ClientsListPage({
                   : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
                 }`}
             >
-              {s === "all" ? "Tümü" : s === "active" ? "Aktif" : s === "pending" ? "Bekliyor" : "Pasif"}
+              {s === "all" ? "Всі" : s === "active" ? "Активні" : s === "pending" ? "Очікують" : "Неактивні"}
             </Link>
           ))}
         </div>
@@ -93,16 +93,16 @@ export default async function ClientsListPage({
       {data.clients.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-gray-200/80">
           <Users className="w-12 h-12 text-gray-200 mb-4" />
-          <p className="text-gray-500 font-medium">Henüz müvekkil kaydı yok</p>
+          <p className="text-gray-500 font-medium">Клієнтів поки немає</p>
           <p className="text-sm text-gray-400 mt-1">
-            {params.search ? "Aramanızla eşleşen sonuç bulunamadı." : "Yeni müvekkil ekleyerek başlayın."}
+            {params.search ? "Не знайдено результатів за вашим запитом." : "Почніть з додавання нового клієнта."}
           </p>
           <Link
             href={`/${ADMIN_PREFIX}/muvekiller/yeni`}
             className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#C9A84C] hover:underline"
           >
             <Plus className="w-4 h-4" />
-            Yeni Müvekkil Ekle
+            Додати нового клієнта
           </Link>
         </div>
       ) : (
@@ -112,10 +112,10 @@ export default async function ClientsListPage({
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-100">
-                  <th className="text-left text-xs font-semibold text-gray-500 px-5 py-3">Müvekkil</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 px-5 py-3">İletişim</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 px-5 py-3">Durum</th>
-                  <th className="text-left text-xs font-semibold text-gray-500 px-5 py-3">Kayıt Tarihi</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 px-5 py-3">Клієнт</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 px-5 py-3">Контакти</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 px-5 py-3">Статус</th>
+                  <th className="text-left text-xs font-semibold text-gray-500 px-5 py-3">Дата реєстрації</th>
                   <th className="text-right text-xs font-semibold text-gray-500 px-5 py-3"></th>
                 </tr>
               </thead>
@@ -165,7 +165,7 @@ export default async function ClientsListPage({
                       </td>
                       <td className="px-5 py-4">
                         <p className="text-xs text-gray-400">
-                          {new Date(client.createdAt).toLocaleDateString("tr-TR")}
+                          {new Date(client.createdAt).toLocaleDateString("uk-UA")}
                         </p>
                       </td>
                       <td className="px-5 py-4 text-right">

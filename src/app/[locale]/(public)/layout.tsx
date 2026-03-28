@@ -19,7 +19,7 @@ export default async function PublicLayout({
       <Header locale={locale as Locale} dict={dict} />
       <main className="flex-1">{children}</main>
       <Footer locale={locale as Locale} dict={dict} />
-      <WhatsAppButton />
+      <WhatsAppButton tooltip={dict.contact.whatsappTooltip} ariaLabel={dict.contact.whatsappButton} />
     </>
   );
 }

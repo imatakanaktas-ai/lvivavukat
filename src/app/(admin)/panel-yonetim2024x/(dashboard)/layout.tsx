@@ -6,8 +6,8 @@ import AdminHeader from "@/components/admin/AdminHeader";
 
 export const metadata: Metadata = {
   title: {
-    default: "Yönetim Paneli | Lviv Avukat",
-    template: "%s | Yönetim — Lviv Avukat",
+    default: "Панель управління | Lviv Avukat",
+    template: "%s | Панель — Lviv Avukat",
   },
   robots: { index: false, follow: false },
 };

@@ -198,6 +198,27 @@
     "heroDescription": "Hukuki ihtiyaçlarınız için bizimle iletişime geçin. İlk görüşme ücretsizdir.",
     "formTitle": "Bize Yazın",
     "formDescription": "Formu doldurarak mesajınızı gönderin. En kısa sürede size dönüş yapacağız.",
+    "nameLabel": "Ad Soyad",
+    "namePlaceholder": "Adınız ve soyadınız",
+    "emailLabel2": "E-posta",
+    "emailPlaceholder": "ornek@email.com",
+    "phoneLabel2": "Telefon",
+    "phonePlaceholder": "+90 5XX XXX XX XX",
+    "subjectLabel": "Konu",
+    "subjectPlaceholder": "Konu seçin",
+    "subjectResidence": "Oturum İzni",
+    "subjectWork": "Çalışma İzni",
+    "subjectMarriage": "Evlilik İşlemleri",
+    "subjectCompany": "Şirket Kurma",
+    "subjectRealEstate": "Gayrimenkul",
+    "subjectVisa": "Vize İşlemleri",
+    "subjectTranslation": "Tercüme/Apostil",
+    "subjectOther": "Diğer",
+    "messageLabel": "Mesajınız",
+    "messagePlaceholder": "Hukuki durumunuzla ilgili detayları yazın...",
+    "sending": "Gönderiliyor...",
+    "sendButton": "Mesaj Gönder",
+    "privacy": "Kişisel verileriniz gizlilik politikamız kapsamında korunmaktadır.",
     "name": "Adınız Soyadınız",
     "email": "E-posta Adresiniz",
     "phone": "Telefon Numaranız",
@@ -206,6 +227,8 @@
     "send": "Gönder",
     "successTitle": "Mesajınız Gönderildi!",
     "successMessage": "En kısa sürede size dönüş yapacağız.",
+    "errorGeneric": "Bir hata oluştu. Lütfen daha sonra tekrar deneyin veya WhatsApp ile ulaşın.",
+    "errorValidation": "Form verileri geçersiz.",
     "infoTitle": "İletişim Bilgileri",
     "address": "Adres",
     "phoneLabel": "Telefon",
@@ -217,6 +240,7 @@
     "whatsappTitle": "Hızlı İletişim",
     "whatsappDescription": "Acil sorularınız için WhatsApp üzerinden anında ulaşın.",
     "whatsappButton": "WhatsApp ile Ulaşın",
+    "whatsappTooltip": "Bize yazın!",
     "mapPlaceholder": "Google Maps entegrasyonu yakında eklenecek"
   },
   "blog": {
@@ -269,5 +293,21 @@
   "kvkk": {
     "title": "KVKK Aydınlatma Metni",
     "description": "Kişisel verilerin korunması kanunu kapsamında aydınlatma metni"
+  },
+  "notFound": {
+    "title": "Sayfa Bulunamadı",
+    "description": "Aradığınız sayfa taşınmış, silinmiş veya hiç var olmamış olabilir. Aşağıdaki bağlantıları kullanarak devam edebilirsiniz.",
+    "home": "Ana Sayfaya Dön",
+    "services": "Hizmetlerimiz",
+    "contact": "İletişim"
+  },
+  "globalError": {
+    "title": "Bir Hata Oluştu",
+    "description": "Beklenmeyen bir sorun oluştu. Sayfayı yenilemeyi deneyin veya ana sayfaya dönün.",
+    "retry": "Tekrar Dene",
+    "home": "Ana Sayfa"
+  },
+  "breadcrumb": {
+    "home": "Anasayfa"
   }
 }

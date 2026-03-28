@@ -35,7 +35,7 @@ export default async function EditClientPage({
           <h1 className="text-2xl font-serif font-bold text-gray-900">
             {client.firstName} {client.lastName}
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">Müvekkil bilgilerini düzenleyin</p>
+          <p className="text-sm text-gray-500 mt-0.5">Редагування інформації клієнта</p>
         </div>
       </div>
       <ClientForm client={client} />

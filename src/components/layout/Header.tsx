@@ -27,7 +27,20 @@ export default function Header({ locale, dict }: { locale: Locale; dict: Diction
   const prefix = locale === "uk" ? "/ua" : "";
   const navItems = getNavItems(dict, prefix);
   const switchLocale = locale === "uk" ? "tr" : "uk";
-  const switchPath = locale === "uk" ? "/" : "/ua";
+
+  // Compute language switch href preserving the current page path
+  const [switchHref, setSwitchHref] = useState(locale === "uk" ? "/" : "/ua");
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (locale === "uk") {
+      // Currently Ukrainian (/ua/...) → switch to Turkish (remove /ua prefix)
+      const stripped = path.replace(/^\/ua\/?/, "/");
+      setSwitchHref(stripped || "/");
+    } else {
+      // Currently Turkish (/...) → switch to Ukrainian (add /ua prefix)
+      setSwitchHref(`/ua${path === "/" ? "" : path}`);
+    }
+  }, [locale]);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -46,8 +59,10 @@ export default function Header({ locale, dict }: { locale: Locale; dict: Diction
     };
   }, [isMobileOpen]);
 
-  const handleLanguageSwitch = () => {
+  const handleLanguageSwitch = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
     document.cookie = `NEXT_LOCALE=${switchLocale};path=/;max-age=${365 * 24 * 60 * 60};samesite=lax`;
+    window.location.href = switchHref;
   };
 
   return (
@@ -120,27 +135,27 @@ export default function Header({ locale, dict }: { locale: Locale; dict: Diction
             ))}
 
             {/* Language Switcher */}
-            <Link
-              href={switchPath}
+            <a
+              href={switchHref}
               onClick={handleLanguageSwitch}
               className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white/80 
                 hover:text-accent transition-colors rounded-lg hover:bg-white/5 ml-1"
             >
               <Globe className="w-4 h-4" />
               <span>{dict.common.switchLanguage}</span>
-            </Link>
+            </a>
           </nav>
 
           {/* CTA + Mobile Toggle */}
           <div className="flex items-center gap-3">
             {/* Language Switcher (mobile-visible) */}
-            <Link
-              href={switchPath}
+            <a
+              href={switchHref}
               onClick={handleLanguageSwitch}
               className="lg:hidden flex items-center gap-1 text-white/80 hover:text-accent transition-colors text-sm"
             >
               <Globe className="w-4 h-4" />
-            </Link>
+            </a>
 
             <a
               href="https://wa.me/380000000000"

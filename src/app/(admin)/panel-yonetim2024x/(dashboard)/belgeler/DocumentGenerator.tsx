@@ -20,11 +20,11 @@ import {
 import { generateDocument, generateDocumentWithAI } from "./actions";
 
 const documentTypes = [
-  { value: "dilekce", label: "Dilekçe", icon: FileSignature },
-  { value: "sozlesme", label: "Sözleşme", icon: ScrollText },
-  { value: "vekaletname", label: "Vekaletname", icon: Stamp },
-  { value: "basvuru", label: "Başvuru Formu", icon: ClipboardList },
-  { value: "diger", label: "Diğer", icon: MoreHorizontal },
+  { value: "dilekce", label: "Клопотання", icon: FileSignature },
+  { value: "sozlesme", label: "Договір", icon: ScrollText },
+  { value: "vekaletname", label: "Довіреність", icon: Stamp },
+  { value: "basvuru", label: "Форма заяви", icon: ClipboardList },
+  { value: "diger", label: "Інше", icon: MoreHorizontal },
 ];
 
 type Template = {
@@ -73,7 +73,7 @@ export default function DocumentGenerator({
       if (result.success && result.content) {
         setGeneratedContent(result.content);
       } else {
-        setError(result.error || "Belge oluşturulamadı.");
+        setError(result.error || "Не вдалося створити документ.");
       }
     });
   };
@@ -92,7 +92,7 @@ export default function DocumentGenerator({
       if (result.success && result.content) {
         setGeneratedContent(result.content);
       } else {
-        setError(result.error || "AI belge oluşturulamadı.");
+        setError(result.error || "Не вдалося створити AI документ.");
       }
     });
   };
@@ -131,7 +131,7 @@ export default function DocumentGenerator({
             }`}
         >
           <Bot className="w-4 h-4" />
-          AI ile Oluştur
+          Створити з AI
         </button>
         <button
           onClick={() => { setMode("template"); setGeneratedContent(""); setError(""); }}
@@ -142,7 +142,7 @@ export default function DocumentGenerator({
             }`}
         >
           <FolderOpen className="w-4 h-4" />
-          Şablondan Oluştur
+          Створити з шаблону
         </button>
       </div>
 
@@ -153,12 +153,12 @@ export default function DocumentGenerator({
             <div className="p-6 rounded-2xl bg-white border border-gray-200/80 space-y-4">
               <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-purple-500" />
-                AI Belge Oluşturucu
+                AI Генератор документів
               </h2>
 
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Belge Türü <span className="text-red-400">*</span>
+                  Тип документа <span className="text-red-400">*</span>
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {documentTypes.map((dt) => {
@@ -183,14 +183,14 @@ export default function DocumentGenerator({
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Müvekkil (opsiyonel)</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Клієнт (необов'язково)</label>
                 <select
                   value={aiClient}
                   onChange={(e) => setAiClient(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
                 >
-                  <option value="">Müvekkil seçin...</option>
+                  <option value="">Оберіть клієнта...</option>
                   {clients.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.firstName} {c.lastName}
@@ -201,7 +201,7 @@ export default function DocumentGenerator({
 
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Belge Detayları <span className="text-red-400">*</span>
+                  Деталі документа <span className="text-red-400">*</span>
                 </label>
                 <textarea
                   value={aiDetails}
@@ -209,7 +209,7 @@ export default function DocumentGenerator({
                   rows={6}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 resize-y
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-                  placeholder="Belgenin konusu, amacı ve içermesi gereken bilgileri yazın...&#10;&#10;Ör: Türk vatandaşı Ahmet Yılmaz için Ukrayna oturum izni başvuru dilekçesi. Pasaport no: U12345678, başvuru tarihi: 15.03.2026"
+                  placeholder="Опишіть тему, мету та інформацію, яка має бути в документі...&#10;&#10;Напр.: Клопотання про посвідку на проживання в Україні для громадянина Туреччини Ахмет Ялмаз. Паспорт: U12345678, дата подачі: 15.03.2026"
                 />
               </div>
 
@@ -232,7 +232,7 @@ export default function DocumentGenerator({
                 ) : (
                   <Sparkles className="w-4 h-4" />
                 )}
-                {isGenerating ? "Oluşturuluyor..." : "Belge Oluştur"}
+                {isGenerating ? "Створення..." : "Створити документ"}
               </button>
             </div>
           ) : (
@@ -241,11 +241,11 @@ export default function DocumentGenerator({
               <div className="p-6 rounded-2xl bg-white border border-gray-200/80 space-y-3">
                 <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
                   <FolderOpen className="w-4 h-4 text-gray-400" />
-                  Şablon Seçin
+                  Оберіть шаблон
                 </h2>
                 {templates.length === 0 ? (
                   <p className="text-sm text-gray-400 py-4 text-center">
-                    Henüz şablon yok. Şablonlar sayfasından ekleyin.
+                    Шаблонів поки немає. Додайте їх на сторінці шаблонів.
                   </p>
                 ) : (
                   <div className="space-y-2 max-h-[300px] overflow-y-auto">
@@ -272,7 +272,7 @@ export default function DocumentGenerator({
               {/* Variables fill */}
               {selectedTemplate && variables && variables.length > 0 && (
                 <div className="p-6 rounded-2xl bg-white border border-gray-200/80 space-y-3">
-                  <h2 className="text-sm font-bold text-gray-800">Değişkenleri Doldurun</h2>
+                  <h2 className="text-sm font-bold text-gray-800">Заповніть змінні</h2>
                   {variables.map((v) => (
                     <div key={v}>
                       <label className="block text-xs font-medium text-gray-600 mb-1">{v}</label>
@@ -293,7 +293,7 @@ export default function DocumentGenerator({
                       bg-[#0A1628] hover:bg-[#1B2A4A] text-white transition-colors disabled:opacity-50"
                   >
                     {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
-                    Belge Oluştur
+                    Створити документ
                   </button>
                 </div>
               )}
@@ -306,7 +306,7 @@ export default function DocumentGenerator({
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-bold text-gray-800 flex items-center gap-2">
               <FileText className="w-4 h-4 text-gray-400" />
-              Oluşturulan Belge
+              Створений документ
             </h2>
             {generatedContent && (
               <div className="flex gap-2">
@@ -316,7 +316,7 @@ export default function DocumentGenerator({
                     text-gray-600 hover:bg-gray-100 transition-colors"
                 >
                   {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                  {copied ? "Kopyalandı" : "Kopyala"}
+                  {copied ? "Скопійовано" : "Копіювати"}
                 </button>
                 <button
                   onClick={handlePrint}
@@ -324,7 +324,7 @@ export default function DocumentGenerator({
                     text-gray-600 hover:bg-gray-100 transition-colors"
                 >
                   <Printer className="w-3.5 h-3.5" />
-                  Yazdır
+                  Друк
                 </button>
               </div>
             )}
@@ -342,8 +342,8 @@ export default function DocumentGenerator({
                 <FileText className="w-16 h-16 mx-auto mb-3 opacity-30" />
                 <p className="text-sm text-gray-400">
                   {mode === "ai"
-                    ? "Detayları girin ve AI ile belge oluşturun"
-                    : "Şablon seçin ve değişkenleri doldurun"}
+                    ? "Введіть деталі та створіть документ за допомогою AI"
+                    : "Оберіть шаблон та заповніть змінні"}
                 </p>
               </div>
             </div>

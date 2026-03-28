@@ -12,8 +12,8 @@ export default async function CalendarPage() {
   return (
     <div className="space-y-6 max-w-7xl">
       <div>
-        <h1 className="text-2xl font-serif font-bold text-gray-900">Takvim</h1>
-        <p className="text-sm text-gray-500 mt-1">Etkinliklerinizi ve randevularınızı yönetin</p>
+        <h1 className="text-2xl font-serif font-bold text-gray-900">Календар</h1>
+        <p className="text-sm text-gray-500 mt-1">Керуйте подіями та зустрічами</p>
       </div>
       <CalendarView initialEvents={events} />
     </div>

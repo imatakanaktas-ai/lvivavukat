@@ -19,7 +19,7 @@ export default async function EditBlogPostPage({
   return (
     <div className="space-y-6 max-w-7xl">
       <div>
-        <h1 className="text-2xl font-serif font-bold text-gray-900">Blog Yazısını Düzenle</h1>
+        <h1 className="text-2xl font-serif font-bold text-gray-900">Редагувати статтю</h1>
         <p className="text-sm text-gray-500 mt-1 truncate max-w-lg">{post.title}</p>
       </div>
       <BlogPostForm post={post} />

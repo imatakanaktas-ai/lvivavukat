@@ -21,12 +21,12 @@ type Message = {
 };
 
 const QUICK_PROMPTS = [
-  "Ukrayna'da oturum izni türleri nelerdir?",
-  "Türk vatandaşı Ukrayna'da nasıl şirket kurar?",
-  "Ukrayna'da evlilik işlemleri için gerekli belgeler",
-  "Oturum izni başvurusu reddedilirse ne yapılmalı?",
-  "Ukrayna'da gayrimenkul alım süreci",
-  "Çalışma izni başvuru prosedürü",
+  "Які види посвідки на проживання в Україні?",
+  "Як громадянин Туреччини може відкрити компанію в Україні?",
+  "Необхідні документи для шлюбу в Україні",
+  "Що робити, якщо заявку на посвідку відхилено?",
+  "Процес купівлі нерухомості в Україні",
+  "Процедура отримання дозволу на роботу",
 ];
 
 export default function AIChat() {
@@ -60,7 +60,7 @@ export default function AIChat() {
       const assistantMsg: Message = {
         id: crypto.randomUUID(),
         role: "assistant",
-        content: result.success && result.reply ? result.reply : (result.error || "Bir hata oluştu."),
+        content: result.success && result.reply ? result.reply : (result.error || "Сталася помилка."),
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, assistantMsg]);
@@ -92,9 +92,9 @@ export default function AIChat() {
               flex items-center justify-center mb-4">
               <Bot className="w-8 h-8 text-purple-600" />
             </div>
-            <h3 className="text-lg font-bold text-gray-800 mb-1">Lviv Avukat AI Asistanı</h3>
+            <h3 className="text-lg font-bold text-gray-800 mb-1">Lviv Avukat AI Асистент</h3>
             <p className="text-sm text-gray-500 mb-6 max-w-md">
-              Ukrayna hukuku, oturum izni, evlilik, şirket kurma ve daha fazlası hakkında sorularınızı yanıtlayabilirim.
+              Я можу відповісти на ваші питання про українське право, посвідку на проживання, шлюб, реєстрацію компанії тощо.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-lg">
               {QUICK_PROMPTS.map((prompt) => (
@@ -136,7 +136,7 @@ export default function AIChat() {
                   <div className="whitespace-pre-wrap">{msg.content}</div>
                   <div className={`flex items-center gap-2 mt-2 ${msg.role === "user" ? "justify-end" : "justify-between"}`}>
                     <span className={`text-[10px] ${msg.role === "user" ? "text-gray-400" : "text-gray-400"}`}>
-                      {msg.timestamp.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}
+                      {msg.timestamp.toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" })}
                     </span>
                     {msg.role === "assistant" && (
                       <button
@@ -168,7 +168,7 @@ export default function AIChat() {
                 <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-gray-50 border border-gray-100">
                   <div className="flex items-center gap-2 text-sm text-gray-500">
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Düşünüyorum...
+                    Думаю...
                   </div>
                 </div>
               </div>
@@ -185,7 +185,7 @@ export default function AIChat() {
             onClick={clearChat}
             className="flex-shrink-0 p-3 rounded-xl border border-gray-200 text-gray-400 
               hover:text-red-500 hover:border-red-200 hover:bg-red-50 transition-all"
-            title="Sohbeti temizle"
+            title="Очистити чат"
           >
             <Trash2 className="w-5 h-5" />
           </button>
@@ -200,7 +200,7 @@ export default function AIChat() {
             disabled={isSending}
             className="w-full px-5 py-3.5 pr-14 rounded-2xl bg-white border border-gray-200 text-sm text-gray-800 
               resize-none focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 disabled:opacity-50"
-            placeholder="Sorunuzu yazın..."
+            placeholder="Напишіть ваше питання..."
           />
           <button
             onClick={() => sendMessage()}

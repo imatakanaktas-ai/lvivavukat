@@ -67,7 +67,7 @@ export default function TemplateManager({
             px-5 py-2.5 rounded-xl text-sm font-semibold transition-colors"
         >
           <Plus className="w-4 h-4" />
-          Yeni Şablon
+          Новий шаблон
         </button>
       </div>
 
@@ -75,8 +75,8 @@ export default function TemplateManager({
       {templates.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-gray-200/80">
           <FolderOpen className="w-12 h-12 text-gray-200 mb-4" />
-          <p className="text-gray-500 font-medium">Henüz şablon yok</p>
-          <p className="text-sm text-gray-400 mt-1">İlk şablonunuzu oluşturun.</p>
+          <p className="text-gray-500 font-medium">Шаблонів поки немає</p>
+          <p className="text-sm text-gray-400 mt-1">Створіть ваш перший шаблон.</p>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -121,7 +121,7 @@ export default function TemplateManager({
                   </div>
                 )}
                 <p className="text-[11px] text-gray-400 mt-3">
-                  {new Date(t.createdAt).toLocaleDateString("tr-TR")}
+                  {new Date(t.createdAt).toLocaleDateString("uk-UA")}
                 </p>
               </div>
             );
@@ -153,7 +153,7 @@ export default function TemplateManager({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-lg font-bold text-gray-900">Yeni Şablon</h3>
+              <h3 className="text-lg font-bold text-gray-900">Новий шаблон</h3>
               <button onClick={() => setShowModal(false)} className="p-1 hover:bg-gray-100 rounded-lg">
                 <X className="w-5 h-5 text-gray-400" />
               </button>
@@ -169,7 +169,7 @@ export default function TemplateManager({
 
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Şablon Adı <span className="text-red-400">*</span>
+                  Назва шаблону <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -177,41 +177,41 @@ export default function TemplateManager({
                   required
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-                  placeholder="Ör: Oturum İzni Başvuru Dilekçesi"
+                  placeholder="Напр.: Клопотання про дозвіл на проживання"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-600 mb-1">Kategori</label>
+                <label className="block text-xs font-medium text-gray-600 mb-1">Категорія</label>
                 <select
                   name="category"
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
                 >
-                  <option value="dilekce">Dilekçe</option>
-                  <option value="sozlesme">Sözleşme</option>
-                  <option value="vekaletname">Vekaletname</option>
-                  <option value="basvuru">Başvuru</option>
-                  <option value="diger">Diğer</option>
+                  <option value="dilekce">Клопотання</option>
+                  <option value="sozlesme">Договір</option>
+                  <option value="vekaletname">Довіреність</option>
+                  <option value="basvuru">Заява</option>
+                  <option value="diger">Інше</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Değişkenler <span className="text-gray-400">(virgülle ayırın)</span>
+                  Змінні <span className="text-gray-400">(розділіть комами)</span>
                 </label>
                 <input
                   type="text"
                   name="variables"
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-800
                     focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-                  placeholder="müvekkil_adı, tarih, pasaport_no"
+                  placeholder="імʼя_клієнта, дата, номер_паспорта"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">
-                  Şablon İçeriği <span className="text-red-400">*</span>
+                  Зміст шаблону <span className="text-red-400">*</span>
                 </label>
                 <textarea
                   name="contentTemplate"
@@ -219,7 +219,7 @@ export default function TemplateManager({
                   rows={8}
                   className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 
                     font-mono resize-y focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
-                  placeholder={"Değişkenleri {{değişken_adı}} formatında kullanın.\n\nÖrnek:\nSayın Yetkili,\n\n{{müvekkil_adı}} isimli müvekkilim adına..."}
+                  placeholder="Використовуйте змінні у форматі {{назва_змінної}}.\n\nПриклад:\nШановний пане,\n\nВід імені мого клієнта {{імʼя_клієнта}}..."
                 />
               </div>
 
@@ -229,7 +229,7 @@ export default function TemplateManager({
                   onClick={() => setShowModal(false)}
                   className="px-5 py-2.5 rounded-xl text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
                 >
-                  İptal
+                  Скасувати
                 </button>
                 <button
                   type="submit"
@@ -238,7 +238,7 @@ export default function TemplateManager({
                     bg-[#0A1628] hover:bg-[#1B2A4A] text-white transition-colors disabled:opacity-50"
                 >
                   {isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                  Oluştur
+                  Створити
                 </button>
               </div>
             </form>

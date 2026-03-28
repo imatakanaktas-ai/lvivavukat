@@ -1,7 +1,15 @@
 import Link from "next/link";
 import { Scale, Home, ArrowLeft, Phone } from "lucide-react";
+import { cookies } from "next/headers";
+import type { Locale } from "@/i18n/config";
+import { getDictionary } from "@/i18n/get-dictionary";
 
-export default function NotFound() {
+export default async function NotFound() {
+  const cookieStore = await cookies();
+  const locale = (cookieStore.get("NEXT_LOCALE")?.value || "tr") as Locale;
+  const dict = await getDictionary(locale);
+  const prefix = locale === "uk" ? "/ua" : "";
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1628] via-[#1B2A4A] to-[#0A1628] flex items-center justify-center px-4">
       {/* Decorative elements */}
@@ -21,35 +29,34 @@ export default function NotFound() {
           404
         </h1>
         <h2 className="text-2xl font-bold text-white mb-3 font-[family-name:var(--font-playfair)]">
-          Sayfa Bulunamadı
+          {dict.notFound.title}
         </h2>
         <p className="text-gray-400 mb-10 leading-relaxed">
-          Aradığınız sayfa taşınmış, silinmiş veya hiç var olmamış olabilir.
-          Aşağıdaki bağlantıları kullanarak devam edebilirsiniz.
+          {dict.notFound.description}
         </p>
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            href="/"
+            href={`${prefix}/`}
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#C9A84C] hover:bg-[#D4AF37] text-[#0A1628] font-semibold rounded-xl transition-colors text-sm"
           >
             <Home className="w-4 h-4" />
-            Ana Sayfaya Dön
+            {dict.notFound.home}
           </Link>
           <Link
-            href="/hizmetler"
+            href={`${prefix}/hizmetler`}
             className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-xl transition-colors text-sm border border-white/10"
           >
             <ArrowLeft className="w-4 h-4" />
-            Hizmetlerimiz
+            {dict.notFound.services}
           </Link>
           <Link
-            href="/iletisim"
+            href={`${prefix}/iletisim`}
             className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-xl transition-colors text-sm border border-white/10"
           >
             <Phone className="w-4 h-4" />
-            İletişim
+            {dict.notFound.contact}
           </Link>
         </div>
 

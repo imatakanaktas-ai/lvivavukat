@@ -286,6 +286,23 @@ export const siteSettings = pgTable("site_settings", {
 });
 
 // ============================================================
+// AI DIRECTIVES (AI Eğitim Yönergeleri)
+// ============================================================
+export const aiDirectives = pgTable("ai_directives", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  category: varchar("category", { length: 50 }).notNull().default("general"),
+  isActive: boolean("is_active").default(true).notNull(),
+  sortOrder: integer("sort_order").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type AIDirective = typeof aiDirectives.$inferSelect;
+export type NewAIDirective = typeof aiDirectives.$inferInsert;
+
+// ============================================================
 // CLIENT NOTES (Müvekkil Notları)
 // ============================================================
 export const clientNotes = pgTable("client_notes", {

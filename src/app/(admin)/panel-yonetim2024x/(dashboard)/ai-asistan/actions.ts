@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth/config";
 import { generateContent } from "@/lib/ai/gemini";
+import { getActiveDirectivesText } from "./directive-actions";
 
 async function requireAuth() {
   const session = await auth();
@@ -45,7 +46,14 @@ export async function sendAIMessage(
   }
 
   try {
-    const reply = await generateContent(message, ASSISTANT_SYSTEM_PROMPT);
+    // Inject active training directives into system prompt
+    let systemPrompt = ASSISTANT_SYSTEM_PROMPT;
+    const directivesText = await getActiveDirectivesText();
+    if (directivesText) {
+      systemPrompt += "\n\n--- AVUKATIN EĞİTİM YÖNERGELERİ ---\nAşağıdaki yönergeleri her yanıtında mutlaka uygula:\n\n" + directivesText;
+    }
+
+    const reply = await generateContent(message, systemPrompt);
     return { success: true, reply };
   } catch {
     return { success: false, error: "AI yanıt oluşturulamadı. Lütfen tekrar deneyin." };

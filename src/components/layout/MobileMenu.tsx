@@ -7,6 +7,7 @@ import { getLocalizedServiceCategories } from "@/data/services";
 import { useState } from "react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 interface MobileMenuProps {
   onClose: () => void;
@@ -16,15 +17,14 @@ interface MobileMenuProps {
 
 export default function MobileMenu({ onClose, locale, dict }: MobileMenuProps) {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
-  const prefix = locale === "uk" ? "/ua" : "";
   const localizedCategories = getLocalizedServiceCategories(locale);
 
   const navItems = [
-    { label: dict.nav.home, href: `${prefix}/` },
-    { label: dict.nav.services, href: `${prefix}/hizmetler`, hasSubmenu: true },
-    { label: dict.nav.about, href: `${prefix}/hakkimizda` },
-    { label: dict.nav.blog, href: `${prefix}/blog` },
-    { label: dict.nav.contact, href: `${prefix}/iletisim` },
+    { label: dict.nav.home, href: localizedHref("/", locale) },
+    { label: dict.nav.services, href: localizedHref("/hizmetler", locale), hasSubmenu: true },
+    { label: dict.nav.about, href: localizedHref("/hakkimizda", locale) },
+    { label: dict.nav.blog, href: localizedHref("/blog", locale) },
+    { label: dict.nav.contact, href: localizedHref("/iletisim", locale) },
   ];
 
   const switchLocale = locale === "uk" ? "tr" : "uk";
@@ -88,7 +88,7 @@ export default function MobileMenu({ onClose, locale, dict }: MobileMenuProps) {
                             {cat.services.map((service) => (
                               <Link
                                 key={service.slug}
-                                href={`${prefix}/hizmetler/${service.slug}`}
+                                href={localizedHref(`/hizmetler/${service.slug}`, locale)}
                                 onClick={onClose}
                                 className="block py-2 px-4 text-sm text-white/70 hover:text-accent 
                                   transition-colors rounded-lg hover:bg-white/5"

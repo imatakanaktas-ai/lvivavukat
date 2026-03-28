@@ -12,6 +12,7 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
 import { type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 export async function generateMetadata({
   params,
@@ -21,12 +22,12 @@ export async function generateMetadata({
   const { locale } = await params;
   const dict = await getDictionary(locale as Locale);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
-  const prefix = locale === "uk" ? "/ua" : "";
+  const blogHref = localizedHref("/blog", locale as Locale);
 
   return {
     title: dict.blog.title,
     description: dict.blog.description,
-    alternates: { canonical: `${siteUrl}${prefix}/blog` },
+    alternates: { canonical: `${siteUrl}${blogHref}` },
   };
 }
 
@@ -104,12 +105,13 @@ export default async function BlogPage({
 }) {
   const { locale } = await params;
   const dict = await getDictionary(locale as Locale);
-  const prefix = locale === "uk" ? "/ua" : "";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
+  const homeHref = localizedHref("/", locale as Locale);
+  const blogHref = localizedHref("/blog", locale as Locale);
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: dict.nav.home, url: `${siteUrl}${prefix}` },
-    { name: dict.blog.title, url: `${siteUrl}${prefix}/blog` },
+    { name: dict.nav.home, url: `${siteUrl}${homeHref}` },
+    { name: dict.blog.title, url: `${siteUrl}${blogHref}` },
   ]);
 
   return (
@@ -122,7 +124,7 @@ export default async function BlogPage({
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb items={[{ label: dict.blog.title }]} homeLabel={dict.nav.home} />
+          <Breadcrumb items={[{ label: dict.blog.title }]} homeLabel={dict.nav.home} homeHref={homeHref} />
           <h1 className="mt-6 text-4xl sm:text-5xl font-serif font-bold text-white">
             {dict.blog.heroTitle}
           </h1>
@@ -166,7 +168,7 @@ export default async function BlogPage({
                       </span>
                     </div>
 
-                    <Link href={`${prefix}/blog/${post.slug}`}>
+                    <Link href={localizedHref(`/blog/${post.slug}`, locale as Locale)}>
                       <h2 className="text-xl font-serif font-bold text-foreground 
                         group-hover:text-primary transition-colors mb-2">
                         {post.title}
@@ -178,7 +180,7 @@ export default async function BlogPage({
                     </p>
 
                     <Link
-                      href={`${prefix}/blog/${post.slug}`}
+                      href={localizedHref(`/blog/${post.slug}`, locale as Locale)}
                       className="inline-flex items-center gap-1.5 text-sm font-semibold text-accent 
                         hover:text-accent-hover transition-colors"
                     >

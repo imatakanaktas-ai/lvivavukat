@@ -5,6 +5,7 @@ import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
 import ContactForm from "./ContactForm";
 import { type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 export async function generateMetadata({
   params,
@@ -14,12 +15,12 @@ export async function generateMetadata({
   const { locale } = await params;
   const dict = await getDictionary(locale as Locale);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
-  const prefix = locale === "uk" ? "/ua" : "";
+  const contactHref = localizedHref("/iletisim", locale as Locale);
 
   return {
     title: dict.contact.title,
     description: dict.contact.description,
-    alternates: { canonical: `${siteUrl}${prefix}/iletisim` },
+    alternates: { canonical: `${siteUrl}${contactHref}` },
   };
 }
 
@@ -30,8 +31,9 @@ export default async function ContactPage({
 }) {
   const { locale } = await params;
   const dict = await getDictionary(locale as Locale);
-  const prefix = locale === "uk" ? "/ua" : "";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
+  const homeHref = localizedHref("/", locale as Locale);
+  const contactHref = localizedHref("/iletisim", locale as Locale);
 
   const contactInfo = [
     {
@@ -57,8 +59,8 @@ export default async function ContactPage({
   ];
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: dict.nav.home, url: `${siteUrl}${prefix}` },
-    { name: dict.contact.title, url: `${siteUrl}${prefix}/iletisim` },
+    { name: dict.nav.home, url: `${siteUrl}${homeHref}` },
+    { name: dict.contact.title, url: `${siteUrl}${contactHref}` },
   ]);
 
   return (
@@ -71,7 +73,7 @@ export default async function ContactPage({
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb items={[{ label: dict.contact.title }]} homeLabel={dict.nav.home} />
+          <Breadcrumb items={[{ label: dict.contact.title }]} homeLabel={dict.nav.home} homeHref={homeHref} />
           <h1 className="mt-6 text-4xl sm:text-5xl font-serif font-bold text-white">
             {dict.contact.title}
           </h1>

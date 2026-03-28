@@ -8,14 +8,15 @@ import MegaMenu from "./MegaMenu";
 import MobileMenu from "./MobileMenu";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
-function getNavItems(dict: Dictionary, prefix: string) {
+function getNavItems(dict: Dictionary, locale: Locale) {
   return [
-    { label: dict.nav.home, href: `${prefix}/` },
-    { label: dict.nav.services, href: `${prefix}/hizmetler`, hasMegaMenu: true },
-    { label: dict.nav.about, href: `${prefix}/hakkimizda` },
-    { label: dict.nav.blog, href: `${prefix}/blog` },
-    { label: dict.nav.contact, href: `${prefix}/iletisim` },
+    { label: dict.nav.home, href: localizedHref("/", locale) },
+    { label: dict.nav.services, href: localizedHref("/hizmetler", locale), hasMegaMenu: true },
+    { label: dict.nav.about, href: localizedHref("/hakkimizda", locale) },
+    { label: dict.nav.blog, href: localizedHref("/blog", locale) },
+    { label: dict.nav.contact, href: localizedHref("/iletisim", locale) },
   ];
 }
 
@@ -25,7 +26,7 @@ export default function Header({ locale, dict }: { locale: Locale; dict: Diction
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
 
   const prefix = locale === "uk" ? "/ua" : "";
-  const navItems = getNavItems(dict, prefix);
+  const navItems = getNavItems(dict, locale);
   const switchLocale = locale === "uk" ? "tr" : "uk";
 
   // Compute language switch href preserving the current page path

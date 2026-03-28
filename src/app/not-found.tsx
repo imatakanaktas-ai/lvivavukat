@@ -3,12 +3,12 @@ import { Scale, Home, ArrowLeft, Phone } from "lucide-react";
 import { cookies } from "next/headers";
 import type { Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 export default async function NotFound() {
   const cookieStore = await cookies();
   const locale = (cookieStore.get("NEXT_LOCALE")?.value || "tr") as Locale;
   const dict = await getDictionary(locale);
-  const prefix = locale === "uk" ? "/ua" : "";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0A1628] via-[#1B2A4A] to-[#0A1628] flex items-center justify-center px-4">
@@ -38,21 +38,21 @@ export default async function NotFound() {
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            href={`${prefix}/`}
+            href={localizedHref("/", locale)}
             className="inline-flex items-center gap-2 px-6 py-3 bg-[#C9A84C] hover:bg-[#D4AF37] text-[#0A1628] font-semibold rounded-xl transition-colors text-sm"
           >
             <Home className="w-4 h-4" />
             {dict.notFound.home}
           </Link>
           <Link
-            href={`${prefix}/hizmetler`}
+            href={localizedHref("/hizmetler", locale)}
             className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-xl transition-colors text-sm border border-white/10"
           >
             <ArrowLeft className="w-4 h-4" />
             {dict.notFound.services}
           </Link>
           <Link
-            href={`${prefix}/iletisim`}
+            href={localizedHref("/iletisim", locale)}
             className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/15 text-white font-semibold rounded-xl transition-colors text-sm border border-white/10"
           >
             <Phone className="w-4 h-4" />

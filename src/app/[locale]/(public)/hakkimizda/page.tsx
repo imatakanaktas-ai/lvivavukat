@@ -18,6 +18,7 @@ import {
 } from "@/lib/seo/schemas";
 import { type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 export async function generateMetadata({
   params,
@@ -27,12 +28,12 @@ export async function generateMetadata({
   const { locale } = await params;
   const dict = await getDictionary(locale as Locale);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
-  const prefix = locale === "uk" ? "/ua" : "";
+  const aboutHref = localizedHref("/hakkimizda", locale as Locale);
 
   return {
     title: dict.about.title,
     description: dict.about.description,
-    alternates: { canonical: `${siteUrl}${prefix}/hakkimizda` },
+    alternates: { canonical: `${siteUrl}${aboutHref}` },
   };
 }
 
@@ -46,12 +47,13 @@ export default async function AboutPage({
 }) {
   const { locale } = await params;
   const dict = await getDictionary(locale as Locale);
-  const prefix = locale === "uk" ? "/ua" : "";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
+  const homeHref = localizedHref("/", locale as Locale);
+  const aboutHref = localizedHref("/hakkimizda", locale as Locale);
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: dict.nav.home, url: `${siteUrl}${prefix}` },
-    { name: dict.about.title, url: `${siteUrl}${prefix}/hakkimizda` },
+    { name: dict.nav.home, url: `${siteUrl}${homeHref}` },
+    { name: dict.about.title, url: `${siteUrl}${aboutHref}` },
   ]);
   const attorneySchema = generateAttorneySchema();
 
@@ -69,7 +71,7 @@ export default async function AboutPage({
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb items={[{ label: dict.about.title }]} homeLabel={dict.nav.home} />
+          <Breadcrumb items={[{ label: dict.about.title }]} homeLabel={dict.nav.home} homeHref={homeHref} />
           <h1 className="mt-6 text-4xl sm:text-5xl font-serif font-bold text-white">
             {dict.about.heroTitle}
           </h1>
@@ -241,7 +243,7 @@ export default async function AboutPage({
               {dict.about.ctaWhatsApp}
             </a>
             <a
-              href={`${prefix}/iletisim`}
+              href={localizedHref("/iletisim", locale as Locale)}
               className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 
                 text-white px-8 py-3.5 rounded-xl font-bold transition-colors"
             >

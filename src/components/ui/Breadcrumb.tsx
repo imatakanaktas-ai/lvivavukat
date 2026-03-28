@@ -9,12 +9,13 @@ interface BreadcrumbItem {
 interface BreadcrumbProps {
   items: BreadcrumbItem[];
   homeLabel?: string;
+  homeHref?: string;
 }
 
-export default function Breadcrumb({ items, homeLabel }: BreadcrumbProps) {
+export default function Breadcrumb({ items, homeLabel, homeHref = "/" }: BreadcrumbProps) {
   return (
     <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-sm text-muted">
-      <Link href="/" className="flex items-center gap-1 hover:text-accent transition-colors">
+      <Link href={homeHref} className="flex items-center gap-1 hover:text-accent transition-colors">
         <Home className="w-3.5 h-3.5" />
         <span className="sr-only">{homeLabel || "Home"}</span>
       </Link>

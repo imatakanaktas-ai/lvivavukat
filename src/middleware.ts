@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { match } from "@formatjs/intl-localematcher";
 import Negotiator from "negotiator";
+import { ukSlugToCanonical, ukServiceSlugToCanonical } from "@/i18n/config";
 
 const LOCALES = ["tr", "uk"] as const;
 const DEFAULT_LOCALE = "tr";
@@ -74,10 +75,23 @@ export function middleware(request: NextRequest) {
     const isBot = BOT_UA_PATTERN.test(userAgent);
 
     // Rewrite /ua/* paths → /uk/* for the [locale] segment
+    // Also remap Ukrainian slugs back to canonical (Turkish) slugs
     if (isUaPath) {
       const restPath = pathname.replace(/^\/ua\/?/, "");
+      const segments = restPath.split("/").filter(Boolean);
+
+      // Remap first segment: page slug (e.g. posluhy → hizmetler)
+      if (segments[0] && ukSlugToCanonical[segments[0]]) {
+        segments[0] = ukSlugToCanonical[segments[0]];
+      }
+
+      // Remap second segment: service slug (e.g. opika-nad-ditmy → velayet)
+      if (segments.length > 1 && segments[1] && ukServiceSlugToCanonical[segments[1]]) {
+        segments[1] = ukServiceSlugToCanonical[segments[1]];
+      }
+
       const url = request.nextUrl.clone();
-      url.pathname = `/uk/${restPath}`;
+      url.pathname = `/uk/${segments.join("/")}`;
       const response = NextResponse.rewrite(url);
       addSecurityHeaders(response);
       return response;

@@ -5,9 +5,9 @@ import Link from "next/link";
 import { ArrowRight, Phone, Shield, Award, Globe } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 export default function Hero({ dict, locale }: { dict: Dictionary; locale: Locale }) {
-  const prefix = locale === "uk" ? "/ua" : "";
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
@@ -81,7 +81,7 @@ export default function Hero({ dict, locale }: { dict: Dictionary; locale: Local
                 {dict.hero.ctaPrimary}
               </a>
               <Link
-                href={`${prefix}/hizmetler`}
+                href={localizedHref("/hizmetler", locale)}
                 className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 
                   text-white px-8 py-4 rounded-xl font-semibold text-base transition-all duration-300 
                   border border-white/10 hover:border-white/20"

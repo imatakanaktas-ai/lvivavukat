@@ -11,6 +11,7 @@ import {
 } from "@/lib/seo/schemas";
 import { type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 export async function generateStaticParams() {
   const slugs = getAllServiceSlugs();
@@ -25,17 +26,19 @@ export async function generateMetadata({
 }: {
   params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const service = getServiceBySlug(slug);
   if (!service) return {};
+  const serviceHref = localizedHref(`/hizmetler/${service.slug}`, locale as Locale);
+  const siteUrl = "https://lvivavukat.com";
   return {
     title: service.metaTitle,
     description: service.metaDescription,
-    alternates: { canonical: `https://lvivavukat.com/hizmetler/${service.slug}` },
+    alternates: { canonical: `${siteUrl}${serviceHref}` },
     openGraph: {
       title: service.metaTitle,
       description: service.metaDescription,
-      url: `https://lvivavukat.com/hizmetler/${service.slug}`,
+      url: `${siteUrl}${serviceHref}`,
       type: "website",
     },
   };
@@ -189,18 +192,20 @@ export default async function ServiceDetailPage({
   params: Promise<{ slug: string; locale: string }>;
 }) {
   const { slug, locale } = await params;
-  const prefix = locale === "uk" ? "/ua" : "";
   const service = getServiceBySlug(slug);
   if (!service) notFound();
   const dict = await getDictionary(locale as Locale);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
   const localizedTitle = locale === "uk" ? service.titleUk : service.title;
   const localizedShortDesc = locale === "uk" ? service.shortDescriptionUk : service.shortDescription;
+  const homeHref = localizedHref("/", locale as Locale);
+  const servicesHref = localizedHref("/hizmetler", locale as Locale);
+  const serviceHref = localizedHref(`/hizmetler/${service.slug}`, locale as Locale);
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: dict.nav.home, url: `${siteUrl}${prefix}` },
-    { name: dict.services.title, url: `${siteUrl}${prefix}/hizmetler` },
-    { name: localizedTitle, url: `${siteUrl}${prefix}/hizmetler/${service.slug}` },
+    { name: dict.nav.home, url: `${siteUrl}${homeHref}` },
+    { name: dict.services.title, url: `${siteUrl}${servicesHref}` },
+    { name: localizedTitle, url: `${siteUrl}${serviceHref}` },
   ]);
   const legalServiceSchema = generateLegalServiceSchema({
     name: localizedTitle,
@@ -235,8 +240,9 @@ export default async function ServiceDetailPage({
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Breadcrumb
+            homeHref={homeHref}
             items={[
-              { label: dict.services.title, href: `${prefix}/hizmetler` },
+              { label: dict.services.title, href: servicesHref },
               { label: localizedTitle },
             ]}
           />
@@ -395,7 +401,7 @@ export default async function ServiceDetailPage({
                     {otherServices.map((s) => (
                       <li key={s.slug}>
                         <Link
-                          href={`${prefix}/hizmetler/${s.slug}`}
+                          href={localizedHref(`/hizmetler/${s.slug}`, locale as Locale)}
                           className="flex items-center gap-2 py-2 px-3 rounded-lg text-sm text-foreground/70 
                             hover:bg-secondary hover:text-primary transition-all"
                         >

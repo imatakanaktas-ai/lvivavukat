@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { getDictionary } from "@/i18n/get-dictionary";
-import { getLocalePrefix } from "@/i18n/locale-utils";
+import { localizedHref } from "@/i18n/locale-utils";
 import type { Locale } from "@/i18n/config";
 
 export async function generateMetadata({
@@ -11,10 +11,11 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const dict = await getDictionary(locale as Locale);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
   return {
     title: dict.kvkk.title,
     description: dict.kvkk.description,
-    alternates: { canonical: "https://lvivavukat.com/kvkk" },
+    alternates: { canonical: `${siteUrl}${localizedHref("/kvkk", locale as Locale)}` },
   };
 }
 
@@ -25,7 +26,6 @@ export default async function KVKKPage({
 }) {
   const { locale } = await params;
   const dict = await getDictionary(locale as Locale);
-  const prefix = getLocalePrefix(locale as Locale);
 
   return (
     <>
@@ -33,7 +33,7 @@ export default async function KVKKPage({
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             items={[
-              { label: dict.common.home, href: `${prefix}/` },
+              { label: dict.common.home, href: localizedHref("/", locale as Locale) },
               { label: dict.kvkk.title },
             ]}
           />

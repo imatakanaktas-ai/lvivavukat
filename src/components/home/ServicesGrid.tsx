@@ -6,9 +6,9 @@ import { ArrowRight } from "lucide-react";
 import { getLocalizedServiceCategories } from "@/data/services";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 export default function ServicesGrid({ dict, locale }: { dict: Dictionary; locale: Locale }) {
-  const prefix = locale === "uk" ? "/ua" : "";
   const localizedCategories = getLocalizedServiceCategories(locale);
   const allServices = localizedCategories.flatMap((c) => c.services).slice(0, 9);
 
@@ -44,7 +44,7 @@ export default function ServicesGrid({ dict, locale }: { dict: Dictionary; local
                 transition={{ duration: 0.4, delay: i * 0.05 }}
               >
                 <Link
-                  href={`${prefix}/hizmetler/${service.slug}`}
+                  href={localizedHref(`/hizmetler/${service.slug}`, locale)}
                   className="group block p-6 rounded-2xl bg-card border border-border/50 
                     hover:border-accent/30 hover:shadow-xl hover:shadow-accent/5 
                     transition-all duration-500 h-full hover:-translate-y-1"
@@ -77,7 +77,7 @@ export default function ServicesGrid({ dict, locale }: { dict: Dictionary; local
           className="mt-12 text-center"
         >
           <Link
-            href={`${prefix}/hizmetler`}
+            href={localizedHref("/hizmetler", locale)}
             className="inline-flex items-center gap-2 bg-primary hover:bg-primary-light text-primary-foreground 
               px-8 py-3.5 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg"
           >

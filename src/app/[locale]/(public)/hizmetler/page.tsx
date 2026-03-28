@@ -6,6 +6,7 @@ import Breadcrumb from "@/components/ui/Breadcrumb";
 import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
 import { type Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 export async function generateMetadata({
   params,
@@ -15,12 +16,12 @@ export async function generateMetadata({
   const { locale } = await params;
   const dict = await getDictionary(locale as Locale);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
-  const prefix = locale === "uk" ? "/ua" : "";
+  const servicesHref = localizedHref("/hizmetler", locale as Locale);
 
   return {
     title: dict.services.title,
     description: dict.services.description,
-    alternates: { canonical: `${siteUrl}${prefix}/hizmetler` },
+    alternates: { canonical: `${siteUrl}${servicesHref}` },
   };
 }
 
@@ -31,13 +32,14 @@ export default async function ServicesPage({
 }) {
   const { locale } = await params;
   const dict = await getDictionary(locale as Locale);
-  const prefix = locale === "uk" ? "/ua" : "";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
   const localizedCategories = getLocalizedServiceCategories(locale as Locale);
+  const homeHref = localizedHref("/", locale as Locale);
+  const servicesHref = localizedHref("/hizmetler", locale as Locale);
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: dict.nav.home, url: `${siteUrl}${prefix}` },
-    { name: dict.services.title, url: `${siteUrl}${prefix}/hizmetler` },
+    { name: dict.nav.home, url: `${siteUrl}${homeHref}` },
+    { name: dict.services.title, url: `${siteUrl}${servicesHref}` },
   ]);
 
   return (
@@ -50,7 +52,7 @@ export default async function ServicesPage({
       {/* Hero */}
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <Breadcrumb items={[{ label: dict.services.title }]} homeLabel={dict.nav.home} />
+          <Breadcrumb items={[{ label: dict.services.title }]} homeLabel={dict.nav.home} homeHref={homeHref} />
           <h1 className="mt-6 text-4xl sm:text-5xl font-serif font-bold text-white">
             {dict.services.heroTitle}
           </h1>
@@ -79,7 +81,7 @@ export default async function ServicesPage({
                   return (
                     <Link
                       key={service.slug}
-                      href={`${prefix}/hizmetler/${service.slug}`}
+                      href={localizedHref(`/hizmetler/${service.slug}`, locale as Locale)}
                       className="group p-6 rounded-2xl bg-card border border-border/50 
                         hover:border-accent/30 hover:shadow-xl hover:shadow-accent/5 
                         transition-all duration-500 hover:-translate-y-1"

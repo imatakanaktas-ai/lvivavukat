@@ -5,9 +5,9 @@ import { Phone, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 export default function CTABanner({ dict, locale }: { dict: Dictionary; locale: Locale }) {
-  const prefix = locale === "uk" ? "/ua" : "";
 
   return (
     <section className="py-20 lg:py-28 relative overflow-hidden">
@@ -42,7 +42,7 @@ export default function CTABanner({ dict, locale }: { dict: Dictionary; locale: 
               {dict.cta.whatsapp}
             </a>
             <Link
-              href={`${prefix}/iletisim`}
+              href={localizedHref("/iletisim", locale)}
               className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/15 
                 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 
                 border border-white/10 hover:border-white/20"

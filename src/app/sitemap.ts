@@ -1,64 +1,49 @@
 import type { MetadataRoute } from "next";
 import { getAllServiceSlugs } from "@/data/services";
+import { pageSlugMap, serviceSlugMap } from "@/i18n/config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
   const now = new Date();
 
-  // Static pages
+  // Helper: get Ukrainian page slug
+  const uaPage = (canonical: string) => pageSlugMap[canonical]?.uk ?? canonical;
+  const uaService = (canonical: string) => serviceSlugMap[canonical]?.uk ?? canonical;
+
+  // Static pages (TR + UA)
   const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: siteUrl,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 1.0,
-    },
-    {
-      url: `${siteUrl}/hizmetler`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: `${siteUrl}/hakkimizda`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/blog`,
-      lastModified: now,
-      changeFrequency: "daily",
-      priority: 0.8,
-    },
-    {
-      url: `${siteUrl}/iletisim`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
-    {
-      url: `${siteUrl}/gizlilik-politikasi`,
-      lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: `${siteUrl}/kvkk`,
-      lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
+    { url: siteUrl, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
+    { url: `${siteUrl}/ua`, lastModified: now, changeFrequency: "weekly", priority: 1.0 },
+    { url: `${siteUrl}/hizmetler`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${siteUrl}/ua/${uaPage("hizmetler")}`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${siteUrl}/hakkimizda`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${siteUrl}/ua/${uaPage("hakkimizda")}`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${siteUrl}/blog`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
+    { url: `${siteUrl}/ua/blog`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
+    { url: `${siteUrl}/iletisim`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${siteUrl}/ua/${uaPage("iletisim")}`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${siteUrl}/gizlilik-politikasi`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${siteUrl}/ua/${uaPage("gizlilik-politikasi")}`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${siteUrl}/kvkk`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${siteUrl}/ua/${uaPage("kvkk")}`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
   ];
 
-  // Service pages
+  // Service pages (TR + UA)
   const serviceSlugs = getAllServiceSlugs();
-  const servicePages: MetadataRoute.Sitemap = serviceSlugs.map((slug) => ({
-    url: `${siteUrl}/hizmetler/${slug}`,
-    lastModified: now,
-    changeFrequency: "monthly" as const,
-    priority: 0.85,
-  }));
+  const servicePages: MetadataRoute.Sitemap = serviceSlugs.flatMap((slug) => [
+    {
+      url: `${siteUrl}/hizmetler/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    },
+    {
+      url: `${siteUrl}/ua/${uaPage("hizmetler")}/${uaService(slug)}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    },
+  ]);
 
   // Blog posts (static placeholders — in production, fetch from DB)
   const blogSlugs = [

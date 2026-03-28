@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { getLocalizedServiceCategories } from "@/data/services";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 interface MegaMenuProps {
   onClose: () => void;
@@ -13,7 +14,6 @@ interface MegaMenuProps {
 }
 
 export default function MegaMenu({ onClose, locale, dict }: MegaMenuProps) {
-  const prefix = locale === "uk" ? "/ua" : "";
   const localizedCategories = getLocalizedServiceCategories(locale);
 
   return (
@@ -38,7 +38,7 @@ export default function MegaMenu({ onClose, locale, dict }: MegaMenuProps) {
                   return (
                     <li key={service.slug}>
                       <Link
-                        href={`${prefix}/hizmetler/${service.slug}`}
+                        href={localizedHref(`/hizmetler/${service.slug}`, locale)}
                         onClick={onClose}
                         className="flex items-center gap-2.5 py-1.5 px-2 rounded-lg text-sm text-foreground/80 
                           hover:bg-secondary hover:text-primary transition-all group"
@@ -55,7 +55,7 @@ export default function MegaMenu({ onClose, locale, dict }: MegaMenuProps) {
         </div>
         <div className="mt-5 pt-4 border-t border-border">
           <Link
-            href={`${prefix}/hizmetler`}
+            href={localizedHref("/hizmetler", locale)}
             onClick={onClose}
             className="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary hover:bg-primary-light 
               text-primary-foreground text-sm font-semibold transition-colors"

@@ -7,6 +7,8 @@ import {
   generateBreadcrumbSchema,
   generateBlogPostSchema,
 } from "@/lib/seo/schemas";
+import { type Locale } from "@/i18n/config";
+import { localizedHref } from "@/i18n/locale-utils";
 
 // Placeholder blog content — will be replaced with DB queries when admin is ready
 const placeholderPostsContent: Record<
@@ -140,21 +142,20 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string; locale: string }>;
 }) {
   const { slug, locale } = await params;
-  const prefix = locale === "uk" ? "/ua" : "";
   const post = placeholderPostsContent[slug];
 
   if (!post) {
     // For slugs that exist in the static list but have no content yet
     if (allSlugs.includes(slug)) {
-      return <PlaceholderPost slug={slug} prefix={prefix} />;
+      return <PlaceholderPost slug={slug} locale={locale as Locale} />;
     }
     notFound();
   }
 
   const breadcrumbSchema = generateBreadcrumbSchema([
-    { name: "Anasayfa", url: "https://lvivavukat.com" },
-    { name: "Blog", url: "https://lvivavukat.com/blog" },
-    { name: post.title, url: `https://lvivavukat.com/blog/${slug}` },
+    { name: "Anasayfa", url: `https://lvivavukat.com${localizedHref("/", locale as Locale)}` },
+    { name: "Blog", url: `https://lvivavukat.com${localizedHref("/blog", locale as Locale)}` },
+    { name: post.title, url: `https://lvivavukat.com${localizedHref(`/blog/${slug}`, locale as Locale)}` },
   ]);
   const blogSchema = generateBlogPostSchema({
     title: post.title,
@@ -179,8 +180,9 @@ export default async function BlogPostPage({
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Breadcrumb
+            homeHref={localizedHref("/", locale as Locale)}
             items={[
-              { label: "Blog", href: "/blog" },
+              { label: "Blog", href: localizedHref("/blog", locale as Locale) },
               { label: post.title },
             ]}
           />
@@ -269,7 +271,7 @@ export default async function BlogPostPage({
           {/* Share + back */}
           <div className="mt-12 pt-8 border-t border-border/50 flex items-center justify-between">
             <Link
-              href={`${prefix}/blog`}
+              href={localizedHref("/blog", locale as Locale)}
               className="inline-flex items-center gap-2 text-sm font-semibold text-accent 
                 hover:text-accent-hover transition-colors"
             >
@@ -291,14 +293,14 @@ export default async function BlogPostPage({
   );
 }
 
-function PlaceholderPost({ slug, prefix }: { slug: string; prefix: string }) {
+function PlaceholderPost({ slug, locale }: { slug: string; locale: Locale }) {
   return (
     <>
       <section className="bg-gradient-to-br from-primary via-primary-light to-primary pt-32 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Breadcrumb
             items={[
-              { label: "Blog", href: `${prefix}/blog` },
+              { label: "Blog", href: localizedHref("/blog", locale) },
               { label: "Yazı" },
             ]}
           />
@@ -313,7 +315,7 @@ function PlaceholderPost({ slug, prefix }: { slug: string; prefix: string }) {
             Bu blog yazısı hazırlık aşamasındadır. Çok yakında yayınlanacaktır.
           </p>
           <Link
-            href={`${prefix}/blog`}
+            href={localizedHref("/blog", locale)}
             className="inline-flex items-center gap-2 text-sm font-semibold text-accent 
               hover:text-accent-hover transition-colors"
           >

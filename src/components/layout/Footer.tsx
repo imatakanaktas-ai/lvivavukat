@@ -9,18 +9,18 @@ import {
 import { getLocalizedServiceCategories } from "@/data/services";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
+import { localizedHref } from "@/i18n/locale-utils";
 
 export default function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
-  const prefix = locale === "uk" ? "/ua" : "";
   const localizedCategories = getLocalizedServiceCategories(locale);
   const topServices = localizedCategories.flatMap((c) => c.services).slice(0, 8);
 
   const quickLinks = [
-    { label: dict.nav.home, href: `${prefix}/` },
-    { label: dict.nav.services, href: `${prefix}/hizmetler` },
-    { label: dict.nav.about, href: `${prefix}/hakkimizda` },
-    { label: dict.nav.blog, href: `${prefix}/blog` },
-    { label: dict.nav.contact, href: `${prefix}/iletisim` },
+    { label: dict.nav.home, href: localizedHref("/", locale) },
+    { label: dict.nav.services, href: localizedHref("/hizmetler", locale) },
+    { label: dict.nav.about, href: localizedHref("/hakkimizda", locale) },
+    { label: dict.nav.blog, href: localizedHref("/blog", locale) },
+    { label: dict.nav.contact, href: localizedHref("/iletisim", locale) },
   ];
 
   return (
@@ -94,7 +94,7 @@ export default function Footer({ locale, dict }: { locale: Locale; dict: Diction
               {topServices.map((service) => (
                 <li key={service.slug}>
                   <Link
-                    href={`${prefix}/hizmetler/${service.slug}`}
+                    href={localizedHref(`/hizmetler/${service.slug}`, locale)}
                     className="text-sm text-white/60 hover:text-accent transition-colors"
                   >
                     {service.title}
@@ -146,10 +146,10 @@ export default function Footer({ locale, dict }: { locale: Locale; dict: Diction
               © {new Date().getFullYear()} {locale === "uk" ? "Адвокат у Львові" : "Lviv Avukat"} - Av. Lyudmyla Chubai. {dict.footer.copyright}
             </p>
             <div className="flex items-center gap-4">
-              <Link href={`${prefix}/gizlilik-politikasi`} className="text-xs text-white/40 hover:text-accent transition-colors">
+              <Link href={localizedHref("/gizlilik-politikasi", locale)} className="text-xs text-white/40 hover:text-accent transition-colors">
                 {dict.footer.privacy}
               </Link>
-              <Link href={`${prefix}/kvkk`} className="text-xs text-white/40 hover:text-accent transition-colors">
+              <Link href={localizedHref("/kvkk", locale)} className="text-xs text-white/40 hover:text-accent transition-colors">
                 {dict.footer.kvkk}
               </Link>
             </div>

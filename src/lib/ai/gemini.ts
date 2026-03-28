@@ -9,8 +9,18 @@ function getApiKey() {
   return apiKey;
 }
 
-function getEndpoint() {
-  return `https://generativelanguage.googleapis.com/v1beta/models/${TEXT_MODEL}:generateContent?key=${getApiKey()}`;
+function getProjectConfig() {
+  const project = process.env.GOOGLE_CLOUD_PROJECT;
+  const location = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
+  if (!project) {
+    throw new Error("GOOGLE_CLOUD_PROJECT is not set");
+  }
+  return { project, location };
+}
+
+function getEndpoint(model: string, method: string) {
+  const { project, location } = getProjectConfig();
+  return `https://${location}-aiplatform.googleapis.com/v1/projects/${project}/locations/${location}/publishers/google/models/${model}:${method}`;
 }
 
 interface GeminiMessage {
@@ -49,10 +59,13 @@ export async function generateContent(
     maxOutputTokens: 8192,
   };
 
-  const endpoint = getEndpoint();
+  const endpoint = getEndpoint(TEXT_MODEL, "generateContent");
   const res = await fetch(endpoint, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": getApiKey(),
+    },
     body: JSON.stringify(body),
   });
 
@@ -69,7 +82,7 @@ export async function generateContentStream(
   prompt: string,
   systemInstruction?: string
 ): Promise<ReadableStream<string>> {
-  const streamEndpoint = getEndpoint().replace(":generateContent", ":streamGenerateContent");
+  const streamEndpoint = getEndpoint(TEXT_MODEL, "streamGenerateContent");
 
   const contents: GeminiMessage[] = [
     { role: "user", parts: [{ text: prompt }] },
@@ -92,7 +105,10 @@ export async function generateContentStream(
 
   const res = await fetch(streamEndpoint, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": getApiKey(),
+    },
     body: JSON.stringify(body),
   });
 
@@ -121,11 +137,14 @@ export async function generateImage(
   prompt: string,
   aspectRatio: "1:1" | "16:9" | "9:16" | "4:3" | "3:4" = "16:9"
 ): Promise<string> {
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL}:predict?key=${getApiKey()}`;
+  const endpoint = getEndpoint(IMAGE_MODEL, "predict");
 
   const res = await fetch(endpoint, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-goog-api-key": getApiKey(),
+    },
     body: JSON.stringify({
       instances: [{ prompt }],
       parameters: {

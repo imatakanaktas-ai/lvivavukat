@@ -225,9 +225,9 @@ Every service page uses a MIX of these block types (not plain text):
 - [x] **8.4** Build & push
 
 ### PHASE 9: Legal Pages
-- [ ] **9.1** Privacy Policy — full UA version
-- [ ] **9.2** Data Protection (KVKK → GDPR/UA) — full UA version
-- [ ] **9.3** Build & push
+- [x] **9.1** Privacy Policy — full UA version
+- [x] **9.2** Data Protection (KVKK → GDPR/UA) — full UA version
+- [x] **9.3** Build & push
 
 ### PHASE 10: Final QA & SEO Audit
 - [ ] **10.1** Full navigation test — every link on UA site uses Ukrainian slugs
@@ -317,6 +317,6 @@ durationUk: string;
 | 6 | Services Batch 5 (Commercial 13-15) | ✅ Complete | 4/4 |
 | 7 | Services Batch 6 (Remaining 16-19) | ✅ Complete | 5/5 |
 | 8 | Blog | ✅ Complete | 4/4 |
-| 9 | Legal Pages | ⬜ Not Started | 0/3 |
+| 9 | Legal Pages | ✅ Complete | 3/3 |
 | 10 | Final QA & SEO | ⬜ Not Started | 0/6 |
 | **TOTAL** | | | **0/64** |

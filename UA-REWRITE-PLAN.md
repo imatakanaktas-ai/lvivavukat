@@ -198,10 +198,10 @@ Every service page uses a MIX of these block types (not plain text):
 - [x] **4.4** Build & push
 
 ### PHASE 5: Services Batch 4 — Сімейне + Комерційне (10-12)
-- [ ] **5.1** Громадянство — Full UA content
-- [ ] **5.2** Реєстрація компанії — Full UA content
-- [ ] **5.3** Нерухомість — Full UA content
-- [ ] **5.4** Build & push
+- [x] **5.1** Громадянство — Full UA content
+- [x] **5.2** Реєстрація компанії — Full UA content
+- [x] **5.3** Нерухомість — Full UA content
+- [x] **5.4** Build & push
 
 ### PHASE 6: Services Batch 5 — Комерційне (13-15)
 - [ ] **6.1** Трудове право — Full UA content
@@ -313,7 +313,7 @@ durationUk: string;
 | 2 | Services Batch 1 (Visa 1-3) | ✅ Complete | 5/5 |
 | 3 | Services Batch 2 (Visa+Family 4-6) | ✅ Complete | 4/4 |
 | 4 | Services Batch 3 (Family 7-9) | ✅ Complete | 4/4 |
-| 5 | Services Batch 4 (Family+Comm 10-12) | ⬜ Not Started | 0/4 |
+| 5 | Services Batch 4 (Family+Comm 10-12) | ✅ Complete | 4/4 |
 | 6 | Services Batch 5 (Commercial 13-15) | ⬜ Not Started | 0/4 |
 | 7 | Services Batch 6 (Remaining 16-19) | ⬜ Not Started | 0/5 |
 | 8 | Blog | ⬜ Not Started | 0/4 |

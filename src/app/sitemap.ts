@@ -46,20 +46,36 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ]);
 
   // Blog posts (static placeholders — in production, fetch from DB)
-  const blogSlugs = [
+  const blogSlugsTr = [
     "ukraynada-oturum-izni-nasil-alinir",
     "ukraynada-turk-vatandaslari-evlilik",
     "ukraynada-sirket-kurma-rehberi",
-    "ukraynada-calisma-izni-rehberi",
-    "ukrayna-gayrimenkul-yatirim",
-    "ukrayna-vergi-sistemi-turkler",
+    "ukrayna-calisma-izni-sureci",
+    "ukraynada-gayrimenkul-alimi",
+    "ukrayna-vize-turleri-karsilastirma",
   ];
-  const blogPages: MetadataRoute.Sitemap = blogSlugs.map((slug) => ({
-    url: `${siteUrl}/blog/${slug}`,
-    lastModified: now,
-    changeFrequency: "monthly" as const,
-    priority: 0.7,
-  }));
+  const blogSlugsUk = [
+    "yak-oformyty-spadshchynu-u-lvovi",
+    "rozluchennya-v-ukrayini-2025",
+    "reyestratsiya-tov-u-lvovi",
+    "prava-pratsivnyka-pry-zvilnenni",
+    "kupivlya-kvartiry-u-lvovi",
+    "zakhyst-prav-spozhyvachiv",
+  ];
+  const blogPages: MetadataRoute.Sitemap = [
+    ...blogSlugsTr.map((slug) => ({
+      url: `${siteUrl}/blog/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+    ...blogSlugsUk.map((slug) => ({
+      url: `${siteUrl}/ua/blog/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+  ];
 
   return [...staticPages, ...servicePages, ...blogPages];
 }

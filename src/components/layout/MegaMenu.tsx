@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { serviceCategories } from "@/data/services";
+import { getLocalizedServiceCategories } from "@/data/services";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 
@@ -14,6 +14,7 @@ interface MegaMenuProps {
 
 export default function MegaMenu({ onClose, locale, dict }: MegaMenuProps) {
   const prefix = locale === "uk" ? "/ua" : "";
+  const localizedCategories = getLocalizedServiceCategories(locale);
 
   return (
     <motion.div
@@ -26,7 +27,7 @@ export default function MegaMenu({ onClose, locale, dict }: MegaMenuProps) {
     >
       <div className="p-6">
         <div className="grid grid-cols-3 gap-6">
-          {serviceCategories.map((category) => (
+          {localizedCategories.map((category) => (
             <div key={category.title}>
               <h3 className="text-xs font-bold text-accent uppercase tracking-widest mb-3 pb-2 border-b border-accent/20">
                 {category.title}

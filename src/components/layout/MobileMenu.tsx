@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Phone, ChevronRight, Globe } from "lucide-react";
-import { serviceCategories } from "@/data/services";
+import { getLocalizedServiceCategories } from "@/data/services";
 import { useState } from "react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
@@ -17,6 +17,7 @@ interface MobileMenuProps {
 export default function MobileMenu({ onClose, locale, dict }: MobileMenuProps) {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const prefix = locale === "uk" ? "/ua" : "";
+  const localizedCategories = getLocalizedServiceCategories(locale);
 
   const navItems = [
     { label: dict.nav.home, href: `${prefix}/` },
@@ -78,7 +79,7 @@ export default function MobileMenu({ onClose, locale, dict }: MobileMenuProps) {
                       exit={{ height: 0, opacity: 0 }}
                       className="pl-4 space-y-4 mt-2 mb-2"
                     >
-                      {serviceCategories.map((cat) => (
+                      {localizedCategories.map((cat) => (
                         <div key={cat.title}>
                           <p className="text-xs font-bold text-accent uppercase tracking-widest mb-2 px-4">
                             {cat.title}

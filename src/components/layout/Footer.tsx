@@ -6,13 +6,14 @@ import {
   Clock,
   Scale,
 } from "lucide-react";
-import { serviceCategories } from "@/data/services";
+import { getLocalizedServiceCategories } from "@/data/services";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 
 export default function Footer({ locale, dict }: { locale: Locale; dict: Dictionary }) {
   const prefix = locale === "uk" ? "/ua" : "";
-  const topServices = serviceCategories.flatMap((c) => c.services).slice(0, 8);
+  const localizedCategories = getLocalizedServiceCategories(locale);
+  const topServices = localizedCategories.flatMap((c) => c.services).slice(0, 8);
 
   const quickLinks = [
     { label: dict.nav.home, href: `${prefix}/` },

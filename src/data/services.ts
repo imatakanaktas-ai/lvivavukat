@@ -35,13 +35,16 @@ export type ContentBlock =
 
 export interface ServiceCategory {
   title: string;
+  titleUk: string;
   services: ServiceItem[];
 }
 
 export interface ServiceItem {
   title: string;
+  titleUk: string;
   slug: string;
   shortDescription: string;
+  shortDescriptionUk: string;
   icon: LucideIcon;
   category: string;
   metaTitle: string;
@@ -53,16 +56,20 @@ export interface ServiceItem {
   processSteps: { title: string; description: string }[];
   faq: { question: string; answer: string }[];
   duration?: string;
+  durationUk?: string;
 }
 
 export const serviceCategories: ServiceCategory[] = [
   {
     title: "Oturum & Vize İşlemleri",
+    titleUk: "Проживання та візові послуги",
     services: [
       {
         title: "Geçici Oturum İzni",
+        titleUk: "Тимчасовий дозвіл на проживання",
         slug: "gecici-oturum-izni",
         shortDescription: "Ukrayna'da geçici ikamet izni başvurusu ve süreç yönetimi",
+        shortDescriptionUk: "Подання заявки на тимчасове проживання в Україні та управління процесом",
         icon: Home,
         category: "oturum-vize",
         metaTitle: "Ukrayna Geçici Oturum İzni (İkamet İzni) Nasıl Alınır? | Lviv Avukat",
@@ -154,8 +161,10 @@ export const serviceCategories: ServiceCategory[] = [
       },
       {
         title: "Kalıcı Oturum İzni",
+        titleUk: "Постійний дозвіл на проживання",
         slug: "kalici-oturum-izni",
         shortDescription: "Ukrayna'da süresiz ikamet hakkı için kalıcı oturum başvurusu",
+        shortDescriptionUk: "Подання заявки на безстрокове проживання в Україні",
         icon: Award,
         category: "oturum-vize",
         metaTitle: "Ukrayna Kalıcı Oturum İzni Nasıl Alınır? | Süresiz İkamet Şartları",
@@ -237,8 +246,10 @@ export const serviceCategories: ServiceCategory[] = [
       },
       {
         title: "Çalışma İzni",
+        titleUk: "Дозвіл на працевлаштування",
         slug: "calisma-izni",
         shortDescription: "Ukrayna'da yasal çalışma izni başvurusu ve işveren prosedürleri",
+        shortDescriptionUk: "Подання заявки на дозвіл на працевлаштування в Україні та процедури для роботодавців",
         icon: Briefcase,
         category: "oturum-vize",
         metaTitle: "Ukrayna Çalışma İzni Almak | Türkler İçin İşveren ve İşçi Rehberi Lviv",
@@ -328,8 +339,10 @@ export const serviceCategories: ServiceCategory[] = [
       },
       {
         title: "Öğrenci Vizesi",
+        titleUk: "Студентська віза",
         slug: "ogrenci-vizesi",
         shortDescription: "Ukrayna üniversitelerinde eğitim için öğrenci vizesi ve oturum izni",
+        shortDescriptionUk: "Студентська віза та дозвіл на проживання для навчання в університетах України",
         icon: GraduationCap,
         category: "oturum-vize",
         metaTitle: "Ukrayna Öğrenci Vizesi | Üniversite Kayıt ve Oturum İşlemleri",
@@ -371,8 +384,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Vize Uzatma",
+        titleUk: "Продовження візи",
         slug: "vize-uzatma",
         shortDescription: "Ukrayna vize süresinin uzatılması ve yasal kalış süresinin yönetimi",
+        shortDescriptionUk: "Продовження терміну візи в Україні та управління легальним перебуванням",
         icon: Clock,
         category: "oturum-vize",
         metaTitle: "Ukrayna Vize Uzatma | Kalış Süresini Yasal Olarak Uzatın",
@@ -417,11 +432,14 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
   },
   {
     title: "Aile & Kişisel Hukuk",
+    titleUk: "Сімейне та особисте право",
     services: [
       {
         title: "Evlilik İşlemleri",
+        titleUk: "Оформлення шлюбу",
         slug: "evlilik-islemleri",
         shortDescription: "Ukrayna'da Türk vatandaşlarının evlilik başvurusu ve nikah işlemleri",
+        shortDescriptionUk: "Подання заявки на шлюб та оформлення реєстрації для громадян Туреччини в Україні",
         icon: Heart,
         category: "aile-kisisel",
         metaTitle: "Ukrayna'da Evlilik İşlemleri | Türkler İçin Nikah ve Kıyma Rehberi Lviv",
@@ -490,8 +508,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Boşanma",
+        titleUk: "Розлучення",
         slug: "bosanma",
         shortDescription: "Ukrayna'da boşanma davası, anlaşmalı ve çekişmeli boşanma süreçleri",
+        shortDescriptionUk: "Справа про розлучення в Україні, за згодою та спірне розлучення",
         icon: Scale,
         category: "aile-kisisel",
         metaTitle: "Ukrayna'da Boşanma | Türk Vatandaşları İçin Boşanma Süreci",
@@ -556,8 +576,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Velayet",
+        titleUk: "Опіка над дітьми",
         slug: "velayet",
         shortDescription: "Çocuk velayeti, nafaka ve aile hukuku davaları",
+        shortDescriptionUk: "Справи про опіку над дітьми, аліменти та сімейне право",
         icon: Users,
         category: "aile-kisisel",
         metaTitle: "Ukrayna'da Velayet Davası | Çocuk Hakları ve Nafaka",
@@ -584,8 +606,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Aile Birleşimi",
+        titleUk: "Воззʼєднання сімʼї",
         slug: "aile-birlesimi",
         shortDescription: "Ukrayna'da aile birleşimi yoluyla oturum izni başvurusu",
+        shortDescriptionUk: "Подання заявки на дозвіл на проживання шляхом воззʼєднання сімʼї в Україні",
         icon: Users,
         category: "aile-kisisel",
         metaTitle: "Ukrayna Aile Birleşimi | Oturum İzni Başvurusu",
@@ -612,8 +636,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Vatandaşlık",
+        titleUk: "Громадянство",
         slug: "vatandaslik",
         shortDescription: "Ukrayna vatandaşlığı başvurusu ve doğal yoldan vatandaşlık edinme",
+        shortDescriptionUk: "Подання заявки на громадянство України та натуралізація",
         icon: Globe,
         category: "aile-kisisel",
         metaTitle: "Ukrayna Vatandaşlığı | Başvuru Şartları ve Süreç",
@@ -643,11 +669,14 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
   },
   {
     title: "Ticari & Genel Hukuk",
+    titleUk: "Комерційне та загальне право",
     services: [
       {
         title: "Şirket Kurma",
+        titleUk: "Реєстрація компанії",
         slug: "sirket-kurma",
         shortDescription: "Ukrayna'da şirket kurma, tescil ve ticaret hukuku danışmanlığı",
+        shortDescriptionUk: "Реєстрація компанії в Україні, реєстрація та консультації з комерційного права",
         icon: Building2,
         category: "ticari-genel",
         metaTitle: "Ukrayna'da Şirket Kurma - Lviv Şirket Kuruluşu ve Tescili | Lviv Avukat",
@@ -722,8 +751,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Gayrimenkul Hukuku",
+        titleUk: "Право нерухомості",
         slug: "gayrimenkul-hukuku",
         shortDescription: "Ukrayna'da gayrimenkul alım-satım, kiralama ve mülkiyet hukuku",
+        shortDescriptionUk: "Купівля-продаж нерухомості, оренда та право власності в Україні",
         icon: MapPin,
         category: "ticari-genel",
         metaTitle: "Ukrayna Gayrimenkul ve Emlak Hukuku | Ev Alma İşlemleri",
@@ -794,8 +825,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "İş Hukuku",
+        titleUk: "Трудове право",
         slug: "is-hukuku",
         shortDescription: "İşçi-işveren ilişkileri, iş sözleşmeleri ve çalışma hakları",
+        shortDescriptionUk: "Трудові відносини, трудові договори та права працівників",
         icon: Briefcase,
         category: "ticari-genel",
         metaTitle: "Ukrayna İş Hukuku | İşçi-İşveren İlişkileri Danışmanlığı",
@@ -821,8 +854,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Sözleşme Hukuku",
+        titleUk: "Договірне право",
         slug: "sozlesme-hukuku",
         shortDescription: "Sözleşme hazırlama, inceleme ve uyuşmazlık çözümü",
+        shortDescriptionUk: "Підготовка, перевірка договорів та вирішення спорів",
         icon: Handshake,
         category: "ticari-genel",
         metaTitle: "Ukrayna Sözleşme Hukuku | Sözleşme Hazırlama ve İnceleme",
@@ -847,8 +882,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Ceza Hukuku",
+        titleUk: "Кримінальне право",
         slug: "ceza-hukuku",
         shortDescription: "Ceza davalarında savunma, hukuki temsil ve haklar",
+        shortDescriptionUk: "Захист у кримінальних справах, юридичне представництво та права",
         icon: ShieldAlert,
         category: "ticari-genel",
         metaTitle: "Ukrayna Ceza Avukatı | Lviv Ceza Hukuku Savunma ve Danışmanlık",
@@ -937,8 +974,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Miras Hukuku",
+        titleUk: "Спадкове право",
         slug: "miras-hukuku",
         shortDescription: "Miras davaları, veraset ilamı ve uluslararası miras süreçleri",
+        shortDescriptionUk: "Спадкові справи, свідоцтво про спадщину та міжнародні спадкові процеси",
         icon: Landmark,
         category: "ticari-genel",
         metaTitle: "Ukrayna Miras Hukuku | Veraset ve İntikal İşlemleri",
@@ -963,8 +1002,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Vergi Danışmanlığı",
+        titleUk: "Податкове консультування",
         slug: "vergi-danismanligi",
         shortDescription: "Ukrayna vergi sistemi, beyanname ve vergi planlaması danışmanlığı",
+        shortDescriptionUk: "Податкова система України, декларації та податкове планування",
         icon: DollarSign,
         category: "ticari-genel",
         metaTitle: "Ukrayna Vergi Danışmanlığı | Vergi Planlaması ve Beyanname",
@@ -991,8 +1032,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Tercüme & Apostil",
+        titleUk: "Переклад та апостиль",
         slug: "tercume-apostil",
         shortDescription: "Yeminli tercüme, noter tasdiki ve apostil işlemleri",
+        shortDescriptionUk: "Присяжний переклад, нотаріальне засвідчення та апостиль",
         icon: Languages,
         category: "ticari-genel",
         metaTitle: "Ukrayna Tercüme & Apostil Hizmetleri | Belge Tasdik İşlemleri",
@@ -1019,8 +1062,10 @@ Ukrayna üniversitelerine kabul alan Türk öğrencilerin eğitim amaçlı geçi
       },
       {
         title: "Noter İşlemleri",
+        titleUk: "Нотаріальні послуги",
         slug: "noter-islemleri",
         shortDescription: "Ukrayna'da noter hizmetleri, vekâletname ve resmi belge onayları",
+        shortDescriptionUk: "Нотаріальні послуги в Україні, довіреність та засвідчення офіційних документів",
         icon: Stamp,
         category: "ticari-genel",
         metaTitle: "Ukrayna Noter İşlemleri | Vekâletname ve Belge Onayı",
@@ -1058,4 +1103,45 @@ export function getServiceBySlug(slug: string): ServiceItem | undefined {
 // Helper to get all slugs (for static generation)
 export function getAllServiceSlugs(): string[] {
   return allServices.map((s) => s.slug);
+}
+
+// Localized service data helpers
+import type { Locale } from "@/i18n/config";
+
+export interface LocalizedServiceItem {
+  title: string;
+  slug: string;
+  shortDescription: string;
+  icon: LucideIcon;
+  category: string;
+  duration?: string;
+}
+
+export interface LocalizedServiceCategory {
+  title: string;
+  services: LocalizedServiceItem[];
+}
+
+export function getLocalizedServiceCategories(locale: Locale): LocalizedServiceCategory[] {
+  return serviceCategories.map((cat) => ({
+    title: locale === "uk" ? cat.titleUk : cat.title,
+    services: cat.services.map((s) => ({
+      title: locale === "uk" ? s.titleUk : s.title,
+      slug: s.slug,
+      shortDescription: locale === "uk" ? s.shortDescriptionUk : s.shortDescription,
+      icon: s.icon,
+      category: s.category,
+      duration: locale === "uk" ? (s.durationUk ?? s.duration) : s.duration,
+    })),
+  }));
+}
+
+export function getLocalizedServiceBySlug(slug: string, locale: Locale) {
+  const service = getServiceBySlug(slug);
+  if (!service) return undefined;
+  return {
+    ...service,
+    localizedTitle: locale === "uk" ? service.titleUk : service.title,
+    localizedShortDescription: locale === "uk" ? service.shortDescriptionUk : service.shortDescription,
+  };
 }

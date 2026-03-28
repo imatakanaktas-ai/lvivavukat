@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Phone, Clock, FileText, ChevronDown, ArrowRight, CheckCircle2, AlertCircle, Quote } from "lucide-react";
-import { allServices, getAllServiceSlugs, getServiceBySlug } from "@/data/services";
+import { getAllServiceSlugs, getServiceBySlug, getLocalizedServiceCategories } from "@/data/services";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import {
   generateBreadcrumbSchema,
@@ -194,20 +194,24 @@ export default async function ServiceDetailPage({
   if (!service) notFound();
   const dict = await getDictionary(locale as Locale);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
+  const localizedTitle = locale === "uk" ? service.titleUk : service.title;
+  const localizedShortDesc = locale === "uk" ? service.shortDescriptionUk : service.shortDescription;
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: dict.nav.home, url: `${siteUrl}${prefix}` },
     { name: dict.services.title, url: `${siteUrl}${prefix}/hizmetler` },
-    { name: service.title, url: `${siteUrl}${prefix}/hizmetler/${service.slug}` },
+    { name: localizedTitle, url: `${siteUrl}${prefix}/hizmetler/${service.slug}` },
   ]);
   const legalServiceSchema = generateLegalServiceSchema({
-    name: service.title,
+    name: localizedTitle,
     description: service.metaDescription,
     url: `https://lvivavukat.com/hizmetler/${service.slug}`,
   });
   const faqSchema = service.faq.length > 0 ? generateFAQSchema(service.faq) : null;
 
-  const otherServices = allServices.filter((s) => s.slug !== service.slug).slice(0, 6);
+  const localizedCategories = getLocalizedServiceCategories(locale as Locale);
+  const localizedAllServices = localizedCategories.flatMap((c) => c.services);
+  const otherServices = localizedAllServices.filter((s) => s.slug !== service.slug).slice(0, 6);
   const Icon = service.icon;
 
   return (
@@ -233,7 +237,7 @@ export default async function ServiceDetailPage({
           <Breadcrumb
             items={[
               { label: dict.services.title, href: `${prefix}/hizmetler` },
-              { label: service.title },
+              { label: localizedTitle },
             ]}
           />
           <div className="mt-6 flex items-start gap-5">
@@ -242,7 +246,7 @@ export default async function ServiceDetailPage({
             </div>
             <div>
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-white">
-                {service.title}
+                {localizedTitle}
               </h1>
               <p className="mt-4 text-lg text-white/60 max-w-2xl">
                 {service.heroDescription}
@@ -368,7 +372,7 @@ export default async function ServiceDetailPage({
                     {dict.services.ctaTitle}
                   </h3>
                   <p className="text-sm text-white/60 mb-5">
-                    {service.title} {dict.services.ctaDescription}
+                    {localizedTitle} {dict.services.ctaDescription}
                   </p>
                   <a
                     href="https://wa.me/380000000000"

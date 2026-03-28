@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { serviceCategories } from "@/data/services";
+import { getLocalizedServiceCategories } from "@/data/services";
 import Breadcrumb from "@/components/ui/Breadcrumb";
 import { generateBreadcrumbSchema } from "@/lib/seo/schemas";
 import { type Locale } from "@/i18n/config";
@@ -33,6 +33,7 @@ export default async function ServicesPage({
   const dict = await getDictionary(locale as Locale);
   const prefix = locale === "uk" ? "/ua" : "";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
+  const localizedCategories = getLocalizedServiceCategories(locale as Locale);
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: dict.nav.home, url: `${siteUrl}${prefix}` },
@@ -62,7 +63,7 @@ export default async function ServicesPage({
       {/* Services by category */}
       <section className="py-16 lg:py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
-          {serviceCategories.map((category) => (
+          {localizedCategories.map((category) => (
             <div key={category.title}>
               <div className="flex items-center gap-3 mb-8">
                 <div className="h-px flex-1 bg-border" />

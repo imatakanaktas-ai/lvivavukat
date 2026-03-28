@@ -3,13 +3,14 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { serviceCategories } from "@/data/services";
+import { getLocalizedServiceCategories } from "@/data/services";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/get-dictionary";
 
 export default function ServicesGrid({ dict, locale }: { dict: Dictionary; locale: Locale }) {
   const prefix = locale === "uk" ? "/ua" : "";
-  const allServices = serviceCategories.flatMap((c) => c.services).slice(0, 9);
+  const localizedCategories = getLocalizedServiceCategories(locale);
+  const allServices = localizedCategories.flatMap((c) => c.services).slice(0, 9);
 
   return (
     <section className="py-20 lg:py-28 bg-background">

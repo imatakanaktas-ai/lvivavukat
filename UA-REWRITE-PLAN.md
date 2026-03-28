@@ -179,11 +179,11 @@ Every service page uses a MIX of these block types (not plain text):
 ### PHASE 2: Services Batch 1 — Проживання та візи (1-3)
 > 1000-1500 words each. Rich content blocks. Full SEO+AEO.
 
-- [ ] **2.1** Тимчасовий дозвіл на проживання — Full UA content (contentBlocksUk, faqUk, processStepsUk, requiredDocumentsUk, metaTitleUk, metaDescriptionUk, heroDescriptionUk)
-- [ ] **2.2** Постійний дозвіл на проживання — Full UA content
-- [ ] **2.3** Дозвіл на працевлаштування — Full UA content
-- [ ] **2.4** Update `[slug]/page.tsx` to render `*Uk` fields when locale=uk
-- [ ] **2.5** Build & push
+- [x] **2.1** Тимчасовий дозвіл на проживання — Full UA content (contentBlocksUk, faqUk, processStepsUk, requiredDocumentsUk, metaTitleUk, metaDescriptionUk, heroDescriptionUk)
+- [x] **2.2** Постійний дозвіл на проживання — Full UA content
+- [x] **2.3** Дозвіл на працевлаштування — Full UA content
+- [x] **2.4** Update `[slug]/page.tsx` to render `*Uk` fields when locale=uk
+- [x] **2.5** Build & push
 
 ### PHASE 3: Services Batch 2 — Візи + Сімейне (4-6)
 - [ ] **3.1** Студентська віза — Full UA content
@@ -310,7 +310,7 @@ durationUk: string;
 |-------|------------|--------|------|
 | 0 | Infrastructure (Slug Routing) | ✅ Complete | 18/18 |
 | 1 | Homepage & Core Pages | ✅ Complete | 7/7 |
-| 2 | Services Batch 1 (Visa 1-3) | ⬜ Not Started | 0/5 |
+| 2 | Services Batch 1 (Visa 1-3) | ✅ Complete | 5/5 |
 | 3 | Services Batch 2 (Visa+Family 4-6) | ⬜ Not Started | 0/4 |
 | 4 | Services Batch 3 (Family 7-9) | ⬜ Not Started | 0/4 |
 | 5 | Services Batch 4 (Family+Comm 10-12) | ⬜ Not Started | 0/4 |

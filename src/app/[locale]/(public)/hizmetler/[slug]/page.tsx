@@ -29,15 +29,18 @@ export async function generateMetadata({
   const { slug, locale } = await params;
   const service = getServiceBySlug(slug);
   if (!service) return {};
+  const isUk = locale === "uk";
   const serviceHref = localizedHref(`/hizmetler/${service.slug}`, locale as Locale);
   const siteUrl = "https://lvivavukat.com";
+  const metaTitle = (isUk && service.metaTitleUk) || service.metaTitle;
+  const metaDesc = (isUk && service.metaDescriptionUk) || service.metaDescription;
   return {
-    title: service.metaTitle,
-    description: service.metaDescription,
+    title: metaTitle,
+    description: metaDesc,
     alternates: { canonical: `${siteUrl}${serviceHref}` },
     openGraph: {
-      title: service.metaTitle,
-      description: service.metaDescription,
+      title: metaTitle,
+      description: metaDesc,
       url: `${siteUrl}${serviceHref}`,
       type: "website",
     },
@@ -195,9 +198,16 @@ export default async function ServiceDetailPage({
   const service = getServiceBySlug(slug);
   if (!service) notFound();
   const dict = await getDictionary(locale as Locale);
+  const isUk = locale === "uk";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://lvivavukat.com";
-  const localizedTitle = locale === "uk" ? service.titleUk : service.title;
-  const localizedShortDesc = locale === "uk" ? service.shortDescriptionUk : service.shortDescription;
+  const localizedTitle = isUk ? service.titleUk : service.title;
+  const localizedShortDesc = isUk ? service.shortDescriptionUk : service.shortDescription;
+  const localizedHeroDesc = (isUk && service.heroDescriptionUk) || service.heroDescription;
+  const localizedDuration = (isUk && service.durationUk) || service.duration;
+  const localizedBlocks = (isUk && service.contentBlocksUk) || service.contentBlocks;
+  const localizedDocs = (isUk && service.requiredDocumentsUk) || service.requiredDocuments;
+  const localizedSteps = (isUk && service.processStepsUk) || service.processSteps;
+  const localizedFaq = (isUk && service.faqUk) || service.faq;
   const homeHref = localizedHref("/", locale as Locale);
   const servicesHref = localizedHref("/hizmetler", locale as Locale);
   const serviceHref = localizedHref(`/hizmetler/${service.slug}`, locale as Locale);
@@ -209,10 +219,10 @@ export default async function ServiceDetailPage({
   ]);
   const legalServiceSchema = generateLegalServiceSchema({
     name: localizedTitle,
-    description: service.metaDescription,
+    description: (isUk && service.metaDescriptionUk) || service.metaDescription,
     url: `https://lvivavukat.com/hizmetler/${service.slug}`,
   });
-  const faqSchema = service.faq.length > 0 ? generateFAQSchema(service.faq) : null;
+  const faqSchema = localizedFaq.length > 0 ? generateFAQSchema(localizedFaq) : null;
 
   const localizedCategories = getLocalizedServiceCategories(locale as Locale);
   const localizedAllServices = localizedCategories.flatMap((c) => c.services);
@@ -255,13 +265,13 @@ export default async function ServiceDetailPage({
                 {localizedTitle}
               </h1>
               <p className="mt-4 text-lg text-white/60 max-w-2xl">
-                {service.heroDescription}
+                {localizedHeroDesc}
               </p>
-              {service.duration && (
+              {localizedDuration && (
                 <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg">
                   <Clock className="w-4 h-4 text-accent" />
                   <span className="text-sm text-white/80">
-                    {dict.services.duration}: <strong className="text-accent">{service.duration}</strong>
+                    {dict.services.duration}: <strong className="text-accent">{localizedDuration}</strong>
                   </span>
                 </div>
               )}
@@ -277,9 +287,9 @@ export default async function ServiceDetailPage({
             {/* Main content */}
             <div className="lg:col-span-2 space-y-12">
               {/* Dynamic Content Blocks or Fallback */}
-              {service.contentBlocks && service.contentBlocks.length > 0 ? (
+              {localizedBlocks && localizedBlocks.length > 0 ? (
                 <div>
-                  {service.contentBlocks.map((block, i) => (
+                  {localizedBlocks.map((block, i) => (
                     <BlockRenderer key={i} block={block} index={i} />
                   ))}
                 </div>
@@ -317,7 +327,7 @@ export default async function ServiceDetailPage({
                   {dict.services.processSteps}
                 </h2>
                 <div className="space-y-4">
-                  {service.processSteps.map((step, i) => (
+                  {localizedSteps.map((step, i) => (
                     <div key={i} className="flex gap-4 p-5 rounded-xl bg-card border border-border/50">
                       <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center flex-shrink-0">
                         <span className="text-primary text-sm font-bold">{String(i + 1).padStart(2, "0")}</span>
@@ -337,7 +347,7 @@ export default async function ServiceDetailPage({
                   {dict.services.requiredDocs}
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-3">
-                  {service.requiredDocuments.map((doc, i) => (
+                  {localizedDocs.map((doc, i) => (
                     <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-secondary">
                       <FileText className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
                       <span className="text-sm text-foreground/80">{doc}</span>
@@ -347,13 +357,13 @@ export default async function ServiceDetailPage({
               </div>
 
               {/* FAQ */}
-              {service.faq.length > 0 && (
+              {localizedFaq.length > 0 && (
                 <div>
                   <h2 className="text-2xl font-serif font-bold text-foreground mb-6">
                     {dict.services.faq}
                   </h2>
                   <div className="space-y-3">
-                    {service.faq.map((faq, i) => (
+                    {localizedFaq.map((faq, i) => (
                       <details key={i} className="group border border-border/50 rounded-xl overflow-hidden">
                         <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-secondary/50 transition-colors">
                           <span className="font-semibold text-foreground pr-4">{faq.question}</span>

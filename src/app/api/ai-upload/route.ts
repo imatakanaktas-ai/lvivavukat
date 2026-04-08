@@ -44,41 +44,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    let extractedText: string | undefined;
-
-    // Extract text from PDF
-    if (mimeType === "application/pdf") {
-      try {
-        // pdf-parse v2 uses PDFParse class with { data: Uint8Array }
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { PDFParse } = require("pdf-parse") as {
-          PDFParse: new (opts: { data: Uint8Array; verbosity?: number }) => {
-            load: () => Promise<void>;
-            getText: () => string;
-            destroy: () => Promise<void>;
-          };
-        };
-        const parser = new PDFParse({ data: new Uint8Array(buffer), verbosity: 0 });
-        await parser.load();
-        extractedText = parser.getText();
-        await parser.destroy();
-
-        // If extracted text is empty or too short, it might be a scanned PDF
-        if (!extractedText || extractedText.trim().length < 10) {
-          extractedText = "[PDF metnini okumak mümkün olmadı — taranmış belge olabilir]";
-        }
-      } catch (e) {
-        console.error("PDF parse error:", e);
-        extractedText = "[PDF metnini okumak mümkün olmadı]";
-      }
-    }
+    // No need to extract text from PDF — Gemini reads PDFs natively via inline data
 
     return NextResponse.json({
       success: true,
       base64,
       mimeType,
       fileName,
-      extractedText,
     });
   } catch (e) {
     console.error("File upload error:", e);

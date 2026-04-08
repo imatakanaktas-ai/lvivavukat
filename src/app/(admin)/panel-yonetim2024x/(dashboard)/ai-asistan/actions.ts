@@ -170,11 +170,14 @@ export async function sendAIMessage(
     // Attach file to the LAST user message for Gemini
     const lastTurn = history[history.length - 1];
     if (fileData && lastTurn) {
-      if (fileType === "image") {
-        lastTurn.fileBase64 = fileData.base64;
-        lastTurn.fileMimeType = fileData.mimeType;
-      } else if (fileType === "pdf" && fileData.extractedText) {
-        lastTurn.content = `[Завантажено PDF: "${fileData.fileName}"]\n\nЗміст документу:\n---\n${fileData.extractedText}\n---\n\n${message}`;
+      // Send both PDFs and images directly to Gemini as inline data
+      // Gemini natively understands PDF and image content
+      lastTurn.fileBase64 = fileData.base64;
+      lastTurn.fileMimeType = fileData.mimeType;
+      if (message) {
+        lastTurn.content = message;
+      } else {
+        lastTurn.content = `Завантажено файл: "${fileData.fileName}". Проаналізуй його зміст.`;
       }
     }
 

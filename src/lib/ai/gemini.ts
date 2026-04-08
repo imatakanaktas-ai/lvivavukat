@@ -22,9 +22,18 @@ function getEndpoint(model: string, method: string) {
   return `https://aiplatform.googleapis.com/v1/projects/${project}/locations/global/publishers/google/models/${model}:${method}?key=${getApiKey()}`;
 }
 
+// Part types for multimodal support
+interface TextPart {
+  text: string;
+}
+interface InlineDataPart {
+  inlineData: { mimeType: string; data: string };
+}
+type Part = TextPart | InlineDataPart;
+
 interface GeminiMessage {
   role: "user" | "model";
-  parts: { text: string }[];
+  parts: Part[];
 }
 
 interface GeminiResponse {
@@ -35,22 +44,42 @@ interface GeminiResponse {
   }[];
 }
 
-export async function generateContent(
-  prompt: string,
+export interface ChatTurn {
+  role: "user" | "assistant";
+  content: string;
+  fileBase64?: string;
+  fileMimeType?: string;
+}
+
+/**
+ * Multi-turn chat with optional multimodal support.
+ * Sends full conversation history so the model remembers context.
+ */
+export async function generateChatResponse(
+  history: ChatTurn[],
   systemInstruction?: string
 ): Promise<string> {
-  const contents: GeminiMessage[] = [
-    { role: "user", parts: [{ text: prompt }] },
-  ];
+  const contents: GeminiMessage[] = history.map((turn) => {
+    const parts: Part[] = [];
+    if (turn.fileBase64 && turn.fileMimeType) {
+      parts.push({
+        inlineData: { mimeType: turn.fileMimeType, data: turn.fileBase64 },
+      });
+    }
+    if (turn.content) {
+      parts.push({ text: turn.content });
+    }
+    return {
+      role: turn.role === "assistant" ? "model" : "user",
+      parts,
+    };
+  });
 
   const body: Record<string, unknown> = { contents };
 
   if (systemInstruction) {
-    body.systemInstruction = {
-      parts: [{ text: systemInstruction }],
-    };
+    body.systemInstruction = { parts: [{ text: systemInstruction }] };
   }
-
   body.generationConfig = {
     temperature: 0.8,
     topP: 0.95,
@@ -72,6 +101,19 @@ export async function generateContent(
 
   const data: GeminiResponse = await res.json();
   return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+}
+
+/**
+ * Simple single-turn generation (backward compatible).
+ */
+export async function generateContent(
+  prompt: string,
+  systemInstruction?: string
+): Promise<string> {
+  return generateChatResponse(
+    [{ role: "user", content: prompt }],
+    systemInstruction
+  );
 }
 
 export async function generateContentStream(

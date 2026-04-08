@@ -303,6 +303,47 @@ export type AIDirective = typeof aiDirectives.$inferSelect;
 export type NewAIDirective = typeof aiDirectives.$inferInsert;
 
 // ============================================================
+// AI CHAT SESSIONS
+// ============================================================
+export const aiChatSessions = pgTable("ai_chat_sessions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull().default("Нова розмова"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export type AIChatSession = typeof aiChatSessions.$inferSelect;
+
+// ============================================================
+// AI CHAT MESSAGES
+// ============================================================
+export const aiChatMessages = pgTable("ai_chat_messages", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  sessionId: uuid("session_id")
+    .references(() => aiChatSessions.id, { onDelete: "cascade" })
+    .notNull(),
+  role: varchar("role", { length: 20 }).notNull(), // "user" | "assistant"
+  content: text("content").notNull(),
+  fileUrl: text("file_url"),
+  fileName: text("file_name"),
+  fileType: varchar("file_type", { length: 50 }), // "pdf" | "image"
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type AIChatMessage = typeof aiChatMessages.$inferSelect;
+
+export const aiChatSessionsRelations = relations(aiChatSessions, ({ many }) => ({
+  messages: many(aiChatMessages),
+}));
+
+export const aiChatMessagesRelations = relations(aiChatMessages, ({ one }) => ({
+  session: one(aiChatSessions, {
+    fields: [aiChatMessages.sessionId],
+    references: [aiChatSessions.id],
+  }),
+}));
+
+// ============================================================
 // CLIENT NOTES (Müvekkil Notları)
 // ============================================================
 export const clientNotes = pgTable("client_notes", {

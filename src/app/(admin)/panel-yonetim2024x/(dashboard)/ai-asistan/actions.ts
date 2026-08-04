@@ -4,7 +4,12 @@ import { auth } from "@/lib/auth/config";
 import { db } from "@/lib/db";
 import { aiChatSessions, aiChatMessages } from "@/lib/db/schema";
 import { eq, desc, asc } from "drizzle-orm";
-import { generateChatResponse, generateContent, type ChatTurn } from "@/lib/ai/gemini";
+import {
+  generateChatResponse,
+  generateContent,
+  type ChatTurn,
+  type ModelTier,
+} from "@/lib/ai/gemini";
 import { getActiveDirectivesText } from "./directive-actions";
 
 async function requireAuth() {
@@ -125,7 +130,8 @@ export async function getMessages(sessionId: string) {
 export async function sendAIMessage(
   sessionId: string,
   message: string,
-  fileData?: { base64: string; mimeType: string; fileName: string; extractedText?: string }
+  fileData?: { base64: string; mimeType: string; fileName: string; extractedText?: string },
+  tier: ModelTier = "pro"
 ): Promise<{ success: boolean; reply?: string; error?: string }> {
   await requireAuth();
 
@@ -189,7 +195,7 @@ export async function sendAIMessage(
     }
 
     // 6. Call Gemini
-    const reply = await generateChatResponse(history, systemPrompt);
+    const reply = await generateChatResponse(history, systemPrompt, tier);
 
     // 7. Save assistant reply
     await db.insert(aiChatMessages).values({
@@ -215,7 +221,11 @@ export async function sendAIMessage(
     return { success: true, reply };
   } catch (e) {
     console.error("AI message error:", e);
-    return { success: false, error: "AI відповідь не вдалося отримати." };
+    const detail = e instanceof Error ? e.message : String(e);
+    return {
+      success: false,
+      error: `AI відповідь не вдалося отримати. (${detail.slice(0, 300)})`,
+    };
   }
 }
 

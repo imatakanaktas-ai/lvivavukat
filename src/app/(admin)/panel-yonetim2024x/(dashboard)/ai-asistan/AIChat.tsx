@@ -19,6 +19,8 @@ import {
   Trash2,
   Pencil,
   Clock,
+  Brain,
+  Zap,
 } from "lucide-react";
 import {
   sendAIMessage,
@@ -30,6 +32,18 @@ import {
   generatePdfFromText,
 } from "./actions";
 import type { AIChatSession, AIChatMessage } from "@/lib/db/schema";
+
+type ModelTier = "pro" | "fast";
+
+const MODEL_OPTIONS: {
+  tier: ModelTier;
+  label: string;
+  hint: string;
+  Icon: typeof Brain;
+}[] = [
+  { tier: "pro", label: "Pro", hint: "Глибокий аналіз, повільніше", Icon: Brain },
+  { tier: "fast", label: "Швидко", hint: "Швидкі відповіді", Icon: Zap },
+];
 
 type FileAttachment = {
   base64: string;
@@ -61,6 +75,19 @@ export default function AIChat() {
   const [isSending, startSend] = useTransition();
   const [isLoadingSessions, startLoadSessions] = useTransition();
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  // Model tier (persisted per browser)
+  const [tier, setTier] = useState<ModelTier>("pro");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("ai-model-tier");
+    if (saved === "pro" || saved === "fast") setTier(saved);
+  }, []);
+
+  const changeTier = (next: ModelTier) => {
+    setTier(next);
+    localStorage.setItem("ai-model-tier", next);
+  };
 
   // File
   const [attachment, setAttachment] = useState<FileAttachment | null>(null);
@@ -264,7 +291,8 @@ export default function AIChat() {
               fileName: currentAttachment.fileName,
               extractedText: currentAttachment.extractedText,
             }
-          : undefined
+          : undefined,
+        tier
       );
 
       if (result.success && result.reply) {
@@ -580,9 +608,34 @@ export default function AIChat() {
           </div>
         )}
 
+        {/* Model selector */}
+        {activeSessionId && (
+          <div className="mt-3 flex items-center gap-2">
+            <span className="text-[11px] font-medium text-gray-400">Модель:</span>
+            <div className="flex items-center gap-1 p-1 rounded-xl bg-gray-100 border border-gray-200">
+              {MODEL_OPTIONS.map(({ tier: t, label, hint, Icon }) => (
+                <button
+                  key={t}
+                  onClick={() => changeTier(t)}
+                  disabled={isSending}
+                  title={hint}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all disabled:opacity-50
+                    ${tier === t
+                      ? "bg-white text-purple-700 shadow-sm border border-purple-200"
+                      : "text-gray-500 hover:text-gray-700 border border-transparent"
+                    }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Input area */}
         {activeSessionId && (
-          <div className="mt-3 flex gap-2">
+          <div className="mt-2 flex gap-2">
             <input
               ref={fileInputRef}
               type="file"

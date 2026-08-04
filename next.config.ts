@@ -1,6 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // AI assistant sends base64 PDFs/images through a server action;
+    // the 1 MB default rejected anything but tiny files.
+    serverActions: { bodySizeLimit: "30mb" },
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

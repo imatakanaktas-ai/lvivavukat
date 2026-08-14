@@ -7,7 +7,7 @@ export type ModelTier = "pro" | "fast";
 
 const MODELS: Record<ModelTier, string> = {
   pro: "gemini-3.1-pro-preview",
-  fast: "gemini-3.6-flash",
+  fast: "gemini-3.7-flash",
 };
 
 export const DEFAULT_TIER: ModelTier = "pro";

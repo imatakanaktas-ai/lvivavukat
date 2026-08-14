@@ -41,6 +41,57 @@ function normalizeDecisionId(input: string): string | null {
   return match ? match[1] : null;
 }
 
+/**
+ * Strips citations the model invented instead of retrieved.
+ *
+ * Two failure modes seen in testing, both dangerous for a lawyer:
+ * 1. zakon.rada deep anchors (#n1350) were fabricated — the article number in
+ *    the prose was right but the link landed on an unrelated article.
+ * 2. ЄДРСР decision links were fabricated — a cited "case 923/876/16" pointed
+ *    at a Review id that is actually a different case entirely.
+ *
+ * Anchors are dropped so the link still opens the correct law, and any court
+ * decision the assistant did not actually open with the tool loses its link.
+ */
+export function sanitizeCitations(
+  text: string,
+  verifiedDecisionIds: Set<string>
+): { text: string; strippedDecisions: number } {
+  let strippedDecisions = 0;
+
+  // 1. zakon.rada.gov.ua/...#nNNN  ->  zakon.rada.gov.ua/...
+  let out = text.replace(
+    /(https?:\/\/zakon\.rada\.gov\.ua\/[^\s)\]]*?)#n\d+/gi,
+    "$1"
+  );
+
+  const isUnverified = (url: string) => {
+    const id = url.match(/reyestr\.court\.gov\.ua\/Review\/(\d+)/i)?.[1];
+    return id ? !verifiedDecisionIds.has(id) : false;
+  };
+
+  // 2. [text](unverified reyestr url) -> text
+  out = out.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/gi, (m, label, url) => {
+    if (!isUnverified(url)) return m;
+    strippedDecisions++;
+    return label;
+  });
+
+  // 3. bare unverified reyestr urls
+  out = out.replace(/https?:\/\/reyestr\.court\.gov\.ua\/Review\/\d+/gi, (url) => {
+    if (!isUnverified(url)) return url;
+    strippedDecisions++;
+    return "(посилання не наведено)";
+  });
+
+  if (strippedDecisions > 0) {
+    out +=
+      "\n\n> ⚠️ **Увага:** посилання на судові рішення, які асистент не відкривав, було прибрано — номери справ у тексті НЕ перевірені. Перевір їх у ЄДРСР перед використанням.";
+  }
+
+  return { text: out, strippedDecisions };
+}
+
 export interface CourtDecision {
   found: boolean;
   id?: string;

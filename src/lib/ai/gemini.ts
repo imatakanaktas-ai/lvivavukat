@@ -222,10 +222,14 @@ export async function generateResearchReply(
   history: ChatTurn[],
   systemInstruction: string
 ): Promise<AssistantReply> {
-  const { readCourtDecision } = await import("./legal-sources");
+  const { readCourtDecision, sanitizeCitations } = await import(
+    "./legal-sources"
+  );
 
   const contents = historyToContents(history);
   const sources = new Map<string, string>();
+  // Only decisions actually opened may keep their link in the reply.
+  const verifiedDecisionIds = new Set<string>();
 
   const body: Record<string, unknown> = {
     contents,
@@ -251,8 +255,9 @@ export async function generateResearchReply(
     const calls = parts.filter((p) => p.functionCall);
 
     if (calls.length === 0) {
+      const clean = sanitizeCitations(extractText(data), verifiedDecisionIds);
       return {
-        text: extractText(data),
+        text: clean.text,
         sources: [...sources].map(([uri, title]) => ({ uri, title })),
       };
     }
@@ -272,6 +277,7 @@ export async function generateResearchReply(
 
         if ("found" in result && result.found && result.url) {
           sources.set(result.url, "reyestr.court.gov.ua");
+          if (result.id) verifiedDecisionIds.add(result.id);
         }
 
         return {

@@ -32,6 +32,7 @@ import {
   generatePdfFromText,
 } from "./actions";
 import type { AIChatSession, AIChatMessage } from "@/lib/db/schema";
+import MessageContent from "./MessageContent";
 
 type ModelTier = "pro" | "fast";
 
@@ -41,8 +42,13 @@ const MODEL_OPTIONS: {
   hint: string;
   Icon: typeof Brain;
 }[] = [
-  { tier: "pro", label: "Pro", hint: "Глибокий аналіз, повільніше", Icon: Brain },
-  { tier: "fast", label: "Швидко", hint: "Швидкі відповіді", Icon: Zap },
+  { tier: "pro", label: "Pro", hint: "Глибокий аналіз, без пошуку", Icon: Brain },
+  {
+    tier: "fast",
+    label: "Пошук",
+    hint: "Шукає актуальні джерела та судову практику, дає посилання",
+    Icon: Zap,
+  },
 ];
 
 type FileAttachment = {
@@ -529,7 +535,10 @@ export default function AIChat() {
                       />
                     )}
 
-                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                    <MessageContent
+                      content={msg.content}
+                      isUser={msg.role === "user"}
+                    />
 
                     <div className={`flex items-center gap-2 mt-2 ${msg.role === "user" ? "justify-end" : "justify-between"}`}>
                       <span className="text-[10px] text-gray-400">

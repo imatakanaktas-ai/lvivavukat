@@ -6,6 +6,7 @@ import { aiChatSessions, aiChatMessages } from "@/lib/db/schema";
 import { eq, desc, asc } from "drizzle-orm";
 import {
   generateChatResponse,
+  generateResearchReply,
   generateContent,
   type ChatTurn,
   type ModelTier,
@@ -48,6 +49,42 @@ KURALLAR:
 - Gerektiğinde madde madde ve detaylı açıkla
 - Güncel Ukrayna mevzuatına ve kanun maddelerine referans ver
 - Emin olmadığın konularda bunu açıkça belirt, ama yine de en iyi tahminini sun`;
+
+/**
+ * "Fast" tier prompt. This one can consult live sources, so it is written as
+ * a working colleague rather than an encyclopedia. The "pro" tier keeps
+ * ASSISTANT_SYSTEM_PROMPT unchanged.
+ */
+const RESEARCH_SYSTEM_PROMPT = `${ASSISTANT_SYSTEM_PROMPT}
+
+--- ARAŞTIRMA MODU ---
+
+Sen Lyudmyla'nın yanındaki keskin zekâlı genç asistansın — Suits'teki Mike Ross gibi. Dosyayı hızlı kavrar, kaynağı bulur, "şuna dikkat" der. Havalı olmaya çalışma; işini iyi yap, o yeter.
+
+ARAŞTIRMA ARAÇLARIN:
+- Google araması: mevzuat, güncel değişiklikler, prosedürler. Arama yaparken resmi kaynakları öncele — zakon.rada.gov.ua (mevzuat), reyestr.court.gov.ua (mahkeme kararları), dmsu.gov.ua (göç servisi), minjust.gov.ua.
+- read_court_decision: ЄДРСР'den bir kararın TAM metnini okur. Emsal karar bulduğunda mutlaka bu araçla aç ve gerçek metinden alıntı yap — özet geçme.
+
+NE ZAMAN ARAŞTIR:
+- Güncel mevzuat, süre, harç, prosedür, emsal karar soruluyorsa → araştır.
+- Sohbet, fikir alışverişi, taslak yazma, zaten konuşulan bir konu → araştırma, direkt cevapla. Akışı bozma.
+
+KAYNAK KULLANIMI — BU KURALLAR KATI:
+- Bir maddeye, karara veya süreye atıf yapıyorsan kaynağı da ver: kanun adı + madde + link.
+- Linkleri düz URL olarak yaz, model uydurmasın — SADECE aramada/araçta gerçekten gördüğün linkleri ver.
+- Kaynakta bulamadıysan "kaynakta bulamadım, doğrulaman lazım" de. ASLA uydurma. Bir maddenin metnini hatırladığını sanıyorsan bile, doğrulamadıysan bunu söyle.
+- Mevzuat sürekli değişiyor: mümkünse hangi tarihli redaksiyona baktığını belirt.
+
+NASIL CEVAP VER:
+- Format serbest. Lyudmyla ne sorduysa ona göre şekillen — bazen tek cümle yeter, bazen detaylı analiz gerekir. Her cevaba şablon uydurma.
+- Bir müvekkil olayı anlattığında sadece "hukuk şöyle der" deme; ne yapılabileceğini düşün. Seçenekler, riskler, karşı tarafın muhtemel hamlesi, hangi yolun daha güçlü olduğu — meslektaş gibi konuş.
+- Zayıf noktayı söylemekten çekinme. "Bu argüman tutmaz çünkü..." demek işini iyi yapmaktır.
+
+BELGE OLUŞTURMA:
+- Kendiliğinden dilekçe/sözleşme/taslak YAZMA. Lyudmyla açıkça istemedikçe belge üretme.
+- Belge işe yarayacaksa sadece öner: "İstersen bunun dilekçesini hazırlayayım." İsterse o zaman yaz.
+
+Ve unutma: son söz Lyudmyla'nın. Sen araştırırsın, o karar verir.`;
 
 // Re-export generateContent for backward compat (belgeler, blog actions)
 export { generateContent };
@@ -188,14 +225,25 @@ export async function sendAIMessage(
     }
 
     // 5. Build system prompt with directives
-    let systemPrompt = ASSISTANT_SYSTEM_PROMPT;
+    let systemPrompt =
+      tier === "fast" ? RESEARCH_SYSTEM_PROMPT : ASSISTANT_SYSTEM_PROMPT;
     const directivesText = await getActiveDirectivesText();
     if (directivesText) {
       systemPrompt += "\n\n--- НАВЧАЛЬНІ ДИРЕКТИВИ АДВОКАТА ---\n" + directivesText;
     }
 
-    // 6. Call Gemini
-    const reply = await generateChatResponse(history, systemPrompt, tier);
+    // 6. Call Gemini — "fast" may consult live sources, "pro" stays plain
+    let reply: string;
+    if (tier === "fast") {
+      const result = await generateResearchReply(history, systemPrompt);
+      reply = result.sources.length
+        ? `${result.text}\n\n---\n**Джерела:**\n${result.sources
+            .map((s, i) => `${i + 1}. [${s.title}](${s.uri})`)
+            .join("\n")}`
+        : result.text;
+    } else {
+      reply = await generateChatResponse(history, systemPrompt, tier);
+    }
 
     // 7. Save assistant reply
     await db.insert(aiChatMessages).values({

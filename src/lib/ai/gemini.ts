@@ -47,19 +47,33 @@ interface TextPart {
 interface InlineDataPart {
   inlineData: { mimeType: string; data: string };
 }
-type Part = TextPart | InlineDataPart;
+type Part = TextPart | InlineDataPart | Record<string, unknown>;
 
 interface GeminiMessage {
   role: "user" | "model";
   parts: Part[];
 }
 
+interface ResponsePart {
+  text?: string;
+  thought?: boolean;
+  functionCall?: { name: string; args?: Record<string, unknown> };
+}
+
+interface GroundingChunk {
+  web?: { uri?: string; title?: string; domain?: string };
+}
+
 interface GeminiResponse {
   candidates?: {
     content?: {
-      parts?: { text?: string; thought?: boolean }[];
+      parts?: ResponsePart[];
     };
     finishReason?: string;
+    groundingMetadata?: {
+      groundingChunks?: GroundingChunk[];
+      webSearchQueries?: string[];
+    };
   }[];
   promptFeedback?: { blockReason?: string };
 }
@@ -98,16 +112,8 @@ export interface ChatTurn {
   fileMimeType?: string;
 }
 
-/**
- * Multi-turn chat with optional multimodal support.
- * Sends full conversation history so the model remembers context.
- */
-export async function generateChatResponse(
-  history: ChatTurn[],
-  systemInstruction?: string,
-  tier: ModelTier = DEFAULT_TIER
-): Promise<string> {
-  const contents: GeminiMessage[] = history.map((turn) => {
+function historyToContents(history: ChatTurn[]): GeminiMessage[] {
+  return history.map((turn) => {
     const parts: Part[] = [];
     if (turn.fileBase64 && turn.fileMimeType) {
       parts.push({
@@ -120,8 +126,20 @@ export async function generateChatResponse(
     return {
       role: turn.role === "assistant" ? "model" : "user",
       parts,
-    };
+    } as GeminiMessage;
   });
+}
+
+/**
+ * Multi-turn chat with optional multimodal support.
+ * Sends full conversation history so the model remembers context.
+ */
+export async function generateChatResponse(
+  history: ChatTurn[],
+  systemInstruction?: string,
+  tier: ModelTier = DEFAULT_TIER
+): Promise<string> {
+  const contents = historyToContents(history);
 
   const body: Record<string, unknown> = { contents };
 
@@ -141,6 +159,131 @@ export async function generateChatResponse(
 
   const data: GeminiResponse = await res.json();
   return extractText(data);
+}
+
+// =============================================
+// RESEARCH-CAPABLE REPLY (fast tier only)
+// =============================================
+
+export interface GroundingSource {
+  title: string;
+  uri: string;
+}
+
+export interface AssistantReply {
+  text: string;
+  sources: GroundingSource[];
+}
+
+const RESEARCH_TOOLS = [
+  { googleSearch: {} },
+  {
+    functionDeclarations: [
+      {
+        name: "read_court_decision",
+        description:
+          "Читає ПОВНИЙ текст судового рішення з Єдиного державного реєстру судових рішень (reyestr.court.gov.ua) за ID або URL рішення. Використовуй після того, як знайшов рішення через пошук, щоб процитувати його точно.",
+        parameters: {
+          type: "OBJECT",
+          properties: {
+            id: {
+              type: "STRING",
+              description:
+                "ID рішення (наприклад 100000000) або повний URL виду https://reyestr.court.gov.ua/Review/100000000",
+            },
+          },
+          required: ["id"],
+        },
+      },
+    ],
+  },
+];
+
+/** Max model↔tool round-trips before we stop and answer with what we have. */
+const MAX_TOOL_STEPS = 4;
+
+function collectSources(data: GeminiResponse, into: Map<string, string>) {
+  const chunks = data.candidates?.[0]?.groundingMetadata?.groundingChunks ?? [];
+  for (const chunk of chunks) {
+    const uri = chunk.web?.uri;
+    if (!uri) continue;
+    const title = chunk.web?.domain || chunk.web?.title || uri;
+    if (!into.has(uri)) into.set(uri, title);
+  }
+}
+
+/**
+ * Reply that can consult live sources: Google Search grounding for
+ * legislation and a direct reader for court decisions. Used only by the
+ * "fast" tier — the "pro" tier deliberately stays on the plain path the
+ * lawyer already relies on.
+ */
+export async function generateResearchReply(
+  history: ChatTurn[],
+  systemInstruction: string
+): Promise<AssistantReply> {
+  const { readCourtDecision } = await import("./legal-sources");
+
+  const contents = historyToContents(history);
+  const sources = new Map<string, string>();
+
+  const body: Record<string, unknown> = {
+    contents,
+    systemInstruction: { parts: [{ text: systemInstruction }] },
+    tools: RESEARCH_TOOLS,
+    generationConfig: {
+      temperature: 0.8,
+      topP: 0.95,
+      maxOutputTokens: 8192,
+      thinkingConfig: { thinkingLevel: "low" },
+    },
+  };
+
+  const endpoint = getEndpoint(resolveModel("fast"), "generateContent");
+
+  for (let step = 0; step < MAX_TOOL_STEPS; step++) {
+    const res = await postWithRetry(endpoint, body);
+    const data: GeminiResponse = await res.json();
+
+    collectSources(data, sources);
+
+    const parts = data.candidates?.[0]?.content?.parts ?? [];
+    const calls = parts.filter((p) => p.functionCall);
+
+    if (calls.length === 0) {
+      return {
+        text: extractText(data),
+        sources: [...sources].map(([uri, title]) => ({ uri, title })),
+      };
+    }
+
+    // Echo the model turn back verbatim — Gemini 3 needs its own parts
+    // (including thoughtSignature) to continue a tool call.
+    contents.push({ role: "model", parts: parts as Part[] });
+
+    const responses = await Promise.all(
+      calls.map(async (part) => {
+        const call = part.functionCall!;
+        const arg = String(call.args?.id ?? "");
+        const result =
+          call.name === "read_court_decision"
+            ? await readCourtDecision(arg)
+            : { error: `Невідомий інструмент: ${call.name}` };
+
+        if ("found" in result && result.found && result.url) {
+          sources.set(result.url, "reyestr.court.gov.ua");
+        }
+
+        return {
+          functionResponse: { name: call.name, response: { result } },
+        };
+      })
+    );
+
+    contents.push({ role: "user", parts: responses as Part[] });
+  }
+
+  throw new Error("Дослідження не завершилося — забагато кроків.");
 }
 
 /**

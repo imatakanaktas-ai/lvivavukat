@@ -56,7 +56,11 @@ function normalizeDecisionId(input: string): string | null {
 export function sanitizeCitations(
   text: string,
   verifiedDecisionIds: Set<string>
-): { text: string; strippedDecisions: number } {
+): {
+  text: string;
+  strippedDecisions: number;
+  unverifiedCaseNumbers: string[];
+} {
   let strippedDecisions = 0;
 
   // 1. zakon.rada.gov.ua/...#nNNN  ->  zakon.rada.gov.ua/...
@@ -84,12 +88,37 @@ export function sanitizeCitations(
     return "(посилання не наведено)";
   });
 
-  if (strippedDecisions > 0) {
-    out +=
-      "\n\n> ⚠️ **Увага:** посилання на судові рішення, які асистент не відкривав, було прибрано — номери справ у тексті НЕ перевірені. Перевір їх у ЄДРСР перед використанням.";
+  // 4. Bare case numbers ("справа № 923/876/16") carry the same risk as a
+  //    link but slip past the checks above, so flag every one the assistant
+  //    did not actually open.
+  const caseNumbers = [
+    ...new Set(
+      [...out.matchAll(/№\s*(\d+\/\d+\/\d+(?:-[а-яґєіїa-z]+)?)/gi)].map(
+        (m) => m[1]
+      )
+    ),
+  ];
+
+  if (strippedDecisions > 0 || caseNumbers.length > 0) {
+    const lines = [
+      "\n\n---\n> ⚠️ **Неперевірені посилання.**",
+    ];
+    if (strippedDecisions > 0) {
+      lines.push(
+        "> Посилання на рішення, які асистент не відкривав, було прибрано."
+      );
+    }
+    if (caseNumbers.length > 0) {
+      lines.push(
+        `> Номери справ, наведені без відкриття в реєстрі: ${caseNumbers
+          .map((n) => `\`${n}\``)
+          .join(", ")}. Перевір їх у ЄДРСР перед використанням.`
+      );
+    }
+    out += lines.join("\n");
   }
 
-  return { text: out, strippedDecisions };
+  return { text: out, strippedDecisions, unverifiedCaseNumbers: caseNumbers };
 }
 
 export interface CourtDecision {

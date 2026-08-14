@@ -199,8 +199,20 @@ const RESEARCH_TOOLS = [
   },
 ];
 
-/** Max model↔tool round-trips before we stop and answer with what we have. */
-const MAX_TOOL_STEPS = 4;
+/**
+ * Max model↔tool round-trips. Set for thoroughness, not speed — the lawyer
+ * would rather wait than get a shallow answer.
+ */
+const MAX_TOOL_STEPS = 8;
+
+export type ThinkingLevel = "low" | "medium" | "high";
+
+/**
+ * Research answers are legal advice, so they get the full thinking budget.
+ * Measured on the scenario suite: "low" produced repealed provisions and
+ * wrong limitation periods, "high" did not.
+ */
+const RESEARCH_THINKING_LEVEL: ThinkingLevel = "high";
 
 function collectSources(data: GeminiResponse, into: Map<string, string>) {
   const chunks = data.candidates?.[0]?.groundingMetadata?.groundingChunks ?? [];
@@ -212,34 +224,34 @@ function collectSources(data: GeminiResponse, into: Map<string, string>) {
   }
 }
 
-/**
- * Reply that can consult live sources: Google Search grounding for
- * legislation and a direct reader for court decisions. Used only by the
- * "fast" tier — the "pro" tier deliberately stays on the plain path the
- * lawyer already relies on.
- */
-export async function generateResearchReply(
-  history: ChatTurn[],
-  systemInstruction: string
-): Promise<AssistantReply> {
-  const { readCourtDecision, sanitizeCitations } = await import(
-    "./legal-sources"
-  );
+interface LoopContext {
+  sources: Map<string, string>;
+  verifiedDecisionIds: Set<string>;
+  thinkingLevel: ThinkingLevel;
+}
 
-  const contents = historyToContents(history);
-  const sources = new Map<string, string>();
-  // Only decisions actually opened may keep their link in the reply.
-  const verifiedDecisionIds = new Set<string>();
+/**
+ * Runs one model turn to completion, executing any tool calls it makes along
+ * the way. Returns the final text.
+ */
+async function runToolLoop(
+  contents: GeminiMessage[],
+  systemInstruction: string,
+  ctx: LoopContext
+): Promise<string> {
+  const { readCourtDecision } = await import("./legal-sources");
 
   const body: Record<string, unknown> = {
     contents,
     systemInstruction: { parts: [{ text: systemInstruction }] },
     tools: RESEARCH_TOOLS,
     generationConfig: {
-      temperature: 0.8,
+      // Lower temperature than chat: statutes and deadlines are not a place
+      // for creative variance.
+      temperature: 0.3,
       topP: 0.95,
-      maxOutputTokens: 8192,
-      thinkingConfig: { thinkingLevel: "low" },
+      maxOutputTokens: 16384,
+      thinkingConfig: { thinkingLevel: ctx.thinkingLevel },
     },
   };
 
@@ -249,18 +261,12 @@ export async function generateResearchReply(
     const res = await postWithRetry(endpoint, body);
     const data: GeminiResponse = await res.json();
 
-    collectSources(data, sources);
+    collectSources(data, ctx.sources);
 
     const parts = data.candidates?.[0]?.content?.parts ?? [];
     const calls = parts.filter((p) => p.functionCall);
 
-    if (calls.length === 0) {
-      const clean = sanitizeCitations(extractText(data), verifiedDecisionIds);
-      return {
-        text: clean.text,
-        sources: [...sources].map(([uri, title]) => ({ uri, title })),
-      };
-    }
+    if (calls.length === 0) return extractText(data);
 
     // Echo the model turn back verbatim — Gemini 3 needs its own parts
     // (including thoughtSignature) to continue a tool call.
@@ -276,8 +282,8 @@ export async function generateResearchReply(
             : { error: `Невідомий інструмент: ${call.name}` };
 
         if ("found" in result && result.found && result.url) {
-          sources.set(result.url, "reyestr.court.gov.ua");
-          if (result.id) verifiedDecisionIds.add(result.id);
+          ctx.sources.set(result.url, "reyestr.court.gov.ua");
+          if (result.id) ctx.verifiedDecisionIds.add(result.id);
         }
 
         return {
@@ -290,6 +296,100 @@ export async function generateResearchReply(
   }
 
   throw new Error("Дослідження не завершилося — забагато кроків.");
+}
+
+const AUDIT_MARKER = "ЧИСТО";
+
+const AUDIT_INSTRUCTION = `Sen bir hukuki denetçisin. Görevin YENİ CEVAP YAZMAK DEĞİL — sadece aşağıdaki taslağı denetlemek.
+
+Şunları TEK TEK kontrol et, her biri için ARAMA YAP:
+1. Taslakta atıf yapılan her kanun maddesi HÂLÂ YÜRÜRLÜKTE mi? Ukrayna'da 2024-2026'da çok madde kaldırıldı veya değişti. Bir madde "виключено на підставі Закону №..." ile kaldırılmışsa bu KRİTİK hatadır.
+2. SÜRELER — en tehlikeli alan, en sıkı kontrol burada:
+   - Taslaktaki HER süre iddiası için (zamanaşımı, hak düşürücü, başvuru süresi) o süreyi belirleyen maddeyi bul ve METNİNİ ALINTILA. Alıntılayamıyorsan iddia doğrulanmamıştır — bildir.
+   - "Genel zamanaşımı 3 yıl" denen HER yerde ЦК md. 258'i (özel zamanaşımı) ayrıca aç ve listeyi oku: o talep türü orada sayılmış mı? Sayılmışsa genel süre DEĞİL, özel süre geçerlidir.
+   - Özel bir kanunun "kısaltılmış süre içermediği" gerekçesi yeterli değil — özel süre çoğu zaman ЦК'ya eklenmiş olarak durur.
+3. Dava numarası verilen her mahkeme kararını read_court_decision ile AÇ. Açamıyorsan veya dava numarası eşleşmiyorsa bu uydurma atıftır.
+
+Ayna siteleri (kodeksy.com.ua, protocol.ua, ligazakon.net) değil, resmi kaynağı esas al.
+
+ÇIKTI BİÇİMİ:
+- Hiçbir sorun bulamadıysan SADECE şu kelimeyi yaz: ${AUDIT_MARKER}
+- Sorun bulduysan madde madde listele: [NE YANLIŞ] → [DOĞRUSU] → [KAYNAK]`;
+
+const REVISE_INSTRUCTION = `Denetçi taslağında hatalar buldu. Cevabı DÜZELT.
+
+- Yapıyı, tonu ve kapsamı KORU. Baştan yazma, sadece hatalı kısımları düzelt.
+- Kaldırılmış bir maddeye dayanan strateji varsa o stratejiyi çıkar veya geçerli dayanakla değiştir.
+- Doğrulanamayan mahkeme kararı atıflarını (dava numarası, tarih) TAMAMEN ÇIKAR. Yerine "bu konuda ВС pratiği var, istersen sicilden bulayım" yaz.
+- Düzelttiğin şeyi ayrıca açıklama, sadece düzeltilmiş cevabı ver.`;
+
+/**
+ * Reply that can consult live sources: Google Search grounding for
+ * legislation and a direct reader for court decisions. Used only by the
+ * "fast" tier — the "pro" tier deliberately stays on the plain path the
+ * lawyer already relies on.
+ *
+ * Runs draft → audit → revise. The audit pass exists because raising the
+ * thinking level was not enough: asked directly, the model knows ч. 2 ст. 110
+ * СК was repealed, but while building a strategy it still reached for it.
+ * A separate pass whose only job is checking catches that.
+ */
+export async function generateResearchReply(
+  history: ChatTurn[],
+  systemInstruction: string,
+  thinkingLevel: ThinkingLevel = RESEARCH_THINKING_LEVEL
+): Promise<AssistantReply> {
+  const { sanitizeCitations } = await import("./legal-sources");
+
+  const ctx: LoopContext = {
+    sources: new Map(),
+    verifiedDecisionIds: new Set(),
+    thinkingLevel,
+  };
+
+  // 1. Draft
+  const draft = await runToolLoop(
+    historyToContents(history),
+    systemInstruction,
+    ctx
+  );
+
+  let final = draft;
+
+  // 2. Audit — a fresh turn so the model checks rather than defends.
+  try {
+    const audit = await runToolLoop(
+      [{ role: "user", parts: [{ text: `TASLAK:\n\n${draft}` }] }],
+      AUDIT_INSTRUCTION,
+      ctx
+    );
+
+    // 3. Revise only when the audit actually found something.
+    if (!audit.trim().toUpperCase().startsWith(AUDIT_MARKER)) {
+      final = await runToolLoop(
+        [
+          {
+            role: "user",
+            parts: [
+              { text: `TASLAK:\n\n${draft}\n\n---\n\nDENETÇİ BULGULARI:\n\n${audit}` },
+            ],
+          },
+        ],
+        `${systemInstruction}\n\n--- DÜZELTME GÖREVİ ---\n${REVISE_INSTRUCTION}`,
+        ctx
+      );
+    }
+  } catch (e) {
+    // A failed audit must not cost the lawyer the answer; keep the draft.
+    console.error("Audit pass failed, returning draft:", e);
+  }
+
+  const clean = sanitizeCitations(final, ctx.verifiedDecisionIds);
+
+  return {
+    text: clean.text,
+    sources: [...ctx.sources].map(([uri, title]) => ({ uri, title })),
+  };
 }
 
 /**

@@ -8,9 +8,14 @@ import {
   generateChatResponse,
   generateResearchReply,
   generateContent,
+  generateDocumentDraft,
+  isDocumentRequest,
   type ChatTurn,
   type ModelTier,
 } from "@/lib/ai/gemini";
+import { DOCUMENT_DRAFT_PROMPT } from "@/lib/ai/prompts";
+import { documentFileName, parseDocumentMarkup } from "@/lib/pdf/markup";
+import { renderLegalDocumentPdf } from "@/lib/pdf/legal-document";
 import { getActiveDirectivesText } from "./directive-actions";
 
 async function requireAuth() {
@@ -189,7 +194,12 @@ export async function sendAIMessage(
   message: string,
   fileData?: { base64: string; mimeType: string; fileName: string; extractedText?: string },
   tier: ModelTier = "pro"
-): Promise<{ success: boolean; reply?: string; error?: string }> {
+): Promise<{
+  success: boolean;
+  reply?: string;
+  document?: { fileName: string };
+  error?: string;
+}> {
   await requireAuth();
 
   if (!message.trim() && !fileData) {
@@ -245,31 +255,50 @@ export async function sendAIMessage(
     }
 
     // 5. Build system prompt with directives
-    let systemPrompt =
-      tier === "fast" ? RESEARCH_SYSTEM_PROMPT : ASSISTANT_SYSTEM_PROMPT;
     const directivesText = await getActiveDirectivesText();
-    if (directivesText) {
-      systemPrompt += "\n\n--- НАВЧАЛЬНІ ДИРЕКТИВИ АДВОКАТА ---\n" + directivesText;
-    }
+    const withDirectives = (prompt: string) =>
+      directivesText
+        ? `${prompt}\n\n--- НАВЧАЛЬНІ ДИРЕКТИВИ АДВОКАТА ---\n${directivesText}`
+        : prompt;
 
-    // 6. Call Gemini — "fast" may consult live sources, "pro" stays plain
+    // 6. Call Gemini. A request for a document file gets a drafted document
+    //    instead of a chat answer; otherwise "fast" may consult live sources
+    //    and "pro" stays plain.
     let reply: string;
-    if (tier === "fast") {
-      const result = await generateResearchReply(history, systemPrompt);
+    let document: { fileName: string } | undefined;
+
+    if (!fileData && (await isDocumentRequest(message))) {
+      reply = await generateDocumentDraft(
+        history,
+        withDirectives(DOCUMENT_DRAFT_PROMPT)
+      );
+      document = { fileName: documentFileName(parseDocumentMarkup(reply)) };
+    } else if (tier === "fast") {
+      const result = await generateResearchReply(
+        history,
+        withDirectives(RESEARCH_SYSTEM_PROMPT)
+      );
       reply = result.sources.length
         ? `${result.text}\n\n---\n**Джерела:**\n${result.sources
             .map((s, i) => `${i + 1}. [${s.title}](${s.uri})`)
             .join("\n")}`
         : result.text;
     } else {
-      reply = await generateChatResponse(history, systemPrompt, tier);
+      reply = await generateChatResponse(
+        history,
+        withDirectives(ASSISTANT_SYSTEM_PROMPT),
+        tier
+      );
     }
 
-    // 7. Save assistant reply
+    // 7. Save assistant reply. A drafted document is stored as its markup and
+    //    rendered to PDF on download, so a follow-up turn can revise it.
     await db.insert(aiChatMessages).values({
       sessionId,
       role: "assistant",
       content: reply,
+      fileName: document?.fileName ?? null,
+      fileType: document ? "document" : null,
     });
 
     // 8. Auto-title on first exchange
@@ -286,7 +315,7 @@ export async function sendAIMessage(
         .where(eq(aiChatSessions.id, sessionId));
     }
 
-    return { success: true, reply };
+    return { success: true, reply, document };
   } catch (e) {
     console.error("AI message error:", e);
     const detail = e instanceof Error ? e.message : String(e);
@@ -298,60 +327,28 @@ export async function sendAIMessage(
 }
 
 // =============================================
-// PDF GENERATION
+// DOCUMENT PDF
 // =============================================
 
-export async function generatePdfFromText(
-  text: string
-): Promise<{ success: boolean; base64?: string; error?: string }> {
+/**
+ * Renders a drafted document (the markup stored as the message content) to
+ * PDF. Rendered on demand rather than stored, so renderer fixes reach old
+ * drafts too and no client document sits in public blob storage.
+ */
+export async function renderDocumentPdf(
+  markup: string
+): Promise<{ success: boolean; base64?: string; fileName?: string; error?: string }> {
   await requireAuth();
   try {
-    const { PDFDocument, StandardFonts, rgb } = await import("pdf-lib");
-
-    const pdfDoc = await PDFDocument.create();
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-    const fontSize = 11;
-    const margin = 50;
-    const lineHeight = fontSize * 1.5;
-
-    const lines = text.split("\n");
-    let page = pdfDoc.addPage([595, 842]); // A4
-    let y = 842 - margin;
-
-    for (const rawLine of lines) {
-      const words = rawLine.split(" ");
-      let currentLine = "";
-
-      for (const word of words) {
-        const testLine = currentLine ? `${currentLine} ${word}` : word;
-        const width = font.widthOfTextAtSize(testLine, fontSize);
-
-        if (width > 595 - margin * 2) {
-          if (y < margin + lineHeight) {
-            page = pdfDoc.addPage([595, 842]);
-            y = 842 - margin;
-          }
-          page.drawText(currentLine, { x: margin, y, size: fontSize, font, color: rgb(0.1, 0.1, 0.1) });
-          y -= lineHeight;
-          currentLine = word;
-        } else {
-          currentLine = testLine;
-        }
-      }
-
-      if (y < margin + lineHeight) {
-        page = pdfDoc.addPage([595, 842]);
-        y = 842 - margin;
-      }
-      page.drawText(currentLine, { x: margin, y, size: fontSize, font, color: rgb(0.1, 0.1, 0.1) });
-      y -= lineHeight;
-    }
-
-    const pdfBytes = await pdfDoc.save();
-    const base64 = Buffer.from(pdfBytes).toString("base64");
-    return { success: true, base64 };
+    const spec = parseDocumentMarkup(markup);
+    const bytes = await renderLegalDocumentPdf(spec);
+    return {
+      success: true,
+      base64: Buffer.from(bytes).toString("base64"),
+      fileName: documentFileName(spec),
+    };
   } catch (e) {
-    console.error("PDF generation error:", e);
-    return { success: false, error: "PDF oluşturulamadı." };
+    console.error("PDF render error:", e);
+    return { success: false, error: "Не вдалося створити PDF." };
   }
 }

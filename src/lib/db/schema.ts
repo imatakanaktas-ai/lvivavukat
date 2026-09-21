@@ -326,7 +326,7 @@ export const aiChatMessages = pgTable("ai_chat_messages", {
   content: text("content").notNull(),
   fileUrl: text("file_url"),
   fileName: text("file_name"),
-  fileType: varchar("file_type", { length: 50 }), // "pdf" | "image"
+  fileType: varchar("file_type", { length: 50 }), // "pdf" | "image" | "document" (drafted; content is the markup)
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

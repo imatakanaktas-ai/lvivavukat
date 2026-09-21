@@ -13,7 +13,6 @@ import {
   FileText,
   ImageIcon,
   X,
-  Download,
   MessageSquare,
   Plus,
   Trash2,
@@ -29,10 +28,11 @@ import {
   deleteSession,
   renameSession,
   getMessages,
-  generatePdfFromText,
+  renderDocumentPdf,
 } from "./actions";
 import type { AIChatSession, AIChatMessage } from "@/lib/db/schema";
 import MessageContent from "./MessageContent";
+import DocumentCard from "./DocumentCard";
 
 type ModelTier = "pro" | "fast";
 
@@ -102,6 +102,7 @@ export default function AIChat() {
 
   // PDF Download
   const [generatingPdfId, setGeneratingPdfId] = useState<string | null>(null);
+  const [pdfError, setPdfError] = useState<{ id: string; message: string } | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -307,8 +308,8 @@ export default function AIChat() {
           sessionId: sessionId!,
           role: "assistant",
           content: result.reply,
-          fileName: null,
-          fileType: null,
+          fileName: result.document?.fileName ?? null,
+          fileType: result.document ? "document" : null,
           fileUrl: null,
           createdAt: new Date(),
         };
@@ -354,18 +355,24 @@ export default function AIChat() {
 
   // ===== PDF DOWNLOAD =====
 
-  const handleDownloadPdf = async (msgId: string, text: string) => {
+  const handleDownloadPdf = async (msgId: string, markup: string) => {
     setGeneratingPdfId(msgId);
+    setPdfError(null);
     try {
-      const result = await generatePdfFromText(text);
-      if (result.success && result.base64) {
-        const link = document.createElement("a");
-        link.href = `data:application/pdf;base64,${result.base64}`;
-        link.download = "document.pdf";
-        link.click();
+      const result = await renderDocumentPdf(markup);
+      if (!result.success || !result.base64) {
+        throw new Error(result.error);
       }
-    } catch {
-      // ignore
+      const link = document.createElement("a");
+      link.href = `data:application/pdf;base64,${result.base64}`;
+      link.download = result.fileName ?? "document.pdf";
+      link.click();
+    } catch (e) {
+      setPdfError({
+        id: msgId,
+        message:
+          (e instanceof Error && e.message) || "Не вдалося створити PDF.",
+      });
     } finally {
       setGeneratingPdfId(null);
     }
@@ -514,7 +521,7 @@ export default function AIChat() {
                       }`}
                   >
                     {/* File indicator */}
-                    {msg.fileName && (
+                    {msg.fileName && msg.fileType !== "document" && (
                       <div className={`flex items-center gap-2 mb-2 px-2 py-1.5 rounded-lg text-xs
                         ${msg.role === "user" ? "bg-white/10" : "bg-gray-100"}`}>
                         {msg.fileType === "pdf" ? (
@@ -535,10 +542,19 @@ export default function AIChat() {
                       />
                     )}
 
-                    <MessageContent
-                      content={msg.content}
-                      isUser={msg.role === "user"}
-                    />
+                    {msg.fileType === "document" ? (
+                      <DocumentCard
+                        markup={msg.content}
+                        isDownloading={generatingPdfId === msg.id}
+                        error={pdfError?.id === msg.id ? pdfError.message : null}
+                        onDownload={() => handleDownloadPdf(msg.id, msg.content)}
+                      />
+                    ) : (
+                      <MessageContent
+                        content={msg.content}
+                        isUser={msg.role === "user"}
+                      />
+                    )}
 
                     <div className={`flex items-center gap-2 mt-2 ${msg.role === "user" ? "justify-end" : "justify-between"}`}>
                       <span className="text-[10px] text-gray-400">
@@ -557,19 +573,6 @@ export default function AIChat() {
                               <Copy className="w-3.5 h-3.5" />
                             )}
                           </button>
-                          {msg.content.length > 100 && (
-                            <button
-                              onClick={() => handleDownloadPdf(msg.id, msg.content)}
-                              className="p-1 rounded text-gray-400 hover:text-red-500"
-                              title="Завантажити як PDF"
-                            >
-                              {generatingPdfId === msg.id ? (
-                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                              ) : (
-                                <Download className="w-3.5 h-3.5" />
-                              )}
-                            </button>
-                          )}
                         </div>
                       )}
                     </div>

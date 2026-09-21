@@ -392,6 +392,111 @@ export async function generateResearchReply(
   };
 }
 
+// =============================================
+// DOCUMENT DRAFTING
+// =============================================
+
+/**
+ * Cheap pre-filter: only messages that mention a file at all go to the
+ * classifier, so ordinary questions pay no extra latency.
+ */
+const FILE_HINT =
+  /pdf|пдф|файл|dosya|indir|завантаж|скача|роздрук|распечат|yazdır|çıktı/i;
+
+const DOCUMENT_REQUEST_INSTRUCTION = `Avukatın mesajını sınıflandır. Soru: avukat şimdi bir belgenin HAZIRLANIP kendisine PDF/dosya olarak VERİLMESİNİ mi istiyor?
+
+EVET örnekleri: "dilekçeyi PDF olarak ver", "bunu pdf yap", "sözleşmeyi dosya olarak hazırla", "підготуй позов у PDF".
+HAYIR örnekleri: yüklenmiş bir PDF hakkında soru ("bu PDF'te ne yazıyor", "yüklediğim dosyayı incele"), PDF'in ne olduğunu sormak, sadece bilgi istemek.
+
+Sadece EVET veya HAYIR yaz.`;
+
+/**
+ * Vertex latency is spiky: the same one-word classification usually returns
+ * in ~2s but occasionally hangs for 40s+. A short timeout with one retry
+ * gets past a stalled call without making the lawyer wait on it.
+ */
+const CLASSIFIER_TIMEOUT_MS = 8_000;
+const CLASSIFIER_ATTEMPTS = 2;
+
+/**
+ * True when the lawyer asks for a document delivered as a file. A slow or
+ * failed classification falls back to a normal chat reply, never an error.
+ */
+export async function isDocumentRequest(message: string): Promise<boolean> {
+  if (!FILE_HINT.test(message)) return false;
+
+  const body = JSON.stringify({
+    contents: [{ role: "user", parts: [{ text: message }] }],
+    systemInstruction: { parts: [{ text: DOCUMENT_REQUEST_INSTRUCTION }] },
+    generationConfig: {
+      temperature: 0,
+      maxOutputTokens: 1024,
+      thinkingConfig: { thinkingLevel: "low" },
+    },
+  });
+
+  for (let i = 0; i < CLASSIFIER_ATTEMPTS; i++) {
+    try {
+      const res = await fetch(
+        getEndpoint(resolveModel("fast"), "generateContent"),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: AbortSignal.timeout(CLASSIFIER_TIMEOUT_MS),
+          body,
+        }
+      );
+      if (!res.ok) throw new Error(`Gemini API error ${res.status}`);
+      const answer = extractText(await res.json());
+      return /^\s*(EVET|YES|ТАК)/i.test(answer);
+    } catch (e) {
+      console.error(`Document request classification attempt ${i + 1} failed:`, e);
+    }
+  }
+  return false;
+}
+
+/**
+ * Writes a standalone legal document (not a chat reply) from the
+ * conversation so far. Returns the document markup parsed by
+ * parseDocumentMarkup in lib/pdf/legal-document.
+ *
+ * Plain text on purpose: under a JSON response schema Gemini looped on empty
+ * blocks until it hit the token limit.
+ *
+ * Always the fast tier, whatever the chat is set to: on the same claim it
+ * wrote a complete document in ~40s, while the pro preview had not returned
+ * after 5 minutes — past what a serverless request can wait.
+ */
+export async function generateDocumentDraft(
+  history: ChatTurn[],
+  systemInstruction: string
+): Promise<string> {
+  const body: Record<string, unknown> = {
+    contents: historyToContents(history),
+    systemInstruction: { parts: [{ text: systemInstruction }] },
+    generationConfig: {
+      // Same reasoning as research: a filed document is not a place for
+      // creative variance.
+      temperature: 0.3,
+      topP: 0.95,
+      maxOutputTokens: 32768,
+      thinkingConfig: { thinkingLevel: "high" },
+    },
+  };
+
+  const endpoint = getEndpoint(resolveModel("fast"), "generateContent");
+  const res = await postWithRetry(endpoint, body);
+  const data: GeminiResponse = await res.json();
+
+  // extractText returns whatever text there is; a document cut off mid-way
+  // must not reach the lawyer looking complete.
+  if (data.candidates?.[0]?.finishReason === "MAX_TOKENS") {
+    throw new Error("Документ вийшов задовгим і обірвався.");
+  }
+  return extractText(data);
+}
+
 /**
  * Vertex returns transient 429/503 under load; retry a few times
  * with backoff instead of surfacing a failure to the lawyer.

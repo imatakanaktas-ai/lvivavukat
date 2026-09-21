@@ -6,6 +6,11 @@ const nextConfig: NextConfig = {
     // the 1 MB default rejected anything but tiny files.
     serverActions: { bodySizeLimit: "30mb" },
   },
+  // The PDF renderer reads its fonts from disk at runtime, which the tracer
+  // cannot see; without this the fonts are missing from the deployed bundle.
+  outputFileTracingIncludes: {
+    "/panel-yonetim2024x/ai-asistan": ["./src/lib/pdf/fonts/**/*"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

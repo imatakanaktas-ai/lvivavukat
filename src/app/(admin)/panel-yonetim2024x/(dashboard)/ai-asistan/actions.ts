@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth/config";
 import { db } from "@/lib/db";
 import { aiChatSessions, aiChatMessages } from "@/lib/db/schema";
-import { eq, desc, asc } from "drizzle-orm";
+import { and, eq, gt, desc, asc } from "drizzle-orm";
 import {
   generateChatResponse,
   generateResearchReply,
@@ -22,6 +22,17 @@ async function requireAuth() {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");
 }
+
+/**
+ * Time one reply may take, counted from the start of the request. Must stay
+ * below `maxDuration` in page.tsx (800 s): at that point the platform kills
+ * the request and nothing is saved, so the model calls stop early enough to
+ * still store an answer.
+ */
+const REQUEST_BUDGET_MS = 760_000;
+
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const ASSISTANT_SYSTEM_PROMPT = `Sen Av. Lyudmyla Chubai'nin kişisel AI hukuk asistanısın. Lyudmyla, Ukrayna Lviv'de çalışan ve Türk vatandaşlarına hukuki danışmanlık sunan deneyimli bir avukattır.
 
@@ -193,13 +204,18 @@ export async function sendAIMessage(
   sessionId: string,
   message: string,
   fileData?: { base64: string; mimeType: string; fileName: string; extractedText?: string },
-  tier: ModelTier = "pro"
+  tier: ModelTier = "pro",
+  clientMessageId?: string
 ): Promise<{
   success: boolean;
   reply?: string;
   document?: { fileName: string };
   error?: string;
 }> {
+  // Fixed first, so the whole request rather than just the model calls fits
+  // inside the platform limit.
+  const deadline = Date.now() + REQUEST_BUDGET_MS;
+
   await requireAuth();
 
   if (!message.trim() && !fileData) {
@@ -214,8 +230,13 @@ export async function sendAIMessage(
         : "image"
       : undefined;
 
-    // 2. Save user message
+    // 2. Save user message. The browser picks the id, so that if its
+    //    connection drops while the reply is being prepared it can still find
+    //    this message — and the reply saved after it — again.
     await db.insert(aiChatMessages).values({
+      ...(clientMessageId && UUID_PATTERN.test(clientMessageId)
+        ? { id: clientMessageId }
+        : {}),
       sessionId,
       role: "user",
       content: message,
@@ -270,13 +291,16 @@ export async function sendAIMessage(
     if (!fileData && (await isDocumentRequest(message))) {
       reply = await generateDocumentDraft(
         history,
-        withDirectives(DOCUMENT_DRAFT_PROMPT)
+        withDirectives(DOCUMENT_DRAFT_PROMPT),
+        deadline
       );
       document = { fileName: documentFileName(parseDocumentMarkup(reply)) };
     } else if (tier === "fast") {
       const result = await generateResearchReply(
         history,
-        withDirectives(RESEARCH_SYSTEM_PROMPT)
+        withDirectives(RESEARCH_SYSTEM_PROMPT),
+        undefined,
+        deadline
       );
       reply = result.sources.length
         ? `${result.text}\n\n---\n**Джерела:**\n${result.sources
@@ -287,7 +311,8 @@ export async function sendAIMessage(
       reply = await generateChatResponse(
         history,
         withDirectives(ASSISTANT_SYSTEM_PROMPT),
-        tier
+        tier,
+        deadline
       );
     }
 
@@ -324,6 +349,49 @@ export async function sendAIMessage(
       error: `AI відповідь не вдалося отримати. (${detail.slice(0, 300)})`,
     };
   }
+}
+
+/**
+ * Whether a message reached the server and whether its reply is stored yet.
+ * The browser asks this when the request that was waiting for the reply
+ * failed: the reply is saved either way, so it can still be shown.
+ */
+export async function getReplyStatus(
+  sessionId: string,
+  userMessageId: string
+): Promise<{ received: boolean; replied: boolean }> {
+  await requireAuth();
+
+  if (!UUID_PATTERN.test(sessionId) || !UUID_PATTERN.test(userMessageId)) {
+    return { received: false, replied: false };
+  }
+
+  const [sent] = await db
+    .select({ createdAt: aiChatMessages.createdAt })
+    .from(aiChatMessages)
+    .where(
+      and(
+        eq(aiChatMessages.id, userMessageId),
+        eq(aiChatMessages.sessionId, sessionId)
+      )
+    )
+    .limit(1);
+
+  if (!sent) return { received: false, replied: false };
+
+  const [reply] = await db
+    .select({ id: aiChatMessages.id })
+    .from(aiChatMessages)
+    .where(
+      and(
+        eq(aiChatMessages.sessionId, sessionId),
+        eq(aiChatMessages.role, "assistant"),
+        gt(aiChatMessages.createdAt, sent.createdAt)
+      )
+    )
+    .limit(1);
+
+  return { received: true, replied: Boolean(reply) };
 }
 
 // =============================================

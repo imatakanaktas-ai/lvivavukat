@@ -28,6 +28,7 @@ import {
   deleteSession,
   renameSession,
   getMessages,
+  getReplyStatus,
   renderDocumentPdf,
 } from "./actions";
 import type { AIChatSession, AIChatMessage } from "@/lib/db/schema";
@@ -68,6 +69,88 @@ const QUICK_PROMPTS = [
   "Процедура отримання дозволу на роботу",
 ];
 
+/**
+ * How long a reply may still turn up after sending: the server works on one
+ * for up to 800 s (maxDuration in page.tsx), plus some slack.
+ */
+const MAX_REPLY_WAIT_MS = 830_000;
+const REPLY_POLL_MS = 8_000;
+
+/**
+ * Looks for the reply on the server after the request that was waiting for it
+ * failed. A reply that takes minutes can outlive the browser's connection
+ * (network hiccup, laptop asleep), but the server keeps working and saves it.
+ * Resolves with the session's messages once the reply to `userMessageId` is
+ * stored, or with null when none is coming.
+ */
+async function waitForSavedReply(
+  sessionId: string,
+  userMessageId: string,
+  sentAt: number
+): Promise<AIChatMessage[] | null> {
+  let notReceived = 0;
+
+  while (Date.now() - sentAt < MAX_REPLY_WAIT_MS) {
+    await new Promise((r) => setTimeout(r, REPLY_POLL_MS));
+
+    try {
+      const status = await getReplyStatus(sessionId, userMessageId);
+
+      if (!status.received) {
+        // The message never reached the server, so no reply will follow.
+        if (++notReceived >= 3) return null;
+        continue;
+      }
+      if (!status.replied) continue;
+
+      const result = await getMessages(sessionId);
+      if (result.success && result.messages) return result.messages;
+    } catch (e) {
+      // An error raised by the server itself (it carries a digest) will not
+      // go away by waiting; anything else means still offline — keep trying.
+      if (e && typeof e === "object" && "digest" in e) return null;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * "Thinking" line with a running clock. Replies can take minutes, and without
+ * a sign of life the page looks frozen and gets reloaded mid-answer.
+ */
+function ThinkingIndicator() {
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    const startedAt = Date.now();
+    const timer = setInterval(
+      () => setElapsed(Math.floor((Date.now() - startedAt) / 1000)),
+      1000
+    );
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <>
+      <div className="flex items-center gap-2 text-sm text-gray-500">
+        <Loader2 className="w-4 h-4 animate-spin" />
+        Думаю...
+        {elapsed >= 10 && (
+          <span className="tabular-nums text-gray-400">
+            {Math.floor(elapsed / 60)}:{String(elapsed % 60).padStart(2, "0")}
+          </span>
+        )}
+      </div>
+      {elapsed >= 45 && (
+        <p className="mt-1 text-xs text-gray-400">
+          Складні запити можуть готуватися до 13 хвилин. Не закривайте сторінку.
+        </p>
+      )}
+    </>
+  );
+}
+
 export default function AIChat() {
   // Sessions
   const [sessions, setSessions] = useState<AIChatSession[]>([]);
@@ -106,6 +189,12 @@ export default function AIChat() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  // The session on screen, for work that finishes after the user moved on.
+  const activeSessionRef = useRef<string | null>(null);
+  useEffect(() => {
+    activeSessionRef.current = activeSessionId;
+  }, [activeSessionId]);
 
   // Auto-scroll
   useEffect(() => {
@@ -287,20 +376,58 @@ export default function AIChat() {
     };
     setMessages((prev) => [...prev, tempUserMsg]);
 
-    startSend(async () => {
-      const result = await sendAIMessage(
-        sessionId!,
-        msg,
-        currentAttachment
-          ? {
-              base64: currentAttachment.base64,
-              mimeType: currentAttachment.mimeType,
-              fileName: currentAttachment.fileName,
-              extractedText: currentAttachment.extractedText,
-            }
-          : undefined,
-        tier
+    const sentAt = Date.now();
+    const isFirstExchange = messages.length === 0;
+
+    // Update session title in sidebar
+    const showSessionTitle = () => {
+      if (!isFirstExchange) return;
+      const titleText = msg.slice(0, 80) || currentAttachment?.fileName || "Розмова";
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === sessionId ? { ...s, title: titleText, updatedAt: new Date() } : s
+        )
       );
+    };
+
+    startSend(async () => {
+      let result: Awaited<ReturnType<typeof sendAIMessage>>;
+
+      try {
+        result = await sendAIMessage(
+          sessionId!,
+          msg,
+          currentAttachment
+            ? {
+                base64: currentAttachment.base64,
+                mimeType: currentAttachment.mimeType,
+                fileName: currentAttachment.fileName,
+                extractedText: currentAttachment.extractedText,
+              }
+            : undefined,
+          tier,
+          tempUserMsg.id
+        );
+      } catch (e) {
+        // The request itself broke — on a reply that takes minutes, usually
+        // the connection. Left uncaught, this replaced the whole panel with
+        // the error page. The server keeps working and saves its reply, so
+        // pick it up from there.
+        console.error("AI request interrupted:", e);
+
+        const saved = await waitForSavedReply(sessionId!, tempUserMsg.id, sentAt);
+        if (saved) {
+          if (activeSessionRef.current === sessionId) setMessages(saved);
+          showSessionTitle();
+          return;
+        }
+
+        result = {
+          success: false,
+          error:
+            "Не вдалося отримати відповідь: з'єднання із сервером перервалося. Оновіть сторінку — якщо відповідь встигла зберегтися, вона буде в розмові; якщо ні, надішліть питання ще раз.",
+        };
+      }
 
       if (result.success && result.reply) {
         const assistantMsg: AIChatMessage = {
@@ -314,16 +441,7 @@ export default function AIChat() {
           createdAt: new Date(),
         };
         setMessages((prev) => [...prev, assistantMsg]);
-
-        // Update session title in sidebar
-        if (messages.length === 0) {
-          const titleText = msg.slice(0, 80) || currentAttachment?.fileName || "Розмова";
-          setSessions((prev) =>
-            prev.map((s) =>
-              s.id === sessionId ? { ...s, title: titleText, updatedAt: new Date() } : s
-            )
-          );
-        }
+        showSessionTitle();
       } else {
         const errorMsg: AIChatMessage = {
           id: crypto.randomUUID(),
@@ -591,10 +709,7 @@ export default function AIChat() {
                     <Bot className="w-4 h-4 text-white" />
                   </div>
                   <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-gray-50 border border-gray-100">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      Думаю...
-                    </div>
+                    <ThinkingIndicator />
                   </div>
                 </div>
               )}

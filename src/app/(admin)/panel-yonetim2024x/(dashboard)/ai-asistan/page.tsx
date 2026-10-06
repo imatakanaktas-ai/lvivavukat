@@ -1,6 +1,12 @@
 import AIChat from "./AIChat";
 import AITrainingPanel from "./AITrainingPanel";
 
+// A research reply runs draft → audit → revise and regularly needs more than
+// the platform's 300 s default, which cut the request off and left the lawyer
+// with an error page. 800 s is the Vercel Pro ceiling; the Server Actions on
+// this page inherit it. REQUEST_BUDGET_MS in actions.ts must stay below it.
+export const maxDuration = 800;
+
 export default function AIAssistantPage() {
   return (
     <div className="space-y-4">

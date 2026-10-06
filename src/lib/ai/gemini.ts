@@ -137,7 +137,8 @@ function historyToContents(history: ChatTurn[]): GeminiMessage[] {
 export async function generateChatResponse(
   history: ChatTurn[],
   systemInstruction?: string,
-  tier: ModelTier = DEFAULT_TIER
+  tier: ModelTier = DEFAULT_TIER,
+  deadline?: number
 ): Promise<string> {
   const contents = historyToContents(history);
 
@@ -155,9 +156,7 @@ export async function generateChatResponse(
   };
 
   const endpoint = getEndpoint(resolveModel(tier), "generateContent");
-  const res = await postWithRetry(endpoint, body);
-
-  const data: GeminiResponse = await res.json();
+  const data = await postWithRetry(endpoint, body, deadline);
   return extractText(data);
 }
 
@@ -228,6 +227,8 @@ interface LoopContext {
   sources: Map<string, string>;
   verifiedDecisionIds: Set<string>;
   thinkingLevel: ThinkingLevel;
+  /** Epoch ms after which no further model call may run. */
+  deadline?: number;
 }
 
 /**
@@ -258,8 +259,7 @@ async function runToolLoop(
   const endpoint = getEndpoint(resolveModel("fast"), "generateContent");
 
   for (let step = 0; step < MAX_TOOL_STEPS; step++) {
-    const res = await postWithRetry(endpoint, body);
-    const data: GeminiResponse = await res.json();
+    const data = await postWithRetry(endpoint, body, ctx.deadline);
 
     collectSources(data, ctx.sources);
 
@@ -323,6 +323,14 @@ const REVISE_INSTRUCTION = `Denetçi taslağında hatalar buldu. Cevabı DÜZELT
 - Doğrulanamayan mahkeme kararı atıflarını (dava numarası, tarih) TAMAMEN ÇIKAR. Yerine "bu konuda ВС pratiği var, istersen sicilden bulayım" yaz.
 - Düzelttiğin şeyi ayrıca açıklama, sadece düzeltilmiş cevabı ver.`;
 
+/** Closes a reply that goes out without a finished audit. */
+const UNAUDITED_NOTE =
+  "> ⚠️ **Перевірку не завершено.** Повторну перевірку цієї відповіді не вдалося завершити. Перед використанням слід перевірити чинність норм, строки та посилання.";
+
+/** Closes a reply the audit faulted but the revision never fixed; the findings follow it. */
+const UNREVISED_NOTE =
+  "> ⚠️ **Відповідь не виправлено.** Перевірка знайшла зауваження, але виправити відповідь не вдалося. Зауваження перевірки:";
+
 /**
  * Reply that can consult live sources: Google Search grounding for
  * legislation and a direct reader for court decisions. Used only by the
@@ -337,7 +345,8 @@ const REVISE_INSTRUCTION = `Denetçi taslağında hatalar buldu. Cevabı DÜZELT
 export async function generateResearchReply(
   history: ChatTurn[],
   systemInstruction: string,
-  thinkingLevel: ThinkingLevel = RESEARCH_THINKING_LEVEL
+  thinkingLevel: ThinkingLevel = RESEARCH_THINKING_LEVEL,
+  deadline?: number
 ): Promise<AssistantReply> {
   const { sanitizeCitations } = await import("./legal-sources");
 
@@ -345,7 +354,14 @@ export async function generateResearchReply(
     sources: new Map(),
     verifiedDecisionIds: new Set(),
     thinkingLevel,
+    deadline,
   };
+
+  const startedAt = Date.now();
+  const logPhase = (phase: string) =>
+    console.info(
+      `[ai] research: ${phase} done at ${Math.round((Date.now() - startedAt) / 1000)}s`
+    );
 
   // 1. Draft
   const draft = await runToolLoop(
@@ -353,8 +369,11 @@ export async function generateResearchReply(
     systemInstruction,
     ctx
   );
+  logPhase("draft");
 
   let final = draft;
+  // Findings of an audit whose revision has not been written yet.
+  let openFindings: string | null = null;
 
   // 2. Audit — a fresh turn so the model checks rather than defends.
   try {
@@ -363,9 +382,11 @@ export async function generateResearchReply(
       AUDIT_INSTRUCTION,
       ctx
     );
+    logPhase("audit");
 
     // 3. Revise only when the audit actually found something.
     if (!audit.trim().toUpperCase().startsWith(AUDIT_MARKER)) {
+      openFindings = audit;
       final = await runToolLoop(
         [
           {
@@ -378,10 +399,16 @@ export async function generateResearchReply(
         `${systemInstruction}\n\n--- DÜZELTME GÖREVİ ---\n${REVISE_INSTRUCTION}`,
         ctx
       );
+      openFindings = null;
+      logPhase("revise");
     }
   } catch (e) {
-    // A failed audit must not cost the lawyer the answer; keep the draft.
+    // A failed audit must not cost the lawyer the answer; keep the draft, but
+    // never let it pass for a checked one.
     console.error("Audit pass failed, returning draft:", e);
+    final = `${draft}\n\n---\n${
+      openFindings ? `${UNREVISED_NOTE}\n\n${openFindings}` : UNAUDITED_NOTE
+    }`;
   }
 
   const clean = sanitizeCitations(final, ctx.verifiedDecisionIds);
@@ -470,7 +497,8 @@ export async function isDocumentRequest(message: string): Promise<boolean> {
  */
 export async function generateDocumentDraft(
   history: ChatTurn[],
-  systemInstruction: string
+  systemInstruction: string,
+  deadline?: number
 ): Promise<string> {
   const body: Record<string, unknown> = {
     contents: historyToContents(history),
@@ -486,8 +514,7 @@ export async function generateDocumentDraft(
   };
 
   const endpoint = getEndpoint(resolveModel("fast"), "generateContent");
-  const res = await postWithRetry(endpoint, body);
-  const data: GeminiResponse = await res.json();
+  const data = await postWithRetry(endpoint, body, deadline);
 
   // extractText returns whatever text there is; a document cut off mid-way
   // must not reach the lawyer looking complete.
@@ -498,33 +525,100 @@ export async function generateDocumentDraft(
 }
 
 /**
- * Vertex returns transient 429/503 under load; retry a few times
- * with backoff instead of surfacing a failure to the lawyer.
+ * Longest a single Vertex call may take. Node's fetch gives up on a request
+ * that has sent no response headers after 300 s, so a slower reply would
+ * never arrive anyway; stopping just short of that turns a stalled call into
+ * a clean retry instead of a bare "fetch failed".
+ */
+const CALL_TIMEOUT_MS = 290_000;
+
+/** With less than this left of the request's budget a call cannot finish. */
+const MIN_CALL_MS = 15_000;
+
+/**
+ * Thrown when the request's time budget runs out. Past its hard limit the
+ * platform kills the request and the lawyer gets an error page instead of an
+ * answer, so model calls stop a little before it.
+ */
+class TimeBudgetError extends Error {
+  constructor() {
+    super(
+      "Час на підготовку відповіді вичерпано. Спробуйте ще раз або розділіть питання на частини."
+    );
+    this.name = "TimeBudgetError";
+  }
+}
+
+/**
+ * Vertex returns transient 429/503 under load and now and then stalls on a
+ * call without answering; retry a few times with backoff instead of
+ * surfacing a failure to the lawyer.
+ *
+ * `deadline` is the epoch-ms time budget of the whole request: no attempt
+ * runs past it.
  */
 async function postWithRetry(
   endpoint: string,
   body: Record<string, unknown>,
+  deadline?: number,
   attempts = 3
-): Promise<Response> {
+): Promise<GeminiResponse> {
+  const payload = JSON.stringify(body);
+  // For the log line only — the endpoint itself carries the API key.
+  const model = endpoint.match(/\/models\/([^:]+):/)?.[1] ?? "gemini";
+  const outOfTime = () =>
+    deadline !== undefined && deadline - Date.now() < MIN_CALL_MS;
+
   let lastError = "";
+  let stalled = false;
 
   for (let i = 0; i < attempts; i++) {
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    if (outOfTime()) throw new TimeBudgetError();
 
-    if (res.ok) return res;
+    const startedAt = Date.now();
+    const timeout =
+      deadline === undefined
+        ? CALL_TIMEOUT_MS
+        : Math.min(CALL_TIMEOUT_MS, deadline - startedAt);
+    let retriable = true;
+    stalled = false;
 
-    lastError = `Gemini API error ${res.status}: ${await res.text()}`;
+    try {
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+        signal: AbortSignal.timeout(timeout),
+      });
 
-    const retriable = res.status === 429 || res.status >= 500;
+      if (res.ok) {
+        const data: GeminiResponse = await res.json();
+        console.info(
+          `[ai] ${model}: ${Math.round((Date.now() - startedAt) / 1000)}s`
+        );
+        return data;
+      }
+
+      lastError = `Gemini API error ${res.status}: ${await res.text()}`;
+      retriable = res.status === 429 || res.status >= 500;
+    } catch (e) {
+      // No HTTP answer at all: the call stalled until the timeout, or the
+      // connection dropped. A fresh attempt usually goes through.
+      const name = (e as { name?: string } | null)?.name;
+      stalled = name === "TimeoutError" || name === "AbortError";
+      lastError = stalled
+        ? "Модель не відповіла вчасно. Спробуйте ще раз."
+        : `Gemini API request failed: ${e instanceof Error ? e.message : String(e)}`;
+      console.error(`[ai] ${model}: attempt ${i + 1} failed`, e);
+    }
+
     if (!retriable || i === attempts - 1) break;
 
     await new Promise((r) => setTimeout(r, 1000 * 2 ** i));
   }
 
+  // A call cut short by the budget is the budget's failure, not the model's.
+  if (stalled && outOfTime()) throw new TimeBudgetError();
   throw new Error(lastError);
 }
 
